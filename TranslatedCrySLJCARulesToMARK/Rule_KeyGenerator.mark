@@ -1,0 +1,46 @@
+package java.jca
+
+rule JCAProvider_KeyGenerator_order{
+	using
+		KeyGenerator as kg
+	ensure
+		order
+			kg.instantiate(),
+			kg.init()?,
+			kg.generate()
+	onfail
+		InvalidOrderOfKeyGenerator
+}
+//constraints
+rule JCAProvider_KeyGenerator_algorithm{
+	using
+		KeyGenerator as kg
+	when 
+		_has_value(kg.secretKeyAlgorithm)
+	ensure
+		kg.secretKeyAlgorithm in ["AES", "HmacSHA224", "HmacSHA256", "HmacSHA384", "HmacSHA512"]
+	onfail
+		InvalidSecretKeyAlgorithmOfKeyGenerator
+}
+rule JCAProvider_KeyGenerator_keysize{
+	using
+		KeyGenerator as kg
+	when
+		kg.secretKeyAlgorithm in ["AES"] && _has_value(kg.secretKeySize)
+	ensure
+		kg.secretKeySize in [128, 192, 256]
+	onfail
+		InvalidKeySizeOfKeyGenerator
+}
+//requires
+rule JCAProvider_KeyGenerator_randomized{
+	using
+		KeyGenerator as kg,
+		SecureRandom as sr
+	when
+		_has_value(kg.ranGen)
+	ensure
+		_is(kg.ranGen, sr)
+	onfail
+		NotRandomranGenOfKeyGenerator
+}

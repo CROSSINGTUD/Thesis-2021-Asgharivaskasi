@@ -1,0 +1,14 @@
+package java.jca
+
+entity ECGenParameterSpec {
+	
+	var curve;
+	
+	
+	op instantiate {
+		java.security.spec.ECGenParameterSpec(
+			curve : java.lang.String 
+		);
+	}
+	
+} //constraint and ensure/almostsame

@@ -1,0 +1,27 @@
+package java.jca
+
+entity CipherInputStream{
+	
+	var is;
+	var ciph;
+	var buffer;
+	var offset;
+	var len;
+	
+	op instantiate{
+		javax.crypto.CipherInputStream (
+			is: java.io.InputStream, ciph: javax.crypto.Cipher
+		);
+	}
+	
+	op read{
+		javax.crypto.CipherInputStream.read();
+		javax.crypto.CipherInputStream.read(buffer: byte[]);
+		javax.crypto.CipherInputStream.read(buffer: byte[], offset: int, len: int);
+	}
+	
+	op close{
+		javax.crypto.CipherInputStream.close();
+	}
+
+}//there is more

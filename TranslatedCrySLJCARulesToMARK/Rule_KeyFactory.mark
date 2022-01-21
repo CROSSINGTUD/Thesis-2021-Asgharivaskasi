@@ -1,0 +1,37 @@
+package java.jca
+
+rule JCAProvider_KeyFactory_1{
+	using
+		KeyFactory as kf
+	ensure
+		order
+			kf.instantiate(),
+			(kf.generatePriv() | kf.generatePub())*
+	onfail
+		InvalidOrderOfKeyFactory
+}
+//constraints
+rule JCAProvider_KeyFactory_2{
+	using
+		KeyFactory as kf
+	when
+		_has_value(kf.keyFactoryAlgorithm)
+	ensure
+		kf.keyFactoryAlgorithm in ["RSA", "DiffieHellman", "DH", "DSA", "EC"]
+	onfail
+		InvalidKeyFactoryAlgoOfKeyFactory
+}
+//requires
+rule JCAProvider_KeyFactory_3{
+	using
+		KeyFactory as kf,
+		SecretKeySpec as sks,
+		X509EncodedKeySpec as X509,
+		PBEKeySpec as pbek
+	when 
+		_has_value(kf.keySpec)
+	ensure
+		_is(kf.keySpec, sks) || _is(kf.keySpec, X509) || _is(kf.keySpec, pbek)
+	onfail
+		InvalidKeySpecOfKeyFactory
+}

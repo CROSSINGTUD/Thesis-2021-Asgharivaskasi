@@ -1,0 +1,23 @@
+package java.jca
+
+entity KeyPair {
+    
+    var consPriv;
+    var consPub;
+    var retPriv;
+    var retPub;
+    
+    op instantiate {
+        java.security.KeyPair(
+            consPub : java.security.PublicKey,
+            consPriv : java.security.PrivateKey
+        );
+    }
+    op getPriv{
+    	 retPriv =  java.security.KeyPair.getPrivate();
+    }
+    op getPub{
+    	retPub = java.security.KeyPair.getPublic();
+    	
+    }
+}//req and ensure

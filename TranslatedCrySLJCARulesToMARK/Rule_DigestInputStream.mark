@@ -1,0 +1,57 @@
+package java.jca
+
+
+rule JCAProvider_DigestInputStream_1{
+	using
+		DigestInputStream as dis
+	ensure
+		order
+			dis.initialize(),
+			dis.read()+,
+			dis.close()
+	onfail
+		InvalidOrderOfDigestInputStream
+}
+//constraints
+rule JCAProvider_DigestInputStream_datalen{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.data) && _has_value(dis.offset)
+	ensure
+		_length(dis.data) >= dis.offset + dis.len 
+	onfail
+		InvalidLenOfdataDigestInputStream
+}
+rule JCAProvider_DigestInputStream_offset{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.offset)
+	ensure
+		dis.offset >= 0
+	onfail
+		InvalidoffsetOfDigestInputStream
+}
+rule JCAProvider_DigestInputStream_len{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.len)
+	ensure
+		dis.len > 0
+	onfail
+		InvalidLenOfDigestInputStream
+}
+//requires
+rule JCAProvider_DigestInputStream_3{
+	using
+		DigestInputStream as dis,
+		MessageDigest as md
+	when 
+		_has_value(dis.md)
+	ensure
+		_is(dis.md, md)
+	onfail
+		InvalidMDOfDigestInputStream
+}

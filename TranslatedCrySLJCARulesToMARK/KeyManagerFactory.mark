@@ -1,0 +1,33 @@
+package java.jca
+
+entity KeyManagerFactory{
+	var password;
+	var algo;
+	var keyStore;
+	var params;
+	var kms;
+	
+	op instantiate{
+		javax.net.ssl.KeyManagerFactory.getInstance(
+			algo: java.lang.String
+		);
+		javax.net.ssl.KeyManagerFactory.getInstance(
+			algo: java.lang.String,
+			_
+		);
+	}
+	
+	op initialize{
+	 	javax.net.ssl.KeyManagerFactory.init(
+			keyStore: java.security.KeyStore,
+			password: char[]
+		);
+		javax.net.ssl.KeyManagerFactory.init(
+			params: javax.net.ssl.ManagerFactoryParameters
+		);
+	 }
+	 
+	op get{
+		kms = javax.net.ssl.KeyManagerFactory.getKeyManager();
+	}	//constraint requires ensures
+}

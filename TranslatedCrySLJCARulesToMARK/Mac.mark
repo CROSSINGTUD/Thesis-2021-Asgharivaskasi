@@ -1,0 +1,51 @@
+package java.jca
+
+entity Mac {
+    
+    var mac;
+    var key;
+    var inp;
+    var pre_input;
+    var input;
+    var output1;
+    var output2;
+    var macAlgorithm;
+    var params;
+    var offset;
+    var outOffset;
+    var len;
+   
+    
+    op instantiate {
+        javax.crypto.Mac.getInstance(
+            macAlgorithm : java.lang.String
+        );
+        javax.crypto.Mac.getInstance(
+            macAlgorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op initialize {
+        javax.crypto.Mac.init(key : java.security.Key);
+        javax.crypto.Mac.init(
+            key : java.security.Key,
+            params : java.security.spec.AlgorithmParameterSpec
+        );
+    }
+    
+    op update {
+        javax.crypto.Mac.update(inp : byte);
+        javax.crypto.Mac.update(pre_input : byte[]);
+        javax.crypto.Mac.update(pre_input : byte[], offset: int, len: int);
+    }
+    
+    op finalizeWU {
+        output1 = javax.crypto.Mac.doFinal();
+        javax.crypto.Mac.doFinal(output1 : byte[], outOffset: int);
+    }
+    op finalize{
+    	output2 = javax.crypto.Mac.doFinal(input : byte[]);
+    }
+    
+}//almost same_ requires, ensures, constrains

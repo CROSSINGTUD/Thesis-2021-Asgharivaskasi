@@ -1,0 +1,10 @@
+package java.jca
+
+rule JCAProvider_TrustAnchor_1{
+	using
+		TrustAnchor as ta
+	ensure
+		ta.instantiate()
+	onfail
+		InvalidOrderOfTrustAnchor
+}

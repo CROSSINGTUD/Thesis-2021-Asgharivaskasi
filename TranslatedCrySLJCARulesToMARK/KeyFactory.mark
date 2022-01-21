@@ -1,0 +1,28 @@
+package java.jca
+
+entity KeyFactory {
+    
+    var keyFactoryAlgorithm;
+    var keySpec;
+    var privKey;
+    var pubKey;
+    
+    op instantiate {
+        java.security.KeyFactory.getInstance(keyFactoryAlgorithm : java.lang.String);
+        java.security.KeyFactory.getInstance(
+            keyFactoryAlgorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op generatePriv {
+        privKey = java.security.KeyFactory.generatePrivate(keySpec : java.security.spec.KeySpec);
+    }
+    op generatePub{
+    	pubKey = java.security.KeyFactory.generatePublic(keySpec : java.security.spec.KeySpec);
+    }
+    
+//    op translate {
+//        outkey = java.security.KeyFactory.translateKey(inkey : java.security.Key);
+//    } in mark
+}//almost same constraint req and ensure

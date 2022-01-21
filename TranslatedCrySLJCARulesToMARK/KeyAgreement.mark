@@ -1,0 +1,59 @@
+package java.jca
+
+entity KeyAgreement {
+    
+    var algorithm;
+    var key;
+    var lastPhase;
+    var sharedSecret;
+    var offset;
+    var params;
+    var random;
+    
+    op instantiate {
+        javax.crypto.KeyAgreement.getInstance(
+            algorithm : java.lang.String
+        );
+        javax.crypto.KeyAgreement.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op initialize {
+        javax.crypto.KeyAgreement.init(
+            key : java.security.Key
+        );
+        javax.crypto.KeyAgreement.init(
+            key : java.security.Key,
+            random : java.security.SecureRandom
+        );
+        javax.crypto.KeyAgreement.init(
+            key : java.security.Key,
+            params : java.security.spec.AlgorithmParameterSpec
+        );
+        javax.crypto.KeyAgreement.init(
+            key : java.security.Key,
+            params : java.security.spec.AlgorithmParameterSpec,
+            random : java.security.SecureRandom
+        );
+    }
+    
+    op doPhase {
+        javax.crypto.KeyAgreement.doPhase(
+            key : java.security.Key,
+            lastPhase : boolean
+        );
+    }
+    
+    op generate {
+        javax.crypto.KeyAgreement.generateSecret();
+        javax.crypto.KeyAgreement.generateSecret(
+            sharedSecret : byte[],
+            offset: int
+        );
+        javax.crypto.KeyAgreement.generateSecret(
+            algorithm : java.lang.String
+        );
+    }
+} //almost same, ensure constraint and requires

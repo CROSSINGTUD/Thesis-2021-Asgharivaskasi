@@ -1,0 +1,19 @@
+package java.jca
+
+entity Cookie{
+	
+	var cookieName;
+	var cookieValue;
+	var secure;
+	
+	op instantiate {
+		
+		javax.servlet.http.Cookie(cookieName: java.lang.String, cookieValue: java.lang.String);
+				
+	}
+	op set{
+		javax.servlet.http.Cookie.setSecure(secure: boolean);
+	}
+	
+	
+}

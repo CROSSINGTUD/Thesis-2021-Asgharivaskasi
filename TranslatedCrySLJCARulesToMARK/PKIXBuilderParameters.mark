@@ -1,0 +1,19 @@
+package java.jca
+
+entity PKIXBuilderParameters {
+	
+	var keyStore;
+	var certSelector;
+	var trustAnchors;
+	
+	op instantiate {
+		java.security.cert.PKIXBuilderParameters(
+			keyStore : java.security.KeyStore,
+			certSelector : java.security.cert.CertSelector
+		);
+		java.security.cert.PKIXBuilderParameters(
+			trustAnchors : java.util.Set<java.security.cert.TrustAnchor>,
+			certSelector : java.security.cert.CertSelector
+		);
+	}
+}// ensure, requires

@@ -1,0 +1,38 @@
+package java.jca
+
+entity MessageDigest {
+    
+    var digestAlgorithm;
+    var pre_inbyte;
+    var pre_inbytearr;
+    var pre_off;
+    var pre_len;
+    var pre_inpBuf;
+    var inbytearr;
+    var off;
+    var len;
+    var out;
+    
+    op instantiate {
+        java.security.MessageDigest.getInstance(digestAlgorithm : java.lang.String);
+        java.security.MessageDigest.getInstance(
+            digestAlgorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op update {
+    	java.security.MessageDigest.update(pre_inbyte: byte);
+    	java.security.MessageDigest.update(pre_inbytearr: byte[]);
+        java.security.MessageDigest.update(pre_inbytearr : byte[], pre_off: int, pre_len: int);
+        java.security.MessageDigest.update(pre_inpBuf : java.nio.ByteBuffer);
+    }
+    
+    op digestWU {
+        out = java.security.MessageDigest.digest();
+        java.security.MessageDigest.digest(out : byte[], off: int, len: int);
+    }
+    op digestWOU{
+    	out = java.security.MessageDigest.digest(inbytearr : byte[]);
+    }
+}//constraint ensures

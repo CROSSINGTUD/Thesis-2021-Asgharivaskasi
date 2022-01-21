@@ -1,0 +1,28 @@
+package java.jca
+
+entity CipherOutputStream{
+	
+	var os;
+	var ciph;
+	var data;
+	var offset;
+	var len;
+	var specifiedByte;
+	
+	op instantiate{
+		javax.crypto.CipherOutputStream (
+			os: java.io.OutputStream, ciph: javax.crypto.Cipher
+		);
+	}
+	
+	op write{
+		javax.crypto.CipherOutputStream.write(specifiedByte: int);
+		javax.crypto.CipherOutputStream.write(data: byte[]);
+		javax.crypto.CipherOutputStream.write(data: byte[], offset: int, len: int);
+	}
+	
+	op close{
+		javax.crypto.CipherOutputStream.close();
+	}
+
+}

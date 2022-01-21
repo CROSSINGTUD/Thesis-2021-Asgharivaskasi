@@ -1,0 +1,16 @@
+package java.jca
+
+//requires
+//were combination of _is and _is_instance, not any more
+//it will show up where it should not be.
+rule JCAProvider_PKIXBuilderParameters_1{
+	using
+		PKIXBuilderParameters as pkixbp,
+		KeyStore as ks
+	when 
+		_has_value(pkixbp.keyStore)
+	ensure
+		_is(pkixbp.keyStore, ks)
+	onfail
+		InvalidKeyStoreOfPKIXBuilderParameters
+}

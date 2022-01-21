@@ -1,0 +1,12 @@
+package java.jca
+
+//notnecessary
+rule JCAProvider_ECParameterSpec_1{
+	using
+		ECParameterSpec as ecps
+	ensure
+		order
+			ecps.instantiate()
+	onfail
+		InvalidOrderOfECParameterSpec
+}

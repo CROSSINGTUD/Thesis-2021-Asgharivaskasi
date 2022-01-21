@@ -1,0 +1,32 @@
+package java.jca
+
+//notnecessary
+rule JCAProvider_DSAParameterSpec_1{
+	using
+		DSAParameterSpec as dsaps
+	ensure
+		order
+			dsaps.initialize()
+	onfail
+		InvalidOrderOfDSAParameterSpec
+}
+rule JCAProvider_DSAParameterSpec_2{
+	using
+		DSAParameterSpec as dsaps
+	when
+	 	_has_value(dsaps.p)
+	ensure
+		dsaps.p >=1^2048
+	onfail
+		InvalidPParameterOfDSAParameterSpec
+}
+rule JCAProvider_DSAParameterSpec_3{
+	using
+		DSAParameterSpec as dsaps
+	when
+	 	_has_value(dsaps.g)
+	ensure
+		dsaps.g >=1^2048
+	onfail
+		InvalidGParameterOfDSAParameterSpec
+}

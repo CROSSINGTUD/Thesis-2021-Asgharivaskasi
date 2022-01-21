@@ -1,0 +1,12 @@
+package java.jca
+
+//notnecessary
+rule JCAProvider_HMACParameterSpec_1{
+	using
+		HMACParameterSpec as hmacps
+	ensure
+		order
+			hmacps.instantiate()
+	onfail
+		InvalidOrderOfHMACParameterSpec
+}

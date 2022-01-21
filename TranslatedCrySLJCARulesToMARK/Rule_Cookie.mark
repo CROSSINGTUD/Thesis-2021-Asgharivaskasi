@@ -1,0 +1,24 @@
+package java.jca
+
+//not necessary
+rule JCAProvider_Cookie_1{
+	using
+		Cookie as co
+	ensure
+		order
+			co.instantiate(),
+			co.set()
+	onfail
+		InvalidOrderOfCookie
+}
+//constraints
+rule JCAProvider_Cookie_2{
+	using
+		Cookie as co
+	when 
+		_has_value(co.secure)
+	ensure
+		co.secure in [true]
+	onfail
+		InvalidSecureBooleanOfCookie
+}

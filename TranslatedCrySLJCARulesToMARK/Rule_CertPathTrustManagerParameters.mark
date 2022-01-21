@@ -1,0 +1,25 @@
+package java.jca
+//this whole rule is not working
+//order is not necessary cause it is only one method
+rule JCAProvider_CertPathTrustManagerParameters_1{
+	using
+		CertPathTrustManagerParameters as cptmp
+	ensure
+		order
+			cptmp.instantiate()
+	onfail
+		InvalidOrderOfCertPathTrustManagerParameters
+}
+//requires
+rule JCAProvider_CertPathTrustManagerParameters_2{
+	using
+		CertPathTrustManagerParameters as cptmp,
+		PKIXParameters as pkixp,
+		PKIXBuilderParameters as pkixb
+	when 
+		_has_value(cptmp.params)
+	ensure
+		_is(cptmp.params, pkixp) || _is(cptmp.params, pkixb)
+	onfail
+		InvalidParamsOfPKIXParameters
+}

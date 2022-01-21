@@ -1,0 +1,92 @@
+package java.jca
+
+rule JCAProvider_AlgorithmParameters_1{
+	using
+		AlgorithmParameters as ap
+	ensure
+		order
+			ap.instantiate(),
+			ap.initialize(),
+			ap.getEncoded()?
+	onfail
+		InvalidOrderOfAlgorithmParameters
+}
+//constraints
+rule JCAProvider_AlgorithmParameters_2{
+	using
+		AlgorithmParameters as ap
+	when 
+		_has_value(ap.algorithm)
+	ensure
+		ap.algorithm in ["AES", "DiffieHellman", "DH", "OAEP", "PBEWithHmacSHA224AndAES_128", 
+		"PBEWithHmacSHA256AndAES_128", "PBEWithHmacSHA384AndAES_128", "PBEWithHmacSHA512AndAES_128", 
+		"PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", "PBEWithHmacSHA384AndAES_256", 
+		"PBEWithHmacSHA512AndAES_256"]
+	onfail
+		InvalidAlgorithmOfAlgorithmParameters
+}
+//requires
+rule JCAProvider_AlgorithmParameters_3{
+	using
+		AlgorithmParameters as ap,
+		AlgorithmParameters as ap2,
+		AlgorithmParameterGenerator as apg
+	when
+		_has_value(ap.params) 
+		&& _has_value(ap.algorithm)
+	ensure
+		(_is(ap.params, apg.algParams) && _is(ap.algorithm, apg.algorithm)) || 
+		(_is(ap.params, ap2.encParams) && _is(ap.algorithm, ap2.algorithm))
+	onfail
+		InvalidAlgorithmOfAlgorithmParameters_notfromAPG
+}
+//not sure
+rule JCAProvider_AlgorithmParameters_4{
+	using
+		AlgorithmParameters as ap,
+		IvParameterSpec as iv
+	when
+		_has_value(ap.algorithm) && ap.algorithm in ["AES"] && _has_value(ap.params) 
+	ensure
+		_is(ap.params, iv)
+	onfail
+		InvalidParamsOfAlgorithmParameters_notfromIvP
+}
+//not sure
+rule JCAProvider_AlgorithmParameters_5{
+	using
+		AlgorithmParameters as ap,
+		DHGenParameterSpec as dhg,
+		DHParameterSpec as dh
+	when
+		_has_value(ap.params) && ap.algorithm in ["DiffieHellman", "DH"] 
+	ensure
+		_is(ap.params, dhg) || _is(ap.params, dh)
+	onfail
+		InvalidParamsOfAlgorithmParameters_notfromDHGP
+}
+//not sure
+rule JCAProvider_AlgorithmParameters_6{
+	using
+		AlgorithmParameters as ap,
+		PBEParameterSpec as pbe
+	when
+		ap.algorithm in ["PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", "PBEWithHmacSHA384AndAES_128", 
+		"PBEWithHmacSHA512AndAES_128", "PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", 
+		"PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"] && _has_value(ap.params) 
+	ensure
+		_is(ap.params, pbe)
+	onfail
+		InvalidParamsOfAlgorithmParameters_notfromPBEP
+}
+rule JCAProvider_AlgorithmParameters_7{
+	using
+		AlgorithmParameters as ap,
+		OAEPParameterSpec as oaep
+	when
+		ap.algorithm in ["OAEP"] && _has_Value(ap.params)
+	ensure
+		_is(ap.params, oaep)
+	onfail
+		InvalidParamsOfAlgorithmParameters_notfromOAEPP
+}

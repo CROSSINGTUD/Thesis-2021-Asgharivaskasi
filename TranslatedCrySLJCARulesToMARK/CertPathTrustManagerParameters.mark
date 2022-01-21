@@ -1,0 +1,20 @@
+package java.jca
+
+entity CertPathTrustManagerParameters {
+	
+	var params;
+	
+	op instantiate {
+		javax.net.ssl.CertPathTrustManagerParameters(
+		params : java.security.cert.CertPathParameters
+		);	
+	}
+	
+}
+
+
+//REQUIRES
+//	generatedCertPathParameters[params];
+//	
+//ENSURES
+//	generatedManagerFactoryParameters[this];

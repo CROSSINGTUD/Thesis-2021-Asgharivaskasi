@@ -1,0 +1,48 @@
+package java.jca
+
+rule JCAProvider_TrustManagerFactory_1{
+	using
+		TrustManagerFactory as tmf
+	ensure
+		order
+			tmf.instantiate(),
+			tmf.initialize(),
+			tmf.getTrustManagers()?
+	onfail
+		InvalidOrderOfTrustManagerFactory
+}
+//constraints
+rule JCAProvider_TrustManagerFactory_2{
+	using
+		TrustManagerFactory as tmf
+	when
+		_has_value(tmf.algo)
+	ensure
+		tmf.algo in ["PKIX", "SunX509"]
+	onfail
+		InvalidAlgoOfTrustManagerFactory
+}
+//requires
+rule JCAProvider_TrustManagerFactory_3{
+	using
+		TrustManagerFactory as tmf,
+		KeyStore as ks
+	when
+		_has_value(tmf.keyStore)
+	ensure
+		_is(tmf.keyStore, ks)
+	onfail
+		InvalidkeystoreOfTrustManagerFactory
+}
+rule JCAProvider_TrustManagerFactory_4{
+	using
+		TrustManagerFactory as tmf,
+		KeyStoreBuilderParameters as ksbp,
+		CertPathTrustManagerParameters as cptmp
+	when
+		_has_value(tmf.params)
+	ensure
+		_is(tmf.params, ksbp) | _is(tmf.params, cptmp)
+	onfail
+		InvalidparamsOfTrustManagerFactory
+}

@@ -1,0 +1,24 @@
+package java.jca
+
+entity PBEKeySpec {
+	
+	var password;
+	var salt;
+	var iterationCount;
+	var keyLength;
+	
+	op instantiate {
+
+		javax.crypto.spec.PBEKeySpec(
+			password : char[],
+			salt : byte[],
+			iterationCount : int,
+			keyLength : int
+		);
+		forbidden javax.crypto.spec.PBEKeySpec(_: char[]);
+		forbidden javax.crypto.spec.PBEKeySpec(_: char[],_: byte[],_: int);
+	}
+	op clear{
+		javax.crypto.spec.PBEKeySpec.clearPassword();
+	}
+} //requires constraints, ensures, negates

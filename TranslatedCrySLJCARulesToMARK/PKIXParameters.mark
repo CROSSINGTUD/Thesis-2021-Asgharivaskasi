@@ -1,0 +1,13 @@
+package java.jca
+
+entity PKIXParameters {
+	
+	var keyStore;
+	
+	op instantiate {
+		java.security.cert.PKIXParameters(
+			keyStore : java.security.KeyStore
+		);
+		java.security.cert.PKIXParameters(_);
+	}
+}// ensure, requires

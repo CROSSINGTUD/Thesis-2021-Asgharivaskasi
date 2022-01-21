@@ -1,0 +1,36 @@
+package java.jca
+
+rule JCAProvider_KeyPair_1{
+	using
+		KeyPair as kp
+	ensure
+		order
+			kp.instantiate(),
+			(kp.getPriv() | kp.getPub())* // i dont know why in last version there was  , between priv and pub
+	onfail
+		InvalidOrderOfKeyPair
+}
+
+//requires
+rule JCAProvider_KeyPair_2{
+	using
+		KeyPair as kp,
+		KeyPair as kp2
+	when 
+		_has_value(kp.consPriv)
+	ensure
+		_is(kp.consPriv, kp2.retPriv)
+	onfail
+		InvalidPrivateKeyOfKeyPair
+}
+rule JCAProvider_KeyPair_3{
+	using
+		KeyPair as kp,
+		KeyPair as kp2
+	when 
+		_has_value(kp.consPub)
+	ensure
+		_is(kp.consPub, kp2.retPub)
+	onfail
+		InvalidPublicKeyOfKeyPair
+}

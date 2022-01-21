@@ -1,0 +1,33 @@
+package java.jca
+
+//notnecessary
+rule JCAProvider_DHParameterSpec_1{
+	using
+		DHParameterSpec as dhps
+	ensure
+		order
+			dhps.instantiate()
+	onfail
+		InvalidOrderOfDHParameterSpec
+}
+//constraints
+rule JCAProvider_DHParameterSpec_2{
+	using
+		DHParameterSpec as dhps
+	when
+		_has_value(dhpc.p)
+	ensure
+		dhpc.p >= 1^2048
+	onfail
+		InvalidPParameterOfDHParameterSpec
+}
+rule JCAProvider_DHParameterSpec_3{
+	using
+		DHParameterSpec as dhps
+	when
+		_has_value(dhpc.g)
+	ensure
+		dhpc.g >= 1^2048
+	onfail
+		InvalidGParameterOfDHParameterSpec
+}

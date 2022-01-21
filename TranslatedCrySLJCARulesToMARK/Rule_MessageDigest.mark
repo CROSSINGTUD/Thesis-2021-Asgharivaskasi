@@ -1,0 +1,85 @@
+package java.jca
+
+//ORDER DOES NOT WORK PROPERLY
+rule JCAProvider_MessageDigest_1{
+	using
+		MessageDigest as md
+	ensure
+		order
+			md.instantiate(),
+			(md.digestWOU() | (md.update()+, (md.digestWU() | md.digestWOU())))+
+			
+	onfail
+		InvalidOrderOfMessageDigest
+}
+//constraints
+rule JCAProvider_MessageDigest_2{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.digestAlgorithm)
+	ensure
+		md.digestAlgorithm in ["SHA-256", "SHA-384", "SHA-512"]
+	onfail
+		InvalidAlgorithmMessageDigest
+}
+rule JCAProvider_MessageDigest_3{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.pre_inbytearr)
+	ensure
+		_length(md.pre_inbytearr) >= md.pre_len + md.pre_off
+	onfail
+		InvalidLengthMessageDigest
+}
+rule JCAProvider_MessageDigest_preoff{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.pre_off)
+	ensure
+		md.pre_off >= 0
+	onfail
+		InvalidpreoffMessageDigest
+}
+rule JCAProvider_MessageDigest_pre_len{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.pre_len)
+	ensure
+		md.pre_len > 0
+	onfail
+		InvalidprelenMessageDigest
+}
+rule JCAProvider_MessageDigest_4{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.out)
+	ensure
+		_length(md.out) >= md.len + md.off
+	onfail
+		InvalidLengthOfOutMessageDigest
+}
+rule JCAProvider_MessageDigest_off{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.off)
+	ensure
+		 md.off >= 0
+	onfail
+		InvalidoffOfMessageDigest
+}
+rule JCAProvider_MessageDigest_len{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.len)
+	ensure
+		 md.len >= 0
+	onfail
+		InvalidlenOfMessageDigest
+}

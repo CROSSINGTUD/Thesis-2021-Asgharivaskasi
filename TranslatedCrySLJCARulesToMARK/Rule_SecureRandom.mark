@@ -1,0 +1,48 @@
+package java.jca
+
+rule JCAProvider_SecureRandom_1{
+	using
+		SecureRandom as sr
+	ensure
+		order
+			sr.instantiate(),
+			(sr.seed()?,
+				(sr.generateSeed()|sr.generate())*
+			)*
+	onfail
+		InvalidOrderOfSecureRandom
+}
+//constraints
+rule JCAProvider_SecureRandom_2{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.randomAlgorithm)
+	ensure
+		sr.randomAlgorithm in ["SHA1PRNG", "Windows-PRNG", "NativePRNG", "NativePRNGBlocking", "NativePRNGNonBlocking", "PKCS11"]
+	onfail
+		InvalidAlgorithmOfSecureRandom
+}
+//requires
+//not sure, but it works
+rule JCAProvider_SecureRandom_3{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.seed)
+	ensure
+		_is(sr.seed, sr.seed) 
+	onfail
+		NotRandomizedSeedOfSecureRandom
+}
+
+rule JCAProvider_SecureRandom_4{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.lSeed)
+	ensure
+		_is(sr.lSeed, sr.randInt) 
+	onfail
+		NotRandomizedlSeedOfSecureRandom
+}

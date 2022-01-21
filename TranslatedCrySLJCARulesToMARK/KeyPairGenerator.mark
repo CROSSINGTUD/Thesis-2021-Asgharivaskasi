@@ -1,0 +1,42 @@
+package java.jca
+
+entity KeyPairGenerator {
+    
+    var keyPairAlgorithm;
+    var kp;
+    var params;
+    var keyPairSize;
+    
+    
+    op instantiate {
+        java.security.KeyPairGenerator.getInstance(
+            keyPairAlgorithm : java.lang.String
+        );
+        java.security.KeyPairGenerator.getInstance(
+            keyPairAlgorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op initialize {
+        java.security.KeyPairGenerator.initialize(
+            keyPairSize : int
+        );
+        java.security.KeyPairGenerator.initialize(
+            keyPairSize : int,
+            _
+        );
+        java.security.KeyPairGenerator.initialize(
+            params : java.security.spec.AlgorithmParameterSpec
+        );
+        java.security.KeyPairGenerator.initialize(
+            params : java.security.spec.AlgorithmParameterSpec,
+            _
+        );
+    }
+    
+    op generate {
+        kp = java.security.KeyPairGenerator.generateKeyPair();
+        kp = java.security.KeyPairGenerator.genKeyPair();
+    }
+} // alllllmostsame constraint ensure req

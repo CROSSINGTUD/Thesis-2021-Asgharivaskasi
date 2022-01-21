@@ -1,0 +1,85 @@
+package java.jca
+
+entity Signature {
+	
+	var sign;
+	var inpb;
+	var inpba;
+	var out;
+	var inpBuf;
+	var signAlgorithm;
+	var priv;
+	var pub;
+	var cert;
+	var params;
+	var verified;
+	var offset;
+	var len;
+	
+	
+	op instantiate {
+		java.security.Signature.getInstance(
+			signAlgorithm : java.lang.String
+		);
+		java.security.Signature.getInstance(
+			signAlgorithm : java.lang.String,
+			_
+		);
+	}
+	
+	op initsign {
+		java.security.Signature.initSign(
+			priv : java.security.PrivateKey
+		);
+		java.security.Signature.initSign(
+			priv : java.security.PrivateKey,
+			_
+		);
+	}
+	
+	op initverify {
+		java.security.Signature.initVerify(
+			cert : java.security.cert.Certificate
+		);
+		java.security.Signature.initVerify(
+			pub : java.security.PublicKey
+		);
+	}
+	
+	op update {
+		java.security.Signature.update(
+			inpb : byte
+		);
+		java.security.Signature.update(
+			inpba : byte[]
+		);
+		java.security.Signature.update(
+			inpBuf : java.nio.ByteBuffer
+		);
+		java.security.Signature.update(
+			inpba : byte[],
+			offset : int,
+			len : int
+		);
+	}
+	
+	op sign {
+		out = java.security.Signature.sign();
+		java.security.Signature.sign(
+			out : byte[],
+			offset : int,
+			len : int
+		);
+	}
+	
+	op verify {
+		verified = java.security.Signature.verify(
+			sign : byte[]
+		);
+		verified = java.security.Signature.verify(
+			sign : byte[],
+			offset : int,
+			len : int
+		);
+	}
+}// constrains ensure and requires

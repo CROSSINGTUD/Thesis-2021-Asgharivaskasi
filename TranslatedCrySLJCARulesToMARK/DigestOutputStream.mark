@@ -1,0 +1,37 @@
+package java.jca
+
+entity DigestOutputStream {
+    
+    var os;
+    var md;
+    var data;
+    var offset;
+    var len;
+    var specifiedByte;
+    
+    
+    op initialize {
+        java.security.spec.DigestInputStream(
+            os: java.io.InputStream,
+            md: java.security.MessageDigest
+        );
+    }
+    op read{
+    	java.security.spec.DigestOutputStream.write(specifiedByte: int);
+    	java.security.spec.DigestOutputStream.write(
+    		data: byte[],
+    		offset: int,
+    		len: int
+    	);
+    	
+    }
+    op close{
+    	
+    	java.security.spec.DigestOutputStream.close();
+    }
+    op on{
+    	
+    	forbidden java.security.spec.DigestOutputStream.on(_: boolean);
+    }
+     
+}//constraints and ensure and requires

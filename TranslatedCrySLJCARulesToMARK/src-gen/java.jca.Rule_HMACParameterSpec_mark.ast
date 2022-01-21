@@ -1,0 +1,13 @@
+/*
+ * Auto-generated AST, do not edit manually.
+ *
+ * This file has been created from MARK and will be overwritten at every change in the original file. 
+*/
+MarkModel 
+  PackageDeclaration (name: java.jca)
+  RuleDeclaration (name: JCAProvider_HMACParameterSpec_1)
+    RuleStatement (action: info, msg: InvalidOrderOfHMACParameterSpec)
+      AliasedEntityExpression (n: hmacps) -> EntityDeclaration (name: HMACParameterSpec)
+      EnsureStatement 
+        OrderExpression (op: null)
+          Terminal (op: instantiate) (entity: hmacps)

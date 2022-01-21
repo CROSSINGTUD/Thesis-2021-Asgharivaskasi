@@ -1,0 +1,27 @@
+package java.jca
+
+entity TrustManagerFactory {
+	
+	var algo;
+	var keyStore;
+	var params;
+	var tms;
+	
+	op instantiate{
+		javax.net.ssl.TrustManagerFactory.getInstance(
+			algo : java.lang.String
+		);
+		javax.net.ssl.TrustManagerFactory.getInstance(
+			algo : java.lang.String,
+			_
+		);
+	}
+	
+	op initialize{
+		javax.net.ssl.TrustManagerFactory.init(keyStore: java.security.KeyStore);
+		javax.net.ssl.TrustManagerFactory.init(params: javax.net.ssl.ManagerFactoryParameters);
+	}
+	op getTrustManagers{
+		tms = javax.net.ssl.TrustManagerFactory.getTrustManagers();
+	}//constraint requires ensures
+}

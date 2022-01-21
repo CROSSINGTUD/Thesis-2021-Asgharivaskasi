@@ -1,0 +1,16 @@
+package java.jca
+
+//requires
+//TODO: check if this works
+rule JCAProvider_X509EncodedKeySpec_1{
+	using
+		X509EncodedKeySpec as x509,
+		Key as k,
+		SecretKey as sk
+	when
+		_has_value(x509.encodedKey)
+	ensure
+		_is(x509.encodedKey, k) || (_is(x509.encodedKey, sk.keyMaterial) && sk.get())
+	onfail
+		InvalidKeyOfX509EncodedKeySpec
+}

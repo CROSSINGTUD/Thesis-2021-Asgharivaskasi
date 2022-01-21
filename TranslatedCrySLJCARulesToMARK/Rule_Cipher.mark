@@ -1,0 +1,286 @@
+package jca
+
+//has to be like this cause for these types i get the error : Couldn't resolve reference to EntityDeclaration 'PrivateKey'.
+//somehow it causes error, I comment it for now maybe in ater versions of Codyze it will work 
+//rule ID_1_01 {
+//    using
+//        Cipher as c
+//    when 
+//    	_has_value(c.key) && _is_instance(c.key, "java.security.PublicKey") || _is_instance(c.key, "java.security.PrivateKey") || _is_instance(c.cert, "java.security.cert.Certificate") || (c.encmode in [3,4] || ["javax.crypto.PRIVATE_KEY", "javax.crypto.PUBLIC_KEY"])
+//		TODO: encmode cannot be string!!!!!!!!! 
+//    ensure
+//        _split(c.transformation, "/", 0) in ["RSA"]
+//    onfail
+//        Invalid_algorithm_RSA_Cipher
+//}
+rule ID_1_secretKey_then_AES {
+    using
+        Cipher as c,
+        SecretKey as secKey
+    when 
+    	_has_value(c.key) && _is(c.key, secKey) 
+    ensure
+        _split(c.transformation, "/", 0) in ["AES", "PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", 
+									"PBEWithHmacSHA384AndAES_128", "PBEWithHmacSHA512AndAES_128", 
+									"PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", 
+									"PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"]
+    onfail
+        Invalid_algorithm_RSA_Cipher
+}
+
+rule ID_1_02 {
+    using
+        Cipher as c
+//        SecretKey as secKey
+    when 
+    	_is_instance(c.key, "javax.crypto.SecretKey")
+    ensure
+        
+        _split(c.transformation, "/", 0) in ["AES", "PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", 
+									"PBEWithHmacSHA384AndAES_128", "PBEWithHmacSHA512AndAES_128", 
+									"PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", 
+									"PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"]
+    onfail
+        Invalid_algorithm_AES_Cipher
+}
+//nocaltonit!! could not find such method
+rule ID_1_03 {
+    using
+        Cipher as c
+    when 
+    	 _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"]
+    ensure
+        _split(c.transformation, "/", 1) in ["CBC", "GCM", "PCBC", "CTR", "CTS", "CFB", "OFB"]
+    onfail
+        Invalid_MODE_AES_Cipher
+}
+
+rule ID_1_04 {
+    using
+        Cipher as c
+    when 
+    	 _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", "PBEWithHmacSHA384AndAES_128", 
+				"PBEWithHmacSHA512AndAES_128", "PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", 
+				"PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"]
+    ensure
+        
+        _split(c.transformation, "/", 1) in ["CBC"]
+    onfail
+        Invalid_MODE_PBE_Cipher
+}
+
+rule ID_1_05 {
+    using
+        Cipher as c
+    when 
+    	 _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RSA"]
+    ensure
+        
+        _split(c.transformation, "/", 1) in ["", "ECB"]
+    onfail
+        Invalid_MODE_RSA_Cipher
+}
+
+rule ID_1_06 {
+    using
+        Cipher as c
+    when 
+    	 _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", "PBEWithHmacSHA384AndAES_128", 
+				"PBEWithHmacSHA512AndAES_128", "PBEWithHmacSHA224AndAES_256", "PBEWithHmacSHA256AndAES_256", 
+				"PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"]
+    ensure
+        
+        _split(c.transformation, "/", 2) in ["PKCS5Padding"]
+    onfail
+        Invalid_PADDING_PBE_Cipher
+}
+
+rule ID_1_07 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.transformation) &&  _split(c.transformation, "/", 0) in ["RSA"] && _split(c.transformation, "/", 1) in [""]
+    ensure
+        
+        _split(c.transformation, "/", 2) in [""]
+    onfail
+        Invalid_PADDING_RSA_withoutmode_Cipher
+}
+rule ID_1_08 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RSA"] && _split(c.transformation, "/", 1) in ["ECB"]
+    ensure
+        
+        _split(c.transformation, "/", 2) in ["NoPadding", "PKCS1Padding", 
+											"OAEPWithMD5AndMGF1Padding", "OAEPWithSHA-224AndMGF1Padding", 
+											"OAEPWithSHA-256AndMGF1Padding", "OAEPWithSHA-384AndMGF1Padding", 
+											"OAEPWithSHA-512AndMGF1Padding"]
+    onfail
+        Invalid_PADDING_RSA_withmodeECB_Cipher
+}
+
+rule ID_1_09 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"] && _split(c.transformation, "/", 1) in ["CBC", "PCBC"]
+    ensure
+        
+        _split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        Invalid_PADDING_AES_withmodeCBC_Cipher
+}
+rule ID_1_10 {
+    using
+        Cipher as c
+    when 
+    	 _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"] && _split(c.transformation, "/", 1) in ["GCM", "CTR", "CTS", "CFB", "OFB"]
+    ensure
+        
+        _split(c.transformation, "/", 2) in ["NoPadding"]
+    onfail
+        Invalid_PADDING_AES_withmodeGCM_Cipher
+}
+
+rule ID_1_11 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.encmode)
+    ensure
+        c.encmode in [1,2,3,4] || c.encmode in ["javax.crypto.Cipher.ENCRYPT_MODE", "javax.crypto.Cipher.DECRYPT_MODE", "javax.crypto.Cipher.PRIVATE_KEY", "javax.crypto.Cipher.PUBLIC_KEY"]
+    onfail
+        Invalid_encmode_Cipher
+}
+rule ID_1_12 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.pre_plaintext)
+    ensure
+        _length(c.pre_plaintext) >= c.pre_plain_off + c.len
+    onfail
+        Invalid_length
+}
+rule ID_1_13 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.pre_ciphertext)
+    ensure
+        _length(c.pre_ciphertext) <= c.pre_ciphertext_off
+    onfail
+        Invalid_length
+}
+rule ID_1_14 {
+    using
+        Cipher as c
+    when 
+    	_has_value(c.plainText)
+    ensure
+        _length(c.plainText) <= c.plain_off + c.len
+    onfail
+        Invalid_length
+}
+rule ID_1_15 {
+    using
+        Cipher as c
+   	when 
+    	_has_value(c.cipherText)
+    ensure
+        _length(c.cipherText) <= c.ciphertext_off
+    onfail
+        Invalid_length
+}
+//requires
+rule ID_1_16 {
+    using
+        Cipher as c,
+        SecretKey as secKey,
+        SecretKeySpec as secKeySpec,
+        SecretKeyFactory as secKeyFac,
+        KeyGenerator as keyGen,
+        KeyStore as ks
+    when
+    	_has_value(c.key)
+    ensure
+        _is(c.key, secKey)  || _is(c.key, secKeySpec) 
+        || (_is(c.key, secKeyFac) && _is(_split(c.transformation, "/", 0), secKeyFac.algorithm)) || (_is(c.key, keyGen) && _is(_split(c.transformation, "/", 0), keyGen.algorithm))
+        || _is(c.key, ks)
+    onfail
+        Invalid_notGeneratedKey
+}
+rule ID_1_17 {
+    using
+        Cipher as c,
+        SecureRandom as secRan
+    when 
+    	_has_value(c.ranGen)
+    ensure
+        _is(c.ranGen, secRan)
+    onfail
+        Invalid_random_number
+}
+rule ID_1_algorithm_params {//notsure
+    using
+        Cipher as c,
+        AlgorithmParameterGenerator as apg,
+        AlgorithmParameters as ap
+    when 
+    	_has_value(c.param)
+    ensure
+    (_is(c.param, apg.algParams) && _is(_split(c.transformation, "/", 0), apg.algorithm)) ||
+    (_is(c.param, ap) && _is(_split(c.transformation, "/", 0), ap.algorithm))
+      
+    onfail
+        Invalid_AlgorithmParamCipher
+}
+
+rule ID_1_18 {//notsure
+    using
+        Cipher as c,
+        Mac as mac
+    when 
+    	_has_value(c.plaintText)
+    ensure
+        !(_is(c.plainText, mac.output2))
+    onfail
+        Invalid_maccedCipherInput
+}
+
+rule ID_1_19 {//????????
+    using
+        Cipher as c,
+        GCMParameterSpec as prepGCM
+    when 
+    	_has_value(c.params) && _split(c.transformation, "/", 1) in ["GCM"]
+    ensure
+        _is(c.params, prepGCM)
+    onfail
+        Invalid_parameterSpec_inGCMmode
+}
+rule ID_1_20 {
+    using
+        Cipher as c,
+        IvParameterSpec as ivParamSpec
+    when 
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "OFB"] && (c.encmode == 1 || c.encmode == "javax.crypto.ENCRYPT_MODE")
+    ensure
+        _is(c.params, ivParamSpec)
+    onfail
+        Invalid_parameterSpec_notIvParams
+}
+rule ID_1_21 {
+    using
+        Cipher as c,
+        OAEPParameterSpec as oaepps
+    when 
+    	_has_value(c.params) && _split(c.transformation, "/", 1) in ["OAEPWithMD5AndMGF1Padding", "OAEPWithSHA-224AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding", 
+				"OAEPWithSHA-384AndMGF1Padding", "OAEPWithSHA-512AndMGF1Padding"]
+    ensure
+        _is(c.params, oaepps)
+    onfail
+        Invalid_parameterSpec_notOAEPParamspec
+}

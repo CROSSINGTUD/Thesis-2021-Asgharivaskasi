@@ -1,0 +1,50 @@
+package java.jca
+
+rule JCAProvider_AlgorithmParameterGenerator_1{
+	using
+		AlgorithmParameterGenerator as apg
+	ensure
+		order
+			apg.instantiate(),
+			apg.initialize(),
+			apg.generate()
+	onfail
+		InvalidOrderOfAlgorithmParameterGenerator
+}
+
+//constraints
+rule JCAProvider_AlgorithmParameterGenerator_2{
+	using
+		AlgorithmParameterGenerator as apg
+	when
+		has_value(apg.algorithm)
+	ensure
+		apg.algorithm in ["DH", "DiffieHellman", "DSA"]
+	onfail
+		InvalidAlgorithmOfAlgorithmParameterGenerator
+}
+
+rule JCAProvider_AlgorithmParameterGenerator_3{
+	using
+		AlgorithmParameterGenerator as apg
+	when
+		_has_value(apg.size)
+	ensure
+		apg.size in [2048, 3072]
+	onfail
+		InvalidSizeOfAlgorithmParameterGenerator
+}
+
+
+//requires
+rule JCAProvider_AlgorithmParameterGenerator_4{
+	using
+		AlgorithmParameterGenerator as apg,
+		SecureRandom as sr
+	when 
+		_has_value(apg.random)
+	ensure
+		_is(apg.random, sr)
+	onfail
+		InvalidSizeOfAlgorithmParameterGenerator
+}

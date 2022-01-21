@@ -1,0 +1,114 @@
+package java.jca
+
+rule JCAProvider_KeyPairGenerator_1{
+	using
+		KeyPairGenerator as kpg
+	ensure
+		order
+			kpg.instantiate(),
+			kpg.initialize(),
+			kpg.generate()
+	onfail
+		InvalidOrderOfKeyPairGenerator
+}
+//constraints
+rule JCAProvider_KeyPairGenerator_2{
+	using
+		KeyPairGenerator as kpg
+	when
+		_has_value(kpg.keyPairAlgorithm)
+	ensure
+		kpg.keyPairAlgorithm in ["RSA", "EC", "DSA", "DiffieHellman", "DH"]
+	onfail
+		InvalidAlgorithmOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_3{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.keyPairAlgorithm in ["RSA"] && _has_value(kpg.keyPairSize)
+	ensure
+		kpg.keyPairSize in [4096, 3072, 2048]
+	onfail
+		InvalidRSASizeOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_4{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.keyPairAlgorithm in ["DSA"] && _has_value(kpg.keyPairSize)
+	ensure
+		kpg.keyPairSize in [2048]
+	onfail
+		InvalidDSASizeOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_5{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.keyPairAlgorithm in ["EC"]
+	ensure
+		kpg.keyPairSize in [256]
+	onfail
+		InvalidECSizeOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_6{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.keyPairAlgorithm in ["DiffieHellman", "DH"] && _has_value(kpg.keyPairSize)
+	ensure
+		kpg.keyPairSize in [2048]
+	onfail
+		InvalidDHSizeOfKeyPairGenerator
+}
+//requires
+rule JCAProvider_KeyPairGenerator_7{
+	using
+		KeyPairGenerator as kpg,
+		RSAKeyGenParameterSpec as rsakgp
+	when 
+		kpg.keyPairAlgorithm in ["RSA"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, rsakgp)
+	onfail
+		InvalidRSAParamsOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_8{
+	using
+		KeyPairGenerator as kpg,
+		DSAParameterSpec as dsaps,
+		DSAGenParameterSpec as dsagps
+	when 
+		kpg.keyPairAlgorithm in ["DSA"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, dsaps) || _is(kpg.params, dsagps)
+	onfail
+		InvalidDSAParamsOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_9{
+	using
+		KeyPairGenerator as kpg,
+		DHGenParameterSpec as dhgps,
+		DHParameterSpec as dhps
+	when 
+		kpg.keyPairAlgorithm in ["DiffieHellman", "DH"] && _has_value(kpg.params)
+	ensure
+		
+		_is(kpg.params, dhgps) || _is(kpg.params, dhps)
+	onfail
+		InvalidDHParamsOfKeyPairGenerator
+}
+rule JCAProvider_KeyPairGenerator_10{
+	using
+		KeyPairGenerator as kpg,
+		ECParameterSpec as ecps,
+		ECGenParameterSpec as ecgps
+	when 
+		kpg.keyPairAlgorithm in ["EC"] && _has_value(kpg.params)
+	ensure
+		
+		_is(kpg.params, ecps) || _is(kpg.params, ecgps) 
+	onfail
+		InvalidECParamsOfKeyPairGenerator
+}

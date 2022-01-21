@@ -1,0 +1,61 @@
+package java.jca
+
+rule JCAProvider_KeyManagerFactory_1{
+	using
+		KeyManagerFactory as kmf
+	ensure
+		order
+			kmf.instantiate(),
+			kmf.initialize(),
+			kmf.get()?
+	onfail
+		InvalidOrderOfKeyManagerFactory
+}
+
+//constraints
+rule JCAProvider_KeyManagerFactory_2{
+	using
+		KeyManagerFactory as kmf
+	when
+		_has_value(kmf.password)
+	ensure
+		!(_is_instance(kmf.password, "java.lang.String"))
+	onfail
+		InvalidPasswordInKeyManagerFactory
+}
+//nothardcoded is missing
+rule JCAProvider_KeyManagerFactory_3{
+	using
+		KeyManagerFactory as kmf
+	when 
+		_has_value(kmf.algo)
+	ensure
+		kmf.algo in ["PKIX", "SunX509"]
+	onfail
+		InvalidAlgorithmInKeyManagerFactory
+}
+//requires
+rule JCAProvider_KeyManagerFactory_4{
+	using
+		KeyManagerFactory as kmf,
+		KeyStore as ks
+	when 
+		_has_value(kmf.KeyStore)
+	ensure
+		_is(kmf.KeyStore, ks)
+	onfail
+		InvalidKeyStoreInKeyManagerFactory
+}
+// can be KeyStoreBuilderParameters or CertPathTrustManagerParameters and its type is ManagerFactoryParameters 
+rule JCAProvider_KeyManagerFactory_5{
+	using
+		KeyManagerFactory as kmf,
+		KeyStoreBuilderParameters as kspb,
+		CertPathTrustManagerParameters as cptmp
+	when
+		_has_value(kmf.params)
+	ensure
+		_is(kmf.params, kspb) || _is(kmf.params, cptmp)
+	onfail
+		InvalidParamsInKeyManagerFactory
+}

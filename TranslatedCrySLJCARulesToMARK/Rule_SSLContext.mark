@@ -1,0 +1,58 @@
+package java.jca
+
+rule JCAProvider_SSLContext_1{
+	using
+		SSLContext as sslc
+	ensure
+		order
+			sslc.instantiate(),
+			sslc.initialize(),
+			sslc.create()?
+	onfail
+		InvalidOrderOfSSLContext
+}
+//constraints
+rule JCAProvider_SSLContext_2{
+	using
+		SSLContext as sslc
+	when
+		_has_value(sslc.protocol)
+	ensure
+		sslc.protocol in ["TLSv1.2"]
+	onfail
+		InvalidProtocolOfSSLContext
+}
+//requires
+rule JCAProvider_SSLContext_3{
+	using
+		SSLContext as sslc,
+		KeyManagerFactory as kmf
+	when 
+		_has_value(sslc.kms)
+	ensure
+		_is(sslc.kms, kmf.kms)
+	onfail
+		InvalidKeyManagerSSLContext
+}
+rule JCAProvider_SSLContext_4{
+	using
+		SSLContext as sslc,
+		TrustManagerFactory as tmf
+	when 
+		_has_value(sslc.tms)
+	ensure
+		_is(sslc.tms, tmf.tms)
+	onfail
+		InvalidTrustManagerSSLContext
+}
+rule JCAProvider_SSLContext_5{
+	using
+		SSLContext as sslc,
+		SecureRandom as sr
+	when 
+		_has_value(sslc.sr)
+	ensure
+		_is_instance(sslc.sr, sr)
+	onfail
+		NotSecureRandomSSLContext
+}

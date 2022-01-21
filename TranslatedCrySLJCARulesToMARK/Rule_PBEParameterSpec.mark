@@ -1,0 +1,27 @@
+package java.jca
+
+//constraints
+rule JCAProvider_PBEParameterSpec_1{
+	using
+		PBEParameterSpec as pbeps
+	when 
+		_has_value(pbeps.iterationCount)
+	ensure
+		pbeps.iterationCount >=10000
+	onfail
+		InvalidIterationOfPBEParameterSpec
+}
+
+//requires
+//verified and violated at the same time!!
+rule JCAProvider_PBEParameterSpec_2{
+	using
+		PBEParameterSpec as pbeps,
+		SecureRandom as sr
+	when
+		_has_value(pbeps.salt)
+	ensure
+		_is(pbeps.salt, sr.genSeed)
+	onfail
+		NotRandomizedSaltPBEParameterSpec
+}

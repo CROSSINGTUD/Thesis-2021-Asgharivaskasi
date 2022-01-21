@@ -1,0 +1,11 @@
+package java.jca
+
+rule JCAProvider_Key_1{
+	using
+		Key as k
+	ensure
+		order
+			k.get()*
+	onfail
+		InvalidOrderOfKey
+}

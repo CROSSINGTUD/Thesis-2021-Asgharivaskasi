@@ -1,0 +1,55 @@
+package java.jca
+
+//notnecessary
+rule JCAProvider_IvParameterSpec_1{
+	using
+		IvParameterSpec as ivps
+	ensure
+		order
+			ivps.instantiate()
+	onfail
+		InvalidOrderOfIvParameterSpec
+}
+//constraints
+rule JCAProvider_IvParameterSpec_ivlen{
+	using
+		IvParameterSpec as ivps
+	when 
+		_has_value(ivps.iv)
+	ensure
+		_length(ivps.iv) >= ivps.offset + ivps.len
+	onfail
+		InvalidLenOfivIVParameterSpec
+}
+rule JCAProvider_IvParameterSpec_offset{
+	using
+		IvParameterSpec as ivps
+	when 
+		_has_value(ivps.offset)
+	ensure
+		ivps.offset >= 0
+	onfail
+		InvalidoffsetIVParameterSpec
+}
+rule JCAProvider_IvParameterSpec_len{
+	using
+		IvParameterSpec as ivps
+	when 
+		_has_value(ivps.len)
+	ensure
+		ivps.len > 0
+	onfail
+		InvalidlenIVParameterSpec
+}
+//requires
+rule JCAProvider_IvParameterSpec_2{
+	using
+		IvParameterSpec as ivps,
+		SecureRandom as sr
+	when 
+		_has_value(ivps.iv)
+	ensure
+		_is(ivps.iv, sr.genSeed) || _is(ivps.iv, sr.bytes) //notsure which one, both are byte[]
+	onfail
+		NotRandomIvIvParameterSpec
+}

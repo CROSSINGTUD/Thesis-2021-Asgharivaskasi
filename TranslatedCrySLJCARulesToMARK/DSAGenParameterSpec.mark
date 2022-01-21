@@ -1,0 +1,22 @@
+package java.jca
+
+entity DSAGenParameterSpec {
+    
+    var primePLen;
+    var subPrimeQLen;
+    var seedLen;
+    
+    
+    op instantiate {
+        java.security.spec.DSAGenParameterSpec(
+            primePLen : int,
+            subPrimeQLen : int
+        );
+        java.security.spec.DSAGenParameterSpec(
+            primePLen : int,
+            subPrimeQLen : int,
+            seedLen : int
+        );
+    }
+    
+}//ensure

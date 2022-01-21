@@ -1,0 +1,35 @@
+package java.jca
+
+//constrains
+rule JCAProvider_OAEPParameterSpec_1{
+	using
+		OAEPParameterSpec as oaepps
+	when
+		_has_value(oaepps.mdName)
+	ensure
+		oaepps.mdName in ["SHA-256", "SHA-384", "SHA-512"]
+	onfail
+		InvalidmdNameOfOAEPParameterSpec
+}
+rule JCAProvider_OAEPParameterSpec_2{
+	using
+		OAEPParameterSpec as oaepps
+	when
+		_has_value(oaepps.mgfName)
+	ensure
+		oaepps.mgfName in ["MGF1"]
+	onfail
+		InvalidmgfNameOfOAEPParameterSpec
+}
+//requires
+rule JCAProvider_OAEPParameterSpec_3{
+	using
+		OAEPParameterSpec as oaepps,
+		MGF1ParameterSpec as mgf1ps
+	when
+		_has_value(oaepps.mdName) && _has_value(oaepps.mgfSpec)
+	ensure
+		_is(oaepps.mdName, mgf1ps.mdName) && _is(oaepps.mgfSpec, mgf1ps)
+	onfail
+		InvalidmgfNameOfOAEPParameterSpec
+}

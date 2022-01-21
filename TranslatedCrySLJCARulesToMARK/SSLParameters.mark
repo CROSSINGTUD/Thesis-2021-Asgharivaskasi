@@ -1,0 +1,30 @@
+package java.jca
+
+entity SSLParameters {
+	
+	var ciphersuites;
+	var protocols;
+	
+	op instantiate1{
+		javax.net.ssl.SSLParameters();
+	}
+	op instantiate2{
+		javax.net.ssl.SSLParameters(ciphersuites: java.lang.String[]);
+	}
+	op instantiate3{
+		javax.net.ssl.SSLParameters(
+			ciphersuites: java.lang.String[],
+			protocols: java.lang.String[]
+		);
+	}
+	op cipherSuite {
+		javax.net.ssl.SSLParameters.setCipherSuites(
+			ciphersuites: java.lang.String[]
+		);
+	}
+	op setProtocol{
+		javax.net.ssl.SSLParameters.setProtocols(
+			protocols: java.lang.String[]		
+		);	
+	}
+}

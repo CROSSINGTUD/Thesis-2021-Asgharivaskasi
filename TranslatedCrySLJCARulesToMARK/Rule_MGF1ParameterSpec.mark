@@ -1,0 +1,22 @@
+package java.jca
+
+rule JCAProvider_MGF1ParameterSpec_order{
+	using
+		MGF1ParameterSpec as mgf1ps
+	ensure
+		order
+			mgf1ps.instantiate()
+	onfail
+		InvalidOrderOfMGF1ParameterSpec
+}
+//CONSTRAINTS
+rule JCAProvider_MGF1ParameterSpec_1{
+	using
+		MGF1ParameterSpec as mgf1ps
+	when
+		_has_value(mgf1ps.mdName)
+	ensure
+		mgf1ps.mdName in ["SHA-256", "SHA-384", "SHA-512"]
+	onfail
+		InvalidmdOfMGF1ParameterSpec
+}

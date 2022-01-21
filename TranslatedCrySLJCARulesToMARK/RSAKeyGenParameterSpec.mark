@@ -1,0 +1,14 @@
+package java.jca
+
+entity RSAKeyGenParameterSpec {
+	
+	var keyLength;
+	var publicExponent;
+	
+	op instantiate {
+		java.security.spec.RSAKeyGenParameterSpec(
+			keyLength : int,
+			publicExponent : java.math.BigInteger
+		);
+	}
+} //almosr-same constraint, ensure

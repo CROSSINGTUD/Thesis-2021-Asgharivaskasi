@@ -1,0 +1,32 @@
+package java.jca
+
+rule JCAProvider_RSAKeyGenParameterSpec_order{
+	using
+		RSAKeyGenParameterSpec as rsakgps
+	ensure
+		order
+			rsakgps.instantiate()
+	onfail
+		InvalidOrderOfRSAKeyGenParameterSpec
+}
+//constraints
+rule JCAProvider_RSAKeyGenParameterSpec_1{
+	using
+		RSAKeyGenParameterSpec as rsakgps
+	when
+		_has_value(rsakgps.keyLength)
+	ensure
+		rsakgps.keyLength in [1024, 2048, 4096]
+	onfail
+		InvalidKeyLengthOfRSAKeyGenParameterSpec
+}
+rule JCAProvider_RSAKeyGenParameterSpec_2{
+	using
+		RSAKeyGenParameterSpec as rsakgps
+	when
+		_has_value(rsakgps.publicExponent)
+	ensure
+		rsakgps.publicExponent in [65537]
+	onfail
+		InvalidPublicExponentOfRSAKeyGenParameterSpec
+}

@@ -1,0 +1,14 @@
+package java.jca
+
+//requires
+rule JCAProvider_PKIXParameters_1{
+	using
+		PKIXParameters as pkixp,
+		KeyStore as ks
+	when 
+		_has_value(pkixp.keyStore)
+	ensure
+		_is(pkixp.keyStore, ks)
+	onfail
+		InvalidKeyStoreOfPKIXParameters
+}

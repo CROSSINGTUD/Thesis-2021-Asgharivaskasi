@@ -1,0 +1,25 @@
+package java.jca
+
+entity TrustAnchor {
+	
+	var pubKey;
+	var cert;
+	var princ;
+	
+	op instantiate{
+		java.security.cert.TrustAnchor(
+			_, 
+			pubKey : java.security.PublicKey,
+			_
+		);
+		java.security.cert.TrustAnchor(
+			cert: java.security.cert.X509Certificate,
+			_
+		);
+		java.security.cert.TrustAnchor(
+			princ: javax.security.auth.x500.X500Principal,
+			pubKey : java.security.PublicKey,
+			_
+		);
+	}//requires ensures
+}

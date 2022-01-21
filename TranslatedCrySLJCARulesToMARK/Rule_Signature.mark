@@ -1,0 +1,84 @@
+package java.jca
+
+rule JCAProvider_Signature_1{
+	using
+		Signature as sig
+	ensure
+		order
+			sig.instantiate(),
+			((sig.initsign()+,(sig.update()+, sig.sign()+)+)+ | (sig.initverify()*, (sig.update()*, sig.verify()+)+)+)
+	onfail
+		InvalidOrderOfSignature
+}
+//constraints
+rule JCAProvider_Signature_2{
+	using
+		Signature as sig
+	when 
+		_has_value(sig.signAlgorithm)
+	ensure
+		sig.signAlgorithm in ["SHA256withRSA", "SHA256withECDSA", "SHA256withDSA", "SHA224withDSA", "NONEwithDSA", "SHA1withDSA"]
+	onfail
+		InvalidAlgorithmOfSignature
+}
+rule JCAProvider_Signature_inputlen{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.inpb)
+	ensure
+		_length(sig.inpb) >= sig.offset + sig.len 
+	onfail
+		InvalidinputlenOfSignature
+}
+rule JCAProvider_Signature_offset{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.offset)
+	ensure
+		 sig.offset >= 0
+	onfail
+		InvalidoffsetOfSignature
+}
+rule JCAProvider_Signature_len{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.len)
+	ensure
+		 sig.len > 0
+	onfail
+		InvalidlenOfSignature
+}
+//requires
+
+rule JCAProvider_Signature_requiredprivkey{
+	// no tests for Signature
+	using
+		Signature as sig,
+		KeyStore as ks,
+		KeyPair as kp,
+		KeyFactory as kf
+	when 
+		_has_value(sig.privateKey)
+	ensure
+		_is(sig.privateKey, ks.key) || (_is(sig.privateKey, kp.retPrivateKey) && kp.getPriv())
+		|| (_is(sig.privateKey, kf.privateKey) && kf.generatePriv())
+	onfail
+		InvalidPrivateKeyOfSignature
+}
+rule JCAProvider_Signature_requiredpubkey{
+	using
+		Signature as sig,
+		KeyStore as ks,
+		KeyPair as kp,
+		KeyFactory as kf
+	when 
+		_has_value(sig.publicKey)
+	ensure
+		_is(sig.publicKey, ks.key) || (_is(sig.publicKey, kp.retPublicKey) && kp.getPub())
+		|| (_is(sig.publicKey, kf.publicKey) && kf.generatePub())
+	onfail
+		InvalidPublicKeyOfSignature
+}

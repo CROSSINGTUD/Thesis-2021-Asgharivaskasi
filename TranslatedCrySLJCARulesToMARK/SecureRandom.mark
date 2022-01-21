@@ -1,0 +1,44 @@
+package java.jca
+
+entity SecureRandom {
+      
+    var seed;
+    var genSeed;
+    var randomAlgorithm;
+    var lSeed;
+    var next;
+    var randInt;
+    var randIntInRange;
+    var range;
+    
+    op instantiate {
+    	
+    	java.security.SecureRandom();
+        java.security.SecureRandom(
+            seed : byte[]
+        );
+        java.security.SecureRandom.getInstance(randomAlgorithm : java.lang.String);
+        java.security.SecureRandom.getInstance(
+            randomAlgorithm : java.lang.String,
+            _
+        );
+        java.security.SecureRandom.getInstanceStrong();
+                
+    }
+ 
+    op seed {
+        java.security.SecureRandom.setSeed(seed : byte[]);
+        java.security.SecureRandom.setSeed(lSeed : long);
+    }
+    
+    op generateSeed {
+        genSeed  = java.security.SecureRandom.generateSeed(_);
+    }
+    
+    op generate {
+        java.security.SecureRandom.nextBytes(next : bytes[]);
+        randInt = java.security.SecureRandom.nextInt();
+        randIntInRange  = java.security.SecureRandom.nextInt(range: int);
+    }
+    
+}//onstraints requires, ensures

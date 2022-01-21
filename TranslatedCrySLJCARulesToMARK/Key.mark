@@ -1,0 +1,12 @@
+package java.jca
+
+entity Key{
+	
+	var keyMaterial;
+	
+	op get{
+		
+		keyMaterial = java.security.Key.getEncoded();
+	}
+	
+}

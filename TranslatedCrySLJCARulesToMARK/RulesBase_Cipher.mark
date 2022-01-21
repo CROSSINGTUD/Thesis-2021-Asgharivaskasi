@@ -1,0 +1,70 @@
+package base.jca
+
+rule cipher_order {
+    using
+        Cipher as c
+    ensure
+        order c.instantiate(),
+            (c.initWOIV() | c.initWIV())+,
+            c.updateAAD()*,
+            c.keywrap()+ | (c.finalize() | (c.update()+, c.doFinals()|c.finalize()))+
+    onfail
+        InvalidOrderOfCipherOperations
+}
+//cannot have order in when clause, that is why this will throw a syntax error
+//rule nocalltoinit_cipher {
+//    using
+//        Cipher as c
+//    when
+//    	order
+//    		c.instantiate(),
+//            (c.initWOIV() | c.initWIV())+,
+//            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+
+//    ensure
+//    	_split(c.transformation, "/", 0) in ["AES", "RSA", "PBEWithHmacSHA224AndAES_128", "PBEWithHmacSHA256AndAES_128", 
+//						"PBEWithHmacSHA384AndAES_128", "PBEWithHmacSHA512AndAES_128", "PBEWithHmacSHA224AndAES_256", 
+//						"PBEWithHmacSHA256AndAES_256", "PBEWithHmacSHA384AndAES_256", "PBEWithHmacSHA512AndAES_256"]
+//    onfail
+//        InvalidOrderfornocalltoinit_cipher
+//}
+
+rule nocalltoIWOIV_cipher {
+    using
+        Cipher as c
+    when
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "OFB"] && c.encmode !=1
+    ensure
+    	order c.instantiate(),
+            c.initWIV()+,
+            c.updateAAD()*,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+
+    onfail
+        InvalidOrderfornocalltoIWOIV_cipher
+}
+rule calltogetiv_cipher { //not_sure
+    using
+        Cipher as c
+    when
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "OFB"] && encmode ==1
+    ensure
+    	order c.instantiate(),
+            (c.initWIV()* | c.initWOIV())+,
+            c.updateAAD()*,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+,
+            c.getIV()
+    onfail
+        InvalidOrderforcalltogetiv_cipher
+}
+rule nocalltoaadupdate_cipher {
+    using
+        Cipher as c
+    when
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "ECB", "OFB"]
+    ensure
+    	order c.instantiate(),
+            (c.initWOIV() | c.initWIV())+,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+
+    onfail
+        InvalidOrderfornocalltoaadupdate_cipher
+}
+

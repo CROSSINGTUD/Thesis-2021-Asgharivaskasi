@@ -1,0 +1,36 @@
+package java.jca
+
+entity KeyGenerator {
+    
+    var secretKeySize;
+    var params;
+    var key;
+    var secretKeyAlgorithm;
+    var ranGen;
+    
+    op instantiate {
+        javax.crypto.KeyGenerator.getInstance(secretKeyAlgorithm : java.lang.String);
+        javax.crypto.KeyGenerator.getInstance(
+            secretKeyAlgorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op init {
+        javax.crypto.KeyGenerator.init(secretKeySize : int);
+        javax.crypto.KeyGenerator.init(
+            secretKeySize : int,
+            ranGen : java.security.SecureRandom
+        );
+        javax.crypto.KeyGenerator.init(ranGen : java.security.SecureRandom);
+        javax.crypto.KeyGenerator.init(params : java.security.spec.AlgorithmParameterSpecs);
+        javax.crypto.KeyGenerator.init(
+            params : java.security.spec.AlgorithmParameterSpec,
+            ranGen : java.security.SecureRandom
+        );
+    }
+    
+    op generate {
+        key = javax.crypto.KeyGenerator.generateKey();
+    }
+}//almost same constraint req and ensure

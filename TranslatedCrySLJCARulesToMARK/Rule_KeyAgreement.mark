@@ -1,0 +1,37 @@
+package java.jca
+
+rule JCAProvider_KeyAgreement_1{
+	using
+		KeyAgreement as ka
+	ensure
+		order
+			ka.instantiate(),
+			ka.initialize(),
+			ka.doPhase(),
+			ka.generate()
+	onfail
+		InvalidOrderOfKeyAgreement
+}
+//constraints
+rule JCAProvider_KeyAgreement_2{
+	using
+		KeyAgreement as ka
+	when 
+		_has_value(ka.algorithm)
+	ensure
+		ka.algorithm in ["DH", "DiffieHellman", "NH"]
+	onfail
+		InvalidAlgorithmOfKeyAgreement
+}
+//requires
+rule JCAProvider_KeyAgreement_3{
+	using
+		KeyAgreement as ka,
+		SecureRandom as sr
+	when
+		_has_value(ka.random)
+	ensure
+		_is(ka.random, sr)
+	onfail
+		NotRandomRandomOfKeyAgreement
+}
