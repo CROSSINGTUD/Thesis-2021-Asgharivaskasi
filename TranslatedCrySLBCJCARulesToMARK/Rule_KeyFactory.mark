@@ -1,0 +1,54 @@
+package java.bcjca
+
+rule BCProvider_KeyFactory_order{
+	using
+		KeyFactory as kf
+	ensure
+		order
+			kf.instantiate(),
+			(kf.generatePriv() | kf.generatePub())*
+	onfail
+		InvalidOrderOfKeyFactory
+}
+//constraints
+rule BCProvider_KeyFactory_algorithm{
+	using
+		KeyFactory as kf
+	when
+		_has_value(kf.algorithm)
+	ensure
+		kf.algorithm in ["DiffieHellman", "DH", "DSA", "EC", "ECDH", "ECDHC", "ECDSA", "RSA", "ElGamal",
+				"X.509", "McElieceKobaraImai", "McEliecePointcheval", "McElieceFujisaki", "McEliece",
+				"McEliece-CCA2", "NH", "QTESLA", "Rainbow", "SPHINCS256", "XMSS", "XMSSMT"]
+	onfail
+		InvalidKeyFactoryAlgoOfKeyFactory
+}
+//requires
+rule BCProvider_KeyFactory_specced{
+	using
+		KeyFactory as kf,
+		SecretKeySpec as sks,
+		X509EncodedKeySpec as X509,
+		PBEKeySpec as pbeks
+	when 
+		_has_value(kf.keySpec)
+	ensure
+		_is(kf.keySpec, sks) || _is(kf.keySpec, X509) || _is(kf.keySpec, pbeks)
+	onfail
+		InvalidKeySpecOfKeyFactory
+}
+//rule BCProvider_KeyFactory_notpbespecced{
+//	//notsure about this, tried to translate negate, it showsverified in
+//	// any way, does not even understand the when clause .clear()
+//	// on the other hand it kinda works! when cleaspassword is called before using the pbe, it shows violated and verified!
+//	//it also throw violated when it shouldnt!
+//	using
+//		KeyFactory as kf,
+//		PBEKeySpec as pbeks
+//	when 
+//		_has_value(kf.keySpec) && pbeks.clear()
+//	ensure
+//		!(_is(kf.keySpec, pbeks))
+//	onfail
+//		InvalidpbeKeySpecOfKeyFactory
+//}

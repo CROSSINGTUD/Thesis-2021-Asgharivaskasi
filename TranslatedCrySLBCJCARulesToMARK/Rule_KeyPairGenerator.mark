@@ -1,0 +1,115 @@
+package java.bcjca
+
+rule BCProvider_KeyPairGenerator_order{
+	using
+		KeyPairGenerator as kpg
+	ensure
+		order
+			kpg.instantiate(),
+			kpg.initialize(),
+			kpg.generate()
+	onfail
+		InvalidOrderOfKeyPairGenerator
+}
+//constraints
+rule BCProvider_KeyPairGenerator_algorithm{
+	using
+		KeyPairGenerator as kpg
+	when
+		_has_value(kpg.algorithm)
+	ensure
+		kpg.algorithm  in ["RSA", "DSA", "DiffieHellman", "DH", "EC", "ECDSA", "ECDH", "ECDHWITHSHA1KDF", "ECDHC", 
+			"ECIES", "ElGamal", "McElieceKobaraImai", "McEliecePointcheval", "McElieceFujisaki", 
+			"McEliece", "McEliece-CCA2", "NH", "QTESLA", "Rainbow", "SPHINCS256", "XMSS", "XMSSMT"]
+	onfail
+		InvalidAlgorithmOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_keysize{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.algorithm in ["RSA"] && _has_value(kpg.keysize)
+	ensure
+		kpg.keysize in [4096, 3072, 2048]
+	onfail
+		InvalidRSASizeOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_keysize{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.algorithm in ["DSA"] && _has_value(kpg.keysize)
+	ensure
+		kpg.keysize in [2048]
+	onfail
+		InvalidDSASizeOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_keysize{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.algorithm in ["DiffieHellman", "DH"] && _has_value(kpg.keysize)
+	ensure
+		kpg.keysize in [2048]
+	onfail
+		InvalidDHSizeOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_keysize{
+	using
+		KeyPairGenerator as kpg
+	when 
+		kpg.algorithm in ["EC", "ECDSA", "ECDH", "ECDHWITHSHA1KDF", "ECDHC", "ECIES"] && _has_value(kpg.keysize)
+	ensure
+		kpg.keysize in [256]
+	onfail
+		InvalidECSizeOfKeyPairGenerator
+}
+//requires
+//not sure
+rule BCProvider_KeyPairGenerator_params{
+	using
+		KeyPairGenerator as kpg,
+		RSAKeyGenParameterSpec as rsakgp
+	when 
+		kpg.algorithm in ["RSA"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, rsakgp)
+	onfail
+		InvalidRSAParamsOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_params{
+	using
+		KeyPairGenerator as kpg,
+		DSAParameterSpec as dsaps,
+		DSAGenParameterSpec as dsagps
+	when 
+		kpg.algorithm in ["DSA"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, dsaps) || _is(kpg.params, dsagps)
+	onfail
+		InvalidDSAParamsOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_params{
+	using
+		KeyPairGenerator as kpg,
+		DHGenParameterSpec as dhgps,
+		DHParameterSpec as dhps
+	when 
+		kpg.algorithm in ["DiffieHellman", "DH"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, dhgps) || _is(kpg.params, dhps)
+	onfail
+		InvalidDHParamsOfKeyPairGenerator
+}
+rule BCProvider_KeyPairGenerator_params{
+	using
+		KeyPairGenerator as kpg,
+		ECParameterSpec as ecps,
+		ECGenParameterSpec as ecgps
+	when 
+		kpg.algorithm in ["EC"] && _has_value(kpg.params)
+	ensure
+		_is(kpg.params, ecps) || _is(kpg.params, ecgps)
+	onfail
+		InvalidECParamsOfKeyPairGenerator
+}

@@ -1,0 +1,19 @@
+package java.bcjca
+
+entity PKIXBuilderParameters {
+	
+	var keystore;
+	var targetConstraints;
+	var trustAnchors;
+	
+	op instantiate {
+		java.security.cert.PKIXBuilderParameters(
+			keystore : java.security.KeyStore,
+			targetConstraints : java.security.cert.CertSelector
+		);
+		java.security.cert.PKIXBuilderParameters(
+			trustAnchors : java.util.Set<java.security.cert.TrustAnchor>,
+			targetConstraints : java.security.cert.CertSelector
+		);
+	}
+}

@@ -1,0 +1,11 @@
+package java.bcjca
+
+rule BCProvider_Key_order{
+	using
+		Key as k
+	ensure
+		order
+			k.get()*
+	onfail
+		InvalidOrderOfKey
+}

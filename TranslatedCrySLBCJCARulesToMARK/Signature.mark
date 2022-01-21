@@ -1,0 +1,85 @@
+package java.bcjca
+
+entity Signature {
+	
+	var sign;
+	var inputByte;
+	var input;
+	var output;
+	var inputByteBuffer;
+	var algorithm;
+	var privateKey;
+	var publicKey;
+	var cert;
+	var params;
+	var verified;
+	var offset;
+	var len;
+	
+	
+	op instantiate {
+		java.security.Signature.getInstance(
+			algorithm : java.lang.String
+		);
+		java.security.Signature.getInstance(
+			algorithm : java.lang.String,
+			_
+		);
+	}
+	
+	op initsign {
+		java.security.Signature.initSign(
+			privateKey : java.security.PrivateKey
+		);
+		java.security.Signature.initSign(
+			pprivateKeyriv : java.security.PrivateKey,
+			_
+		);
+	}
+	
+	op initverify {
+		java.security.Signature.initVerify(
+			cert : java.security.cert.Certificate
+		);
+		java.security.Signature.initVerify(
+			publicKey : java.security.PublicKey
+		);
+	}
+	
+	op update {
+		java.security.Signature.update(
+			input : byte
+		);
+		java.security.Signature.update(
+			inputByte : byte[]
+		);
+		java.security.Signature.update(
+			inputByteBuffer : java.nio.ByteBuffer
+		);
+		java.security.Signature.update(
+			input : byte[],
+			offset : int,
+			len : int
+		);
+	}
+	
+	op sign {
+		out = java.security.Signature.sign();
+		java.security.Signature.sign(
+			output : byte[],
+			offset : int,
+			len : int
+		);
+	}
+	
+	op verify {
+		verified = java.security.Signature.verify(
+			sign : byte[]
+		);
+		verified = java.security.Signature.verify(
+			sign : byte[],
+			offset : int,
+			len : int
+		);
+	}
+}

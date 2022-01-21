@@ -1,0 +1,11 @@
+package java.bcjca
+
+rule BCProvider_ECParameterSpec_order{
+	using
+		ECParameterSpec as ecps
+	ensure
+		order
+			ecps.instantiate()
+	onfail
+		InvalidOrderOfECParameterSpec
+}

@@ -1,0 +1,44 @@
+package java.bcjca
+
+rule BCProvider_OAEPParameterSpec_order{
+	using
+		OAEPParameterSpec as oaepps
+	ensure
+		order
+			oaepps.instantiate()
+	onfail
+		InvalidOrderOfOAEPParameterSpec
+}
+//constrains
+rule BCProvider_OAEPParameterSpec_mdname{
+	using
+		OAEPParameterSpec as oaepps
+	when
+		_has_value(oaepps.mdName)
+	ensure
+		oaepps.mdName in ["SHA-256", "SHA-384", "SHA-512"]
+	onfail
+		InvalidmdNameOfOAEPParameterSpec
+}
+rule BCProvider_OAEPParameterSpec_mgfName{
+	using
+		OAEPParameterSpec as oaepps
+	when
+		_has_value(oaepps.mgfName)
+	ensure
+		oaepps.mgfName in ["MGF1"]
+	onfail
+		InvalidmgfNameOfOAEPParameterSpec
+}
+//requires
+rule BCProvider_OAEPParameterSpec_preparedMGF1{
+	using
+		OAEPParameterSpec as oaepps,
+		MGF1ParameterSpec as mgf1ps
+	when
+		_has_value(oaepps.mdName) && _has_value(oaepps.mgfSpec)
+	ensure
+		_is(oaepps.mdName, mgf1ps.mdName) &  _is(oaepps.mgfSpec, mgf1ps)
+	onfail
+		InvalidmgfNameOfOAEPParameterSpec
+}

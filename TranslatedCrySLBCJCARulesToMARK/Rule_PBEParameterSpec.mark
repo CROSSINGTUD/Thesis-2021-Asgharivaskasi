@@ -1,0 +1,37 @@
+package java.bcjca
+
+rule BCProvider_PBEParameterSpec_order{
+	using
+		PBEParameterSpec as pbeps
+	ensure
+		order
+			pbeps.instantiate()
+	onfail
+		InvalidOrderOfPBEParameterSpec
+}
+//constraints
+rule BCProvider_PBEParameterSpec_iterationcount{
+	using
+		PBEParameterSpec as pbeps
+	when 
+		_has_value(pbeps.iterationCount)
+	ensure
+		pbeps.iterationCount >=10000
+	onfail
+		InvalidIterationOfPBEParameterSpec
+}
+
+//requires
+//verified and violated at the same time!!
+//behaves the same
+rule BCProvider_PBEParameterSpec_randomized{
+	using
+		PBEParameterSpec as pbeps,
+		SecureRandom as sr
+	when
+		_has_value(pbeps.salt)
+	ensure
+		_is(pbeps.salt, sr.genSeed) || _is(pbeps.salt, sr.bytes)
+	onfail
+		NotRandomizedSaltPBEParameterSpec
+}

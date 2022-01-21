@@ -1,0 +1,61 @@
+package java.bcjca
+
+rule BCProvider_KeyManagerFactory_order{
+	using
+		KeyManagerFactory as kmf
+	ensure
+		order
+			kmf.instantiate(),
+			kmf.initialize(),
+			kmf.get()?
+	onfail
+		InvalidOrderOfKeyManagerFactory
+}
+
+//constraints
+rule BCProvider_KeyManagerFactory_password{
+	using
+		KeyManagerFactory as kmf
+	when
+		_has_value(kmf.password)
+	ensure
+		!(_is_instance(kmf.password, "java.lang.String"))
+	onfail
+		InvalidPasswordInKeyManagerFactory
+}
+//nothardcoded is missing
+rule BCProvider_KeyManagerFactory_algorithm{
+	using
+		KeyManagerFactory as kmf
+	when 
+		_has_value(kmf.algorithm)
+	ensure
+		kmf.algorithm in ["PKIX", "X509", "X.509"]
+	onfail
+		InvalidAlgorithmInKeyManagerFactory
+}
+//requires
+rule BCProvider_KeyManagerFactory_genkeyStore{
+	using
+		KeyManagerFactory as kmf,
+		KeyStore as ks
+	when 
+		_has_value(kmf.KeyStore)
+	ensure
+		_is(kmf.KeyStore, ks)
+	onfail
+		InvalidKeyStoreInKeyManagerFactory
+}
+// can be KeyStoreBuilderParameters or CertPathTrustManagerParameters and its type is ManagerFactoryParameters 
+rule BCProvider_KeyManagerFactory_genmngfactoryparam{
+	using
+		KeyManagerFactory as kmf,
+		KeyStoreBuilderParameters as kspb,
+		CertPathTrustManagerParameters as cptmp
+	when
+		_has_value(kmf.params)
+	ensure
+		_is(kmf.params, kspb) || _is(kmf.params, cptmp)
+	onfail
+		InvalidParamsInKeyManagerFactory
+}

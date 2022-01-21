@@ -1,0 +1,48 @@
+package java.bcjca
+
+rule BCProvider_SecureRandom_order{
+	using
+		SecureRandom as sr
+	ensure
+		order
+			sr.instantiate(),
+			(sr.seed()?,
+				(sr.generateSeed()|sr.generate())*
+			)*
+	onfail
+		InvalidOrderOfSecureRandom
+}
+//constraints
+rule BCProvider_SecureRandom_algorithm{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.algorithm)
+	ensure
+		sr.algorithm in ["DEFAULT", "NONCEANDIV"]
+	onfail
+		InvalidAlgorithmOfSecureRandom
+}
+//requires
+//not sure, but it works
+rule BCProvider_SecureRandom_randomizedseed{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.seed)
+	ensure
+		_is(sr.seed, sr.seed) 
+	onfail
+		NotRandomizedSeedOfSecureRandom
+}
+
+rule BCProvider_SecureRandom_randomizedLseed{
+	using
+		SecureRandom as sr
+	when 
+		_has_value(sr.lSeed)
+	ensure
+		_is(sr.lSeed, sr.randInt)  
+	onfail
+		NotRandomizedLSeedOfSecureRandom
+}

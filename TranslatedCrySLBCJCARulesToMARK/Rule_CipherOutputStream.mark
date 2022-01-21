@@ -1,0 +1,56 @@
+package java.bcjca
+
+rule BCProvider_CipherOutputStream_1{
+	using
+		CipherOutputStream as cos
+	ensure
+		order
+			cos.instantiate(),
+			cos.write()+,
+			cos.close()
+	onfail
+		InvalidOrderOfCipherOutputStream
+}
+//constraints
+rule BCProvider_CipherOutputStream_datalen{
+	using
+		CipherOutputStream as cos
+	when 
+		_has_value(cos.data)
+	ensure
+		_length(cos.data) >= cos.offset + cos.len
+	onfail
+		InvalidLenOfdataCipherOutputStream
+}
+rule BCProvider_CipherOutputStream_offset{
+	using
+		CipherOutputStream as cos
+	when 
+		_has_value(cos.offset)
+	ensure
+		cos.offset >= 0
+	onfail
+		InvalidoffsetCipherOutputStream
+}
+rule BCProvider_CipherOutputStream_len{
+	using
+		CipherOutputStream as cos
+	when 
+		_has_value(cos.len)
+	ensure
+		cos.len > 0
+	onfail
+		InvalidLenOfCipherOutputStream
+}
+//requires
+rule BCProvider_CipherOutputStream_cipher{
+	using
+		CipherOutputStream as cos,
+		Cipher as c
+	when 
+		_has_value(cos.cipher)
+	ensure
+		_is(cos.cipher, c)
+	onfail
+		InvalidCipherNotCipherOfCipherOutputStream
+}

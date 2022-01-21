@@ -1,0 +1,11 @@
+package java.bcjca
+
+rule BCProvider_HMACParameterSpec_order{
+	using
+		HMACParameterSpec as hmacps
+	ensure
+		order
+			hmacps.instantiate()
+	onfail
+		InvalidOrderOfHMACParameterSpec
+}

@@ -1,0 +1,128 @@
+package java.bcjca
+
+entity Cipher {
+    
+    var transformation;
+    var encmode;
+    var key;
+    var certificate;
+    var paramSpec;
+    var params;
+    
+    var prePlainTextOffset;
+	var preCipherTextOffset;
+	var plainTextOffset;
+	var cipherTextOffset;
+	var aadOffset;
+    
+	var prePlainTextLen;
+	var plainTextLen;
+	var aadLen;
+	
+    var prePlainText;
+	var preCipherText;
+	var prePlainTextByteBuffer;
+	var preCipherTextByteBuffer;
+	
+	var plainText;
+	var cipherText;
+	var wrappedKeyBytes;
+	var plainTextByteBuffer;
+	var cipherTextByteBuffer;
+	
+	var aadBytes;
+	var aadByteBuffer;
+
+    var random;
+    
+    var wrappedKey;
+    
+    op instantiate {
+        javax.crypto.Cipher.getInstance(
+            transformation : java.lang.String
+        );
+        javax.crypto.Cipher.getInstance(
+            transformation : java.lang.String,
+            _
+        );
+    }
+    
+    op initWOIV {
+        javax.crypto.Cipher.init(
+            encmode : int,
+            certificate : java.security.cert.Certificate
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            certificate : java.security.cert.Certificate,
+            random : java.security.SecureRandom
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key,
+            random : java.security.SecureRandom
+        );
+    }
+    op initWIV{
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key,
+            paramSpec : java.security.AlgorithmParameterSpec
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key,
+            params : java.security.AlgorithmParameters
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key,
+            paramSpec : java.security.AlgorithmParameterSpec,
+            random : java.security.SecureRandom
+        );
+        javax.crypto.Cipher.init(
+            encmode : int,
+            key : java.security.Key,
+            params : java.security.AlgorithmParameters,
+            random : java.security.SecureRandom
+        );
+    }
+    
+    op update {
+    	preCipherText = javax.crypto.Cipher.update(prePlainText : byte[]); 
+        preCipherText = javax.crypto.Cipher.update(prePlainText : byte[], prePlainTextOffset: int, prePlainTextLen: int); 
+    	javax.crypto.Cipher.update(prePlainText : byte[], prePlainTextOffset: int, prePlainTextLen: int, preCipherText : byte[]);
+        javax.crypto.Cipher.update(prePlainText : byte[], prePlainTextOffset: int, prePlainTextLen: int, preCipherText : byte[], preCipherTextOffset:  int);
+        javax.crypto.Cipher.update(prePlainTextByteBuffer : java.nio.ByteBuffer, preCipherTextByteBuffer : java.nio.ByteBuffer);
+    }
+    
+    op AADUpdate {
+        javax.crypto.Cipher.updateAAD(aadBytes : byte[]);
+        javax.crypto.Cipher.updateAAD(aadBytes: byte[], aadOffset: int, aadLen: int);
+        javax.crypto.Cipher.updateAAD(aadByteBuffer : java.nio.ByteBuffer);
+    }
+    
+    op finalize {
+        cipherText = javax.crypto.Cipher.doFinal(plainText : byte[]);
+        cipherText = javax.crypto.Cipher.doFinal(plainText : byte[], plainTextOffset :int , plainTextLen: int);
+        javax.crypto.Cipher.doFinal(plainText : byte[], plainTextOffset: int, plainTextLen: int, cipherText : byte[]);
+        javax.crypto.Cipher.doFinal(plainText : byte[], plainTextOffset: int, plainTextLen: int, cipherText : byte[], cipherTextOffset: int);
+        javax.crypto.Cipher.doFinal(plainTextByteBuffer : java.nio.ByteBuffer, cipherTextByteBuffer: java.nio.ByteBuffer);
+    }
+    op doFinal{
+    	cipherText = javax.crypto.Cipher.doFinal();
+    	javax.crypto.Cipher.doFinal(cipherText : byte[], cipherTextOffset: int);
+    }
+    
+    op keywrap {
+        wrappedKeyBytes = javax.crypto.Cipher.wrap(wrappedKey : java.security.Key);
+    }
+    op getIV {
+    	javax.crypto.Cipher.getIV();
+    }
+    
+}

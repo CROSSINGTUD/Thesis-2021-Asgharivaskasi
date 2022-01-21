@@ -1,0 +1,48 @@
+package java.bcjca
+
+rule BCProvider_TrustManagerFactory_order{
+	using
+		TrustManagerFactory as tmf
+	ensure
+		order
+			tmf.instantiate(),
+			tmf.initialize(),
+			tmf.getTrustManagers()?
+	onfail
+		InvalidOrderOfTrustManagerFactory
+}
+//constraints
+rule BCProvider_TrustManagerFactory_algorithm{
+	using
+		TrustManagerFactory as tmf
+	when
+		_has_value(tmf.algorithm )
+	ensure
+		tmf.algorithm  in ["PKIX", "X509", "X.509"]
+	onfail
+		InvalidAlgoOfTrustManagerFactory
+}
+//requires
+rule BCProvider_TrustManagerFactory_generatedkeystore{
+	using
+		TrustManagerFactory as tmf,
+		KeyStore as ks
+	when
+		_has_value(tmf.keyStore)
+	ensure
+		_is(tmf.keyStore, ks)
+	onfail
+		InvalidkeyStoreOfTrustManagerFactory
+}
+rule BCProvider_TrustManagerFactory_params{
+	using
+		TrustManagerFactory as tmf,
+		KeyStoreBuilderParameters as ksbp,
+		CertPathTrustManagerParameters as cptmp
+	when
+		_has_value(tmf.params)
+	ensure
+		_is(tmf.params, ksbp) || _is(tmf.params, cptmp)
+	onfail
+		InvalidparamsOfTrustManagerFactory
+}

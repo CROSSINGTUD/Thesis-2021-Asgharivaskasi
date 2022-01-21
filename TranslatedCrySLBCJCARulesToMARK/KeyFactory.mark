@@ -1,0 +1,25 @@
+package java.bcjca
+
+entity KeyFactory {
+    
+    var algorithm;
+    var keySpec;
+    var privateKey;
+    var publicKey;
+    
+    op instantiate {
+        java.security.KeyFactory.getInstance(algorithm : java.lang.String);
+        java.security.KeyFactory.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op generatePriv {
+        privateKey = java.security.KeyFactory.generatePrivate(keySpec : java.security.spec.KeySpec);
+    }
+    op generatePub{
+    	publicKey = java.security.KeyFactory.generatePublic(keySpec : java.security.spec.KeySpec);
+    }
+
+}

@@ -1,0 +1,20 @@
+package java.bcjca
+
+entity PBEParameterSpec {
+	
+	var salt;
+	var iterationCount;
+	var params;
+	
+	op instantiate {
+		javax.crypto.spec.PBEParameterSpec(
+			salt : byte[],
+			iterationCount : int
+		);
+		javax.crypto.spec.PBEParameterSpec(
+			salt : byte[],
+			iterationCount : int,
+			params : java.security.spec.AlgorithmParameterSpec
+		);
+	}
+}

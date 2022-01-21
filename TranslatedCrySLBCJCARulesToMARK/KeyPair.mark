@@ -1,0 +1,23 @@
+package java.bcjca
+
+entity KeyPair {
+    
+    var privateKey;
+    var privateKey;
+    var retPrivateKey;
+    var retPublicKey;
+    
+    op instantiate {
+        java.security.KeyPair(
+            publicKey : java.security.PublicKey,
+            privateKey : java.security.PrivateKey
+        );
+    }
+    op getPriv{
+    	 retPrivateKey =  java.security.KeyPair.getPrivate();
+    }
+    op getPub{
+    	retPublicKey = java.security.KeyPair.getPublic();
+    	
+    }
+}

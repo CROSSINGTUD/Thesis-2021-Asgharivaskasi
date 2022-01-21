@@ -1,0 +1,22 @@
+package java.bcjca
+
+rule BCProvider_DHGenParameterSpec_order{
+	using
+		DHGenParameterSpec as dhgps
+	ensure
+		order
+			dhgps.instantiate()
+	onfail
+		InvalidOrderOfDHGenParameterSpec
+}
+//constraints
+rule BCProvider_DHGenParameterSpec_size{
+	using
+		DHGenParameterSpec as dhgps
+	when 
+		_has_value(dhgps.exponentSize)
+	ensure
+		dhgps.exponentSize < dhgps.primeSize
+	onfail
+		InvalidsizeOfDHGenParameterSpec
+}

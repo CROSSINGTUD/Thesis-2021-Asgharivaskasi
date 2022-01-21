@@ -1,0 +1,89 @@
+package java.bcjca
+
+rule BCProvider_Signature_order{
+	using
+		Signature as sig
+	ensure
+		order
+			sig.instantiate(),
+			((sig.initsign()+,(sig.update()+, sig.sign()+)+)+ | (sig.initverify()*, (sig.update()*, sig.verify()+)+)+)
+	onfail
+		InvalidOrderOfSignature
+}
+//constraints
+rule BCProvider_Signature_algorithm{
+	using
+		Signature as sig
+	when 
+		_has_value(sig.algorithm)
+	ensure
+		sig.algorithm in ["ECDDSA", "SHA256WITHECDDSA", "SHA384WITHECDDSA", "SHA512WITHECDDSA", "SHA3-256WITHECDDSA", "SHA3-384WITHECDDSA", 
+			"SHA3-512WITHECDDSA", "SHA256WITHECNR", "SHA384WITHECNR", "SHA512WITHECNR", "SHA256withECDSA", "SHA256withDSA", 
+			"SHA224withRSA", "SHA384withRSA", "SHA512withRSA", "SHA256withRSA", "SHA224withDSA", "SHA384withDSA", "SHA512withDSA", 
+			"QTESLA"]
+	onfail
+		InvalidAlgorithmOfSignature
+}
+rule BCProvider_Signature_inputlen{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.input)
+	ensure
+		_length(sig.input) >= sig.offset + sig.len 
+	onfail
+		InvalidinputlenOfSignature
+}
+rule BCProvider_Signature_offset{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.offset)
+	ensure
+		 sig.offset >= 0
+	onfail
+		InvalidoffsetOfSignature
+}
+rule BCProvider_Signature_len{
+	using
+		Signature as sig
+	when 	
+		_has_value(sig.len)
+	ensure
+		 sig.len > 0
+	onfail
+		InvalidlenOfSignature
+}
+//requires
+
+rule BCProvider_Signature_requiredprivkey{
+	//see if keypair and keyfactory works 
+	// no tests for Signature
+	using
+		Signature as sig,
+		KeyStore as ks,
+		KeyPair as kp,
+		KeyFactory as kf
+	when 
+		_has_value(sig.privateKey)
+	ensure
+		_is(sig.privateKey, ks.key) || (_is(sig.privateKey, kp.retPrivateKey) && kp.getPriv())
+		|| (_is(sig.privateKey, kf.privateKey) && kf.generatePriv())
+	onfail
+		InvalidPrivateKeyOfSignature
+}
+rule BCProvider_Signature_requiredpubkey{
+	//see if keypair and keyfactory works
+	using
+		Signature as sig,
+		KeyStore as ks,
+		KeyPair as kp,
+		KeyFactory as kf
+	when 
+		_has_value(sig.publicKey)
+	ensure
+		_is(sig.publicKey, ks.key) || (_is(sig.publicKey, kp.retPublicKey) && kp.getPub())
+		|| (_is(sig.publicKey, kf.publicKey) && kf.generatePub())
+	onfail
+		InvalidPublicKeyOfSignature
+}

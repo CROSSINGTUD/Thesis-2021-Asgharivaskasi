@@ -1,0 +1,33 @@
+package java.bcjca
+
+entity KeyManagerFactory{
+	var password;
+	var algorithm;
+	var keyStore;
+	var params;
+	var keyManager;
+	
+	op instantiate{
+		javax.net.ssl.KeyManagerFactory.getInstance(
+			algorithm: java.lang.String
+		);
+		javax.net.ssl.KeyManagerFactory.getInstance(
+			algorithm: java.lang.String,
+			_
+		);
+	}
+	
+	op initialize{
+	 	javax.net.ssl.KeyManagerFactory.init(
+			keyStore: java.security.KeyStore,
+			password: char[]
+		);
+		javax.net.ssl.KeyManagerFactory.init(
+			params: javax.net.ssl.ManagerFactoryParameters
+		);
+	 }
+	 
+	op get{
+		keyManager = javax.net.ssl.KeyManagerFactory.getKeyManager();
+	}	
+}

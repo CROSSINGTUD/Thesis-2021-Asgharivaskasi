@@ -1,0 +1,26 @@
+package java.bcjca
+// the rule is not working!
+//order is not necessary cause it is only one method
+rule BCProvider_CertPathTrustManagerParameters_order{
+	using
+		CertPathTrustManagerParameters as cptmp
+	ensure
+		order
+			cptmp.instantiate()
+	onfail
+		InvalidOrderOfCertPathTrustManagerParameters
+}
+//requires
+rule BCProvider_CertPathTrustManagerParameters_params{
+	using
+		CertPathTrustManagerParameters as cptmp,
+		PKIXBuilderParameters as pkixb,
+		PKIXParameters as pkixp
+	when
+		_has_value(cptmp.params)
+	ensure
+		_is(cptmp.params, pkixb) || _is(cptmp.params, pkixp) 
+	onfail
+		InvalidParamsOfCertPathTrustManagerParameters
+		
+}

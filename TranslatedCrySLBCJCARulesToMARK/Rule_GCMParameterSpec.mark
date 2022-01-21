@@ -1,0 +1,64 @@
+package java.bcjca
+
+rule BCProvider_GCMParameterSpec_order{
+	using
+		GCMParameterSpec as gcmps
+	ensure
+		order
+			gcmps.instantiate()
+	onfail
+		InvalidOrderOfGCMParameterSpec
+}
+//constraints
+rule BCProvider_GCMParameterSpec_tagLen{
+	using
+		GCMParameterSpec as gcmps
+	when
+		_has_value(gcmps.tagLen)
+	ensure
+		gsmps.tagLen in [96, 104, 112, 120, 128]
+	onfail
+		InvalidLenOftagGCMParameterSpec
+}
+rule BCProvider_GCMParameterSpec_src{
+	using
+		GCMParameterSpec as gcmps
+	when
+		_has_value(gcmps.src)
+	ensure
+		_length(gsmps.src) >= gcmps.offset + gcmps.len
+	onfail
+		InvalidLenOfSrcGCMParameterSpec
+}
+rule BCProvider_GCMParameterSpec_offset{
+	using
+		GCMParameterSpec as gcmps
+	when
+		_has_value(gcmps.offset)
+	ensure
+		gcmps.offset >= 0
+	onfail
+		InvalidLenOfoffsetGCMParameterSpec
+}
+rule BCProvider_GCMParameterSpec_len{
+	using
+		GCMParameterSpec as gcmps
+	when
+		_has_value(gcmps.len)
+	ensure
+		gcmps.len >= 0
+	onfail
+		InvalidLenGCMParameterSpec
+}
+//requires
+rule BCProvider_GCMParameterSpec_randomized{
+	using
+		GCMParameterSpec as gcmps,
+		SecureRandom as sr
+	when
+		_has_value(gcmps.src)
+	ensure
+		_is(gsmps.src, sr)
+	onfail
+		NotRandomSrcGCMParameterSpec
+}

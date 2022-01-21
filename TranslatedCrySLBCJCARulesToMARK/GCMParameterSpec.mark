@@ -1,0 +1,22 @@
+package java.bcjca
+
+entity GCMParameterSpec {
+	
+	var tagLen;
+	var src;
+	var offset;
+	var len;
+	
+	op instantiate {
+		javax.crypto.spec.GCMParameterSpec(
+			tagLen : int,
+			src : byte[]
+		);
+		javax.crypto.spec.GCMParameterSpec(
+			tagLen : int,
+			src : byte[],
+			offset : int,
+			len : int
+		);
+	}
+}

@@ -1,0 +1,129 @@
+package java.bcjca
+
+rule BCProvider_Mac_order{
+	using
+		Mac as m
+	ensure
+		order
+			m.instantiate(),
+			m.initialize(),
+			m.finalizeWU() | (m.update()+, m.finalize()|m.finalizeWU())
+	onfail
+		InvalidOrderOfMac
+}
+//constraints
+rule BCProvider_Mac_algorithm{
+	using
+		Mac as m
+	when 
+		_has_value(m.algorithm)
+	ensure
+		m.algorithm in ["AESCMAC", "AESCCMMAC", "HmacSHA256", "HmacSHA384", "HmacSHA512",
+			 "HMACSHA3-256", "HMACSHA3-384", "HMACSHA3-512",
+			 "PBEWithHmacSHA256", "PBEWithHmacSHA384", "PBEWithHmacSHA512", "Poly1305", "Shacal-2CMAC"]
+	onfail
+		InvalidAlgorithmOfMac
+}
+rule BCProvider_Mac_outputlLen{
+	using
+		Mac as m
+	when 
+		_has_value(m.output1)
+	ensure
+		_length(m.output1) > m.outOffset 
+	onfail
+		Invalidoutput1LenOfMac
+}
+rule BCProvider_Mac_preinputlen{
+	using
+		Mac as m
+	when 
+		_has_value(m.preInput)
+	ensure
+		_length(m.preInput) >= m.len + m.offset 
+	onfail
+		InvalidpreinputLenOfMac
+}
+rule BCProvider_Mac_offset{
+	using
+		Mac as m
+	when 
+		_has_value(m.offset)
+	ensure
+		m.offset >= 0 
+	onfail
+		InvalidoffsetOfMac
+}
+rule BCProvider_Mac_len{
+	using
+		Mac as m
+	when 
+		_has_value(m.len)
+	ensure
+		m.len > 0 
+	onfail
+		InvalidlenOfMac
+}
+//requires
+rule BCProvider_Mac_params{
+	using
+		Mac as m,
+		HMACParameterSpec as hmacps
+	when
+		_has_value(m.params)
+	ensure
+		_is(m.params, hmacps)
+	onfail
+		InvalidHMacSpecOfMac
+}
+//notsure- this works
+rule BCProvider_Mac_output2{
+	using
+		Mac as m,
+		Cipher as c
+	when 
+	    _has_value(m.output2)
+	ensure
+		!(_is(m.output2, c.cihperText))
+	onfail
+		EncryptedOutput2OfMac
+}
+rule BCProvider_Mac_outpu1{
+	using
+		Mac as m,
+		Cipher as c
+	when 
+	    _has_value(m.output1)
+	ensure
+		!(_is(m.output1, c.cihperText))
+	onfail
+		EncryptedOutput1OfMac
+}
+rule BCProvider_Mac_generatedkey{
+	using
+		Mac as m,
+		KeyStore as ks,
+		SecretKeyFactory as skf,
+		KeyGenerator as kg,
+		SecretKeySpec as sks
+		
+	when 
+	    _has_value(m.key) 
+	ensure
+	//not sure about the java.security.Key: note: it should not be there
+		_is(m.key, sks) || _is(m.key, skf.key)|| _is(m.key, kg.key) || _is(m.key, ks.key) 
+	onfail
+		InvalidGeneratedKeyOfMac
+}
+//not sure, tried to implement negates in secretkey-does not work cause egal where the destroy is, it always throws an error
+//rule BCProvider_Mac_neggeneratedkey{
+//	using
+//		Mac as m,
+//		SecretKey as sk
+//	when 
+//	    _has_value(m.key) && sk.destroy()
+//	ensure
+//		!(_is(m.key, sk))
+//	onfail
+//		InvalidGeneratedKeyOfMac
+//}

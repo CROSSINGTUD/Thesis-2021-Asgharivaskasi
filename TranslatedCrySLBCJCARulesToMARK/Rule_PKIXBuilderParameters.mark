@@ -1,0 +1,16 @@
+package java.bcjca
+
+//requires
+//were combination of _is and _is_instance, not any more
+//it will show up where it should not be.
+rule BCProvider_PKIXBuilderParameters_generatedkeystore{
+	using
+		PKIXBuilderParameters as pkixbp,
+		KeyStore as ks
+	when 
+		_has_value(pkixbp.keystore)
+	ensure
+		_is(pkixbp.keystore, ks)
+	onfail
+		InvalidKeyStoreOfPKIXBuilderParameters
+}

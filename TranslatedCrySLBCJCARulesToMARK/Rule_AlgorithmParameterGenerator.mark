@@ -1,0 +1,59 @@
+package java.bcjca
+
+rule BCProvider_AlgorithmParameterGenerator_order{
+	using
+		AlgorithmParameterGenerator as apg
+	ensure
+		order
+			apg.instantiate(),
+			apg.initialize(),
+			apg.generate()
+	onfail
+		InvalidOrderOfAlgorithmParameterGenerator
+}
+//constraints
+rule BCProvider_AlgorithmParameterGenerator_algorithm{
+	using
+		AlgorithmParameterGenerator as apg
+	when
+		has_value(apg.algorithm)
+	ensure
+		apg.algorithm in ["AES", "Camellia", "Shacal2", "Shacal-2", "DH", "DiffieHellman", "DSA", "ElGamal"]
+	onfail
+		InvalidAlgorithmOfAlgorithmParameterGenerator
+}
+
+rule BCProvider_AlgorithmParameterGenerator_size{
+	using
+		AlgorithmParameterGenerator as apg
+	when
+		_has_value(apg.algorithm) && apg.algorithm in ["DH", "DSA", "ElGamal"] && _has_value(apg.size)
+	ensure
+		apg.size in [1048] //would it work? or do we need a ==? this works
+
+	onfail
+		InvalidSizeOfAlgorithmParameterGenerator
+}
+
+rule BCProvider_AlgorithmParameterGenerator_size{
+	using
+		AlgorithmParameterGenerator as apg
+	when
+		_has_value(apg.algorithm) && apg.algorithm in ["AES", "Camellia", "Shacal2", "Shacal-2"] && _has_value(apg.size)
+	ensure
+		apg.size in [128, 192, 256]
+	onfail
+		InvalidSizeOfAlgorithmParameterGenerator
+}
+//requires
+rule BCProvider_AlgorithmParameterGenerator_randomized{
+	using
+		AlgorithmParameterGenerator as apg,
+		SecureRandom as sr
+	when 
+		_has_value(apg.random)
+	ensure
+		_is(apg.random, sr)
+	onfail
+		InvalidSizeOfAlgorithmParameterGenerator
+}

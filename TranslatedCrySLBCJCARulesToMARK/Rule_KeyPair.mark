@@ -1,0 +1,36 @@
+package java.bcjca
+
+rule BCProvider_KeyPair_order{
+	using
+		KeyPair as kp
+	ensure
+		order
+			kp.instantiate(),
+			(kp.getPub() | kp.getPriv())*
+	onfail
+		InvalidOrderOfKeyPair
+}
+
+//requires
+rule BCProvider_KeyPair_genprivkey{
+	using
+		KeyPair as kp,
+		KeyPair as kp2
+	when 
+		_has_value(kp.privateKey)
+	ensure
+		_is(kp.privateKey, kp2.retPrivateKey)
+	onfail
+		InvalidPrivateKeyOfKeyPair
+}
+rule BCProvider_KeyPair_genpubkey{
+	using
+		KeyPair as kp,
+		KeyPair as kp2
+	when 
+		_has_value(kp.publicKey)
+	ensure
+		_is(kp.publicKey, kp2.retPublicKey)
+	onfail
+		InvalidPublicKeyOfKeyPair
+}

@@ -1,0 +1,67 @@
+package java.bcjca
+
+rule BCProvider_SSLParameters_order{
+	using
+		SSLParameters as sslp
+	ensure
+		order
+			(sslp.instantiate1(), (sslp.cipherSuite(), sslp.setProtocol()) | (sslp.setProtocol(), sslp.cipherSuite())) |
+			(sslp.instantiate2(), sslp.setProtocol()) |
+			sslp.instantiate3()
+
+	onfail
+		InvalidOrderOfSSLParameters
+}
+
+
+//constrsints
+//these have to be string arrays but there is no definition for arrays in MARK
+//: does this work? no, cause we have not string array in mark
+//rule BCProvider_SSLParameters_protocols{
+//	using
+//		SSLParameters as sslp
+//	when 
+//		_has_value(sslp.protocols)
+//	ensure
+//		sslp.protocols == ["TLSv1.2"]	
+//	onfail
+//		InvalidProtocolsSSLParameters
+//}
+//
+//rule BCProvider_SSLParameters_cipherSuites{
+//	using
+//		SSLParameters as sslp
+//	when 
+//		_has_value(sslp.cipherSuites)
+//	ensure
+//		sslp.cipherSuites in ["TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_RSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+//				"TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
+//				"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_RSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+//				"TLS_DHE_DSS_WITH_AES_128_GCM_SHA256",
+//				"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+//				"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+//				"TLS_RSA_WITH_AES_256_CBC_SHA256",
+//				"TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384",
+//				"TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384",
+//				"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
+//				"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
+//				"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
+//				"TLS_DHE_DSS_WITH_AES_128_CBC_SHA256"]	
+//	onfail
+//		InvalidCipherSuitesSSLParameters
+//}

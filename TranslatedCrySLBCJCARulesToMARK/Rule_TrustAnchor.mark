@@ -1,0 +1,30 @@
+package java.bcjca
+
+rule BCProvider_TrustAnchor_order{
+	using
+		TrustAnchor as ta
+	ensure
+		order
+			ta.instantiate()
+	onfail
+		InvalidOrderOfTrustAnchor
+}
+//requires
+//check if it works: it shows violated and verified at the same time.
+rule BCProvider_TrustAnchor_generatedPubkey{
+	using
+		TrustAnchor as ta,
+		KeyPair as kp,
+		KeyFactory as kf,
+		KeyStore as ks
+	when 
+		_has_value(ta.publicKey)
+	ensure
+		_is(ta.publicKey, ks.key) 
+		|| _is(ta.publicKey, kp.retPublicKey) 
+//			&& kp.getPub()
+		|| _is(ta.publicKey, kf.publicKey) 
+//		&& kf.generatePub()
+	onfail
+		InvalidpublicKeyOfTrustAnchor
+}

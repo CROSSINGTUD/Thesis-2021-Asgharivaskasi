@@ -1,0 +1,56 @@
+package java.bcjca
+
+rule BCProvider_DigestInputStream_order{
+	using
+		DigestInputStream as dis
+	ensure
+		order
+			dis.initialize(),
+			dis.read()+,
+			dis.close()
+	onfail
+		InvalidOrderOfDigestInputStream
+}
+//constraints
+rule BCProvider_DigestInputStream_datalen{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.data) && _has_value(dis.offset)
+	ensure
+		_length(dis.data) >= dis.offset + dis.len 
+	onfail
+		InvalidLenOfdataDigestInputStream
+}
+rule BCProvider_DigestInputStream_offset{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.offset)
+	ensure
+		dis.offset >= 0
+	onfail
+		InvalidoffsetOfDigestInputStream
+}
+rule BCProvider_DigestInputStream_len{
+	using
+		DigestInputStream as dis
+	when 
+		_has_value(dis.len)
+	ensure
+		dis.len > 0
+	onfail
+		InvalidLenOfDigestInputStream
+}
+//requires
+rule BCProvider_DigestInputStream_genmsgdigest{
+	using
+		DigestInputStream as dis,
+		MessageDigest as md
+	when 
+		_has_value(dis.digest)
+	ensure
+		_is(dis.digest, md)
+	onfail
+		InvalidMDOfDigestInputStream
+}

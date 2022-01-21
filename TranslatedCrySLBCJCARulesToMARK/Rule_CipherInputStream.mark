@@ -1,0 +1,56 @@
+package java.bcjca
+
+rule BCProvider_CipherInputStream_1{
+	using
+		CipherInputStream as cis
+	ensure
+		order
+			cis.instantiate(),
+			cis.read()+,
+			cis.close()
+	onfail
+		InvalidOrderOfCipherInputStream
+}
+//constraints
+rule BCProvider_CipherInputStream_lenData{
+	using
+		CipherInputStream as cis
+	when
+		_has_value(cis.data)
+	ensure
+		_lenght(cis.data) >= cis.offset + cis.len
+	onfail
+		InvalidLenOfdataCipherInputStream
+}
+rule BCProvider_CipherInputStream_offset{
+	using
+		CipherInputStream as cis
+	when
+		_has_value(cis.offset)
+	ensure
+		cis.offset >= 0
+	onfail
+		InvalidLenOfoffsetCipherInputStream
+}
+rule BCProvider_CipherInputStream_len{
+	using
+		CipherInputStream as cis
+	when
+		_has_value(cis.len)
+	ensure
+		cis.len > 0
+	onfail
+		InvalidLenofCipherInputStream
+}
+//requires
+rule BCProvider_CipherInputStream_cipher{
+	using
+		CipherInputStream as cis,
+		Cipher as c
+	when 
+	    _has_value(cis.cipher)
+	ensure
+		_is(cis.cipher, c)
+	onfail
+		InvalidCipherNotCipherOfCipherInputStream
+}

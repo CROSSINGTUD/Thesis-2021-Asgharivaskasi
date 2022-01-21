@@ -1,0 +1,58 @@
+package java.bcjca
+
+rule BCProvider_SSLContext_order{
+	using
+		SSLContext as sslc
+	ensure
+		order
+			sslc.instantiate(),
+			sslc.initialize(),
+			sslc.create()?
+	onfail
+		InvalidOrderOfSSLContext
+}
+//constraints
+rule BCProvider_SSLContext_protocol{
+	using
+		SSLContext as sslc
+	when
+		_has_value(sslc.protocol)
+	ensure
+		sslc.protocol in ["TLSv1.2"]
+	onfail
+		InvalidProtocolOfSSLContext
+}
+//requires
+rule BCProvider_SSLContext_generatedkeymanger{
+	using
+		SSLContext as sslc,
+		KeyManagerFactory as kmf
+	when 
+		_has_value(sslc.km)
+	ensure
+		_is(sslc.km, kmf.keyManager)
+	onfail
+		InvalidKeyManagerSSLContext
+}
+rule BCProvider_SSLContext_gentrustmnger{
+	using
+		SSLContext as sslc,
+		TrustManagerFactory as tmf
+	when 
+		_has_value(sslc.tm)
+	ensure
+		_is(sslc.tm, tmf.trustManager)
+	onfail
+		InvalidTrustManagerSSLContext
+}
+rule BCProvider_SSLContext_randomized{
+	using
+		SSLContext as sslc,
+		SecureRandom as sr
+	when 
+		_has_value(sslc.sr)
+	ensure
+		_is_instance(sslc.sr, sr)
+	onfail
+		NotSecureRandomSSLContext
+}

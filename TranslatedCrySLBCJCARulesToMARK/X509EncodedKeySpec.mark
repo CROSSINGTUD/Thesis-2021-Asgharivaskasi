@@ -1,0 +1,12 @@
+package java.bcjca
+
+entity X509EncodedKeySpec {
+	
+	var encodedKey;
+	
+	op instantiate {
+		java.security.spec.X509EncodedKeySpec(
+			encodedKey : byte[]
+		);
+	}
+}

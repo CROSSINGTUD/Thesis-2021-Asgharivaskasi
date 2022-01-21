@@ -1,0 +1,36 @@
+package java.bcjca
+
+entity DigestInputStream {
+    
+    var stream;
+    var digest;
+    var data;
+    var offset;
+    var len;
+    
+    
+    op initialize {
+        java.security.spec.DigestInputStream(
+            stream: java.io.InputStream,
+            digest: java.security.MessageDigest
+        );
+    }
+    op read{
+    	java.security.spec.DigestInputStream.read();
+    	java.security.spec.DigestInputStream.read(
+    		data: byte[],
+    		offset: int,
+    		len:int
+    	);
+    	
+    }
+    op close{
+    	
+    	java.security.spec.DigestInputStream.close();
+    }
+    op on{
+    	
+    	forbidden java.security.spec.DigestInputStream.on(_: boolean);
+    }
+     
+}

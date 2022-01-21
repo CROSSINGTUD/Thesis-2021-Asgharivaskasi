@@ -1,0 +1,88 @@
+package java.bcjca
+
+//ORDER DOES NOT WORK PROPERLY
+rule BCProvider_MessageDigest_order{
+	using
+		MessageDigest as md
+	ensure
+		order
+			md.instantiate(),
+			(md.digestWOU() | (md.update()+, (md.digestWU() | md.digestWOU())))+
+			
+	onfail
+		InvalidOrderOfMessageDigest
+}
+//constraints
+rule BCProvider_MessageDigest_algorithm{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.algorithm)
+	ensure
+		md.algorithm in ["SHA-256", "SHA-384", "SHA-512", "SHA-512/256", "SHA3-224", "SHA3-256", "SHA3-384", "SHA3-512",
+			"BLAKE2B-256", "BLAKE2B-384", "BLAKE2B-512", "BLAKE2S-256",
+			"KECCAK-256", "KECCAK-384", "KECCAK-512",
+			"WHIRLPOOL"]
+	onfail
+		InvalidAlgorithmMessageDigest
+}
+rule BCProvider_MessageDigest_preinput{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.preInput)
+	ensure
+		_length(md.preInput) >= md.preLen  + md.preOffset
+	onfail
+		InvalidLenpreinputMessageDigest
+}
+rule BCProvider_MessageDigest_preoffset{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.preOffset)
+	ensure
+		md.preOffset >=0
+	onfail
+		InvalidpreoffsetMessageDigest
+}
+rule BCProvider_MessageDigest_preLen {
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.preLen )
+	ensure
+		md.preLen >0
+	onfail
+		InvalidpreLenMessageDigest
+}
+rule BCProvider_MessageDigest_outputlen{
+	using
+		MessageDigest as md
+	when
+		_has_value(md.output)
+	ensure
+		_length(md.output) >= md.len + md.offset
+	onfail
+		InvalidLengthOfOutMessageDigest
+}
+rule BCProvider_MessageDigest_offset{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.offset)
+	ensure
+		md.offset >= 0
+	onfail
+		InvalidoffsetMessageDigest
+}
+rule BCProvider_MessageDigest_len{
+	using
+		MessageDigest as md
+	when 
+		_has_value(md.len)
+	ensure
+		md.len >= 0
+	onfail
+		InvalidlenMessageDigest
+}

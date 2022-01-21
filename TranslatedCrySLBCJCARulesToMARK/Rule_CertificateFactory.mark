@@ -1,0 +1,32 @@
+package java.bcjca
+
+rule BCProvider_CertificateFactory_1{
+	using
+		CertificateFactory as cf
+	ensure
+		order
+			cf.instantiate(),
+			(cf.generateCertificate() | cf.generateCertPath() | cf.generateCRL())+
+	onfail
+		InvalidOrderOfCertificateFactory
+}
+rule BCProvider_CertificateFactory_2{
+	using
+		CertificateFactory as cf
+	when 
+		_has_value(cf.type)
+	ensure
+		cf.type in ["X509", "X.509"]
+	onfail
+		InvalidTypeOfCertificateFactory
+}
+rule BCProvider_CertificateFactory_3{
+	using
+		CertificateFactory as cf
+	when 
+		_has_value(cf.encoding)
+	ensure
+		cf.encoding in ["PKCS7", "PkiPath"]
+	onfail
+		InvalidTypeOfCertificateFactory
+}

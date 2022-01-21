@@ -1,0 +1,18 @@
+package java.bcjca
+
+entity SSLEngine {
+	
+	var cipherSuites;
+	var protocols;
+	
+	op enableCipher {
+		javax.net.ssl.SSLEngine.setEnabledCipherSuites(
+			cipherSuites: java.lang.String[]
+		);
+	}
+	op enableProtocol{
+		javax.net.ssl.SSLEngine.setEnabledProtocols(
+			protocols: java.lang.String[]		
+		);	
+	}
+} 

@@ -1,0 +1,27 @@
+package java.bcjca
+
+entity CipherInputStream{
+	
+	var inputStream;
+	var cipher;
+	var data;
+	var offset;
+	var len;
+	
+	op instantiate{
+		javax.crypto.CipherInputStream (
+			inputStream: java.io.InputStream, cipher: javax.crypto.Cipher
+		);
+	}
+	
+	op read{
+		javax.crypto.CipherInputStream.read();
+		javax.crypto.CipherInputStream.read(data: byte[]);
+		javax.crypto.CipherInputStream.read(data: byte[], offset: int, len: int);
+	}
+	
+	op close{
+		javax.crypto.CipherInputStream.close();
+	}
+
+}

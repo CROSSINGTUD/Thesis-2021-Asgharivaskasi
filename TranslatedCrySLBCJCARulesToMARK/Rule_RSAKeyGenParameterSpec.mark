@@ -1,0 +1,32 @@
+package java.bcjca
+
+rule BCProvider_RSAKeyGenParameterSpec_order{
+	using
+		RSAKeyGenParameterSpec as rsakgps
+	ensure
+		order
+			rsakgps.instantiate()
+	onfail
+		InvalidOrderOfRSAKeyGenParameterSpec
+}
+//constraints
+rule BCProvider_RSAKeyGenParameterSpec_keysize{
+	using
+		RSAKeyGenParameterSpec as rsakgps
+	when
+		_has_value(rsakgps.keysize)
+	ensure
+		rsakgps.keysize in [1024, 2048, 4096]
+	onfail
+		InvalidkeysizeOfRSAKeyGenParameterSpec
+}
+//rule BCProvider_RSAKeyGenParameterSpec_publicExponent{
+//	using
+//		RSAKeyGenParameterSpec as rsakgps
+//	when
+//		_has_value(rsakgps.publicExponent)
+//	ensure
+//		rsakgps.publicExponent in [65537]
+//	onfail
+//		InvalidPublicExponentOfRSAKeyGenParameterSpec
+//}

@@ -1,0 +1,551 @@
+package java.bcjca
+
+rule BCProvider_Cipher_order {
+    using
+        Cipher as c
+    ensure
+        order c.instantiate(),
+            (c.initWOIV() | c.initWIV())+,
+            c.AADUpdate()*,
+            c.keywrap()+ | (c.finalize() | (c.update()+, c.doFinals()|c.finalize()))+
+    onfail
+        InvalidOrderOfCipherOperations
+}
+//Constraints
+
+rule BCProvider_Cipher_1 {
+    using
+        Cipher as c
+    when
+    	_has_value(c.key)
+        || _is_instance(c.key, "java.security.PublicKey") 
+        || _is_instance(c.key, "java.security.PrivateKey") 
+		|| c.encmode in [3,4, "javax.crypto.PRIVATE_KEY", "javax.crypto.PUBLIC_KEY"] // had to put all encmode together cause otherwise this rule will cause problem to all rules
+    ensure
+    	  _split(c.transformation, "/", 0) in ["RSA"]
+    onfail
+        InvalidAlgorithmOfCipher
+}
+rule BCProvider_Cipher_2 {
+    using
+        Cipher as c
+    when
+        _has_value(c.key) && _is_instance(c.key, "javax.crypto.SecretKey") 
+    ensure
+    	_split(c.transformation, "/", 0) in ["AES", "RIJNDAEL", "ElGamal", "ECIESwithAES-CBC", "DHIESwithAES-CBC",
+									"Twofish", "Camellia", "Serpent", "Tnepres", "Shacal2", "Shacal-2", "McEliece", 
+									"McEliecePointcheval", "McElieceKobaraImai", "McElieceFujisaki"]
+    onfail
+        InvalidAlgorithmOfCipher
+}
+////cannot write nocallto
+//
+rule BCProvider_Cipher_Mode_3 {
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC", "GCM", "CTR", "CTS", "CFB", "OFB", "CCM"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_4 {
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RIJNDAEL"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC", "GCM", "CTR", "CTS", "CFB", "OFB", "CCM"]
+    onfail
+        InvalidModeOfCipher
+}
+
+rule BCProvider_Cipher_Mode_5 {
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["ElGamal"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["ECB"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_6 {
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Twofish"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_7{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Camellia"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_8{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Serpent"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC", "CFB", "OFB"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_9{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Tnepres"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC", "CFB", "OFB"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_10{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Shacal2"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Mode_11{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Shacal-2"]
+    ensure
+    	_split(c.transformation, "/", 1) in ["CBC"]
+    onfail
+        InvalidModeOfCipher
+}
+rule BCProvider_Cipher_Padding_12{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["ElGamal"] && _split(c.transformation, "/", 1) in ["ECB"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS1Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_13{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RSA"] && _split(c.transformation, "/", 1) in [""]
+    ensure
+    	_split(c.transformation, "/", 2) in [""]
+    onfail
+        InvalidPaddingOfCipher
+}
+
+rule BCProvider_Cipher_Padding_14{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RSA"] && _split(c.transformation, "/", 1) in ["ECB"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS1Padding","OAEPWithMD5AndMGF1Padding",
+													"OAEPWithSHA-224AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding",
+													"OAEPWithSHA-384AndMGF1Padding", "OAEPWithSHA-512AndMGF1Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_15{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RSA"] && _split(c.transformation, "/", 1) in ["ECB"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS1Padding","OAEPWithMD5AndMGF1Padding",
+													"OAEPWithSHA-224AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding",
+													"OAEPWithSHA-384AndMGF1Padding", "OAEPWithSHA-512AndMGF1Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_16{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_17{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["AES"] && _split(c.transformation, "/", 1) in ["GCM", "CTR", "CTS", "CFB", "OFB", "CCM"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["NoPadding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_18{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RIJNDAEL"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_19{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["RIJNDAEL"] && _split(c.transformation, "/", 1) in ["GCM", "CTR", "CTS", "CFB", "OFB", "CCM"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["NoPadding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_20{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Serpent"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_21{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Serpent"] && _split(c.transformation, "/", 1) in ["CFB", "OFB"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["NoPadding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_22{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Shacal-2"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_23{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Tnepres"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_24{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Tnepres"] && _split(c.transformation, "/", 1) in ["CFB", "OFB"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["NoPadding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_25{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Twofish"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_26{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Camellia"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_Padding_27{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) && _split(c.transformation, "/", 0) in ["Shacal2"] && _split(c.transformation, "/", 1) in ["CBC"]
+    ensure
+    	_split(c.transformation, "/", 2) in ["PKCS5Padding", "ISO10126Padding"]
+    onfail
+        InvalidPaddingOfCipher
+}
+
+rule BCProvider_Cipher_nocalltoiwoiv{
+    using
+        Cipher as c
+    when
+        _has_value(c.transformation) &&  _split(c.transformation, "/", 1) in ["CBC", "CTR", "CTS", "CFB", "OFB", "CCM"] && (encmode !=1 || c.encmode != "javax.crypto.ENCRYPT_MODE")
+    ensure
+    	order c.instantiate(),
+            c.initWIV()+,
+            c.AADUpdate()*,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+
+    onfail
+        InvalidPaddingOfCipher
+}
+rule BCProvider_Cipher_calltogetiv { //not_sure
+    using
+        Cipher as c
+    when
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "OFB"] && (encmode ==1 || c.encmode == "javax.crypto.ENCRYPT_MODE")
+    ensure
+    	order c.instantiate(),
+            (c.initWIV()* | c.initWOIV())+,
+            c.AADUpdate()*,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+,
+            c.getIV()
+    onfail
+        InvalidOrderforcalltogetiv_cipher
+}
+rule BCProvider_Cipher_nocalltoaadupdate {
+    using
+        Cipher as c
+    when
+    	_split(c.transformation, "/", 1) in ["CBC", "PCBC", "CTR", "CTS", "CFB", "ECB", "OFB"]
+    ensure
+    	order c.instantiate(),
+            (c.initWOIV() | c.initWIV())+,
+            c.keywrap()+ | (c.finialize() | (c.update()+, c.doFinals()|c.finilize()))+
+    onfail
+        InvalidOrderfornocalltoaadupdate_cipher
+}
+rule BCProvider_Cipher_encmode {
+    using
+        Cipher as c
+    when
+    	_has_value(c.encmode)
+    ensure
+    	c.encmode in [1,2,3,4] || c.encmode in ["javax.crypto.Cipher.ENCRYPT_MODE", "javax.crypto.Cipher.DECRYPT_MODE", "javax.crypto.Cipher.PRIVATE_KEY", "javax.crypto.Cipher.PUBLIC_KEY"]
+//    	should I also add the Strings or not?? i did anyway
+    onfail
+        InvalidEncmodeOfCipher
+}
+
+rule BCProvider_Cipher_preplainlength {
+    using
+        Cipher as c
+    when
+    	_has_value(c.prePlainText)
+    ensure
+    	_length(c.prePlainText) >= c.prePlainTextOffset  + c.prePlainTextLen
+
+    onfail
+        InvalidLenOfprePlainOfCipher
+}
+rule BCProvider_Cipher_precipherlength {
+    using
+        Cipher as c
+    when
+    	_has_value(c.preCipherText)
+    ensure
+    	_length(c.preCipherText) >= c.preCipherTextOffset
+
+    onfail
+        InvalidLenOfpreCipherOfCipher
+}
+rule BCProvider_Cipher_preplainoffset {
+    using
+        Cipher as c
+    when
+    	_has_value(c.prePlainTextOffset)
+    ensure
+    	c.prePlainTextOffset >= 0
+
+    onfail
+        InvalidLenOfprePlainOffOfCipher
+}
+rule BCProvider_Cipher_preplainolen {
+    using
+        Cipher as c
+    when
+    	_has_value(c.prePlainTextLen )
+    ensure
+    	c.prePlainTextLen >= 0
+
+    onfail
+        InvalidLenOfprePlainlenOfCipher
+}
+rule BCProvider_Cipher_precipheroffset {
+    using
+        Cipher as c
+    when
+    	_has_value(c.preCipherTextOffset)
+    ensure
+    	c.preCipherTextOffset >= 0
+
+    onfail
+        InvalidLenOfpreCipherOffOfCipher
+}
+rule BCProvider_Cipher_plaintext {
+    using
+        Cipher as c
+    when
+    	_has_value(c.plainText)
+    ensure
+    	_length(c.plainText) >=  c.plainTextOffset + c.plainTextLen
+
+    onfail
+        InvalidLenOfplainTextOfCipher
+}
+rule BCProvider_Cipher_ciphertext {
+    using
+        Cipher as c
+    when
+    	_has_value(c.cipherText)
+    ensure
+    	_length(c.cipherText) >=  c.cipherTextOffset
+
+    onfail
+        InvalidLenOfcipherTextOfCipher
+}
+rule BCProvider_Cipher_plaintextoff {
+    using
+        Cipher as c
+    when
+    	_has_value(c.plainTextOffset)
+    ensure
+    	c.plainTextOffset >= 0
+
+    onfail
+        InvalidLenOfplaintextoffOfCipher
+}
+rule BCProvider_Cipher_plaintextlen {
+    using
+        Cipher as c
+    when
+    	_has_value(c.plainTextLen)
+    ensure
+    	c.plainTextLen > 0
+
+    onfail
+        InvalidLenOfplaintextlenOfCipher
+}
+rule BCProvider_Cipher_ciphertextoff {
+    using
+        Cipher as c
+    when
+    	_has_value(c.cipherTextOffset )
+    ensure
+    	c.cipherTextOffset >= 0
+
+    onfail
+        InvalidLenOfciphertextlenOfCipher
+}
+
+//requires
+
+rule BCProvider_Cipher_generatedkey {
+    using
+        Cipher as c,
+        SecretKey as secKey,
+        SecretKeySpec as secKeySpec,
+        SecretKeyFactory as secKeyFac,
+        KeyGenerator as keyGen,
+        KeyStore as ks
+    when
+    	_has_value(c.key)
+    ensure
+        _is(c.key, secKey)  || _is(c.key, secKeySpec) 
+        || (_is(c.key, secKeyFac) && _is(_split(c.transformation, "/", 0), secKeyFac.algorithm)) || (_is(c.key, keyGen) && _is(_split(c.transformation, "/", 0), keyGen.algorithm))
+        || _is(c.key, ks)
+    onfail
+        Invalid_notGeneratedKey
+}
+rule BCProvider_Cipher_randomized {
+    using
+        Cipher as c,
+        SecureRandom as secRan
+    when 
+    	_has_value(c.random)
+    ensure
+        _is(c.random, secRan)
+    onfail
+        Invalid_randomnumberOfCipher
+}
+rule BCProvider_Cipher_preparedAlg {//notsure
+    using
+        Cipher as c,
+        AlgorithmParameterGenerator as apg,
+        AlgorithmParameters as ap
+    when 
+    	_has_value(c.params)
+    ensure
+    (_is(c.params, apg.algParams) && _is(_split(c.transformation, "/", 0), apg.algorithm)) ||
+    (_is(c.params, ap) && _is(_split(c.transformation, "/", 0), ap.algorithm))
+      
+    onfail
+        Invalid_AlgorithmParamCipher
+}
+rule BCProvider_Cipher_notmacced {//notsure
+    using
+        Cipher as c,
+        Mac as mac
+    when 
+    	_has_value(c.plaintText)
+    ensure
+        !(_is(c.plainText, mac.output2))
+    onfail
+        Invalid_maccedCipherInput
+}
+
+rule BCProvider_Cipher_preparediv {
+    using
+        Cipher as c,
+        IvParameterSpec as ivParamSpec
+    when 
+    	_split(c.transformation, "/", 1) in ["CBC", "CTR", "CTS", "CFB", "OFB"] && (c.encmode == 1 || c.encmode == "javax.crypto.ENCRYPT_MODE") 
+    ensure
+        _is(c.paramSpec, ivParamSpec)
+    onfail
+        Invalid_parameterSpec_notIvParams
+}
+rule BCProvider_Cipher_preparedGCM {
+    using
+        Cipher as c,
+        GCMParameterSpec as prepGCM
+    when 
+    	_has_value(c.paramSpec) && _split(c.transformation, "/", 1) in ["GCM"]
+    ensure
+        _is(c.paramSpec, prepGCM)
+    onfail
+        Invalid_parameterSpec_inGCMmode
+}
+rule BCProvider_Cipher_preparedOAEP {
+    using
+        Cipher as c,
+        OAEPParameterSpec as oaepps
+    when 
+    	_has_value(c.paramSpec) && _split(c.transformation, "/", 1) in ["OAEPWithMD5AndMGF1Padding", "OAEPWithSHA-224AndMGF1Padding", "OAEPWithSHA-256AndMGF1Padding",
+				"OAEPWithSHA-384AndMGF1Padding", "OAEPWithSHA-512AndMGF1Padding"]
+    ensure
+        _is(c.paramSpec, oaepps)
+    onfail
+        Invalid_parameterSpec_notOAEPParamspec
+}

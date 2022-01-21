@@ -1,0 +1,38 @@
+package java.bcjca
+
+entity MessageDigest {
+    
+    var algorithm;
+    var preInputByte;
+    var preInput;
+    var preOffset;
+    var preLen;
+    var preInputByteBuffer;
+    var input;
+    var offset;
+    var len;
+    var output;
+    
+    op instantiate {
+        java.security.MessageDigest.getInstance(algorithm : java.lang.String);
+        java.security.MessageDigest.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op update {
+    	java.security.MessageDigest.update(preInputByte: byte);
+    	java.security.MessageDigest.update(preInput: byte[]);
+        java.security.MessageDigest.update(preInput : byte[], preOffset: int, preLen: int);
+        java.security.MessageDigest.update(preInputByteBuffer : java.nio.ByteBuffer);
+    }
+    
+    op digestWU {
+        output = java.security.MessageDigest.digest();
+        java.security.MessageDigest.digest(output : byte[], offset: int, len: int);
+    }
+    op digestWOU{
+    	output = java.security.MessageDigest.digest(input : byte[]);
+    }
+}

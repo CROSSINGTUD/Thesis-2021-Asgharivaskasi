@@ -1,0 +1,25 @@
+package java.bcjca
+
+entity TrustAnchor {
+	
+	var publicKey;
+	var trustedCert;
+	var caPrincipal;
+	
+	op instantiate{
+		java.security.cert.TrustAnchor(
+			_, 
+			publicKey : java.security.PublicKey,
+			_
+		);
+		java.security.cert.TrustAnchor(
+			trustedCert: java.security.cert.X509Certificate,
+			_
+		);
+		java.security.cert.TrustAnchor(
+			caPrincipal: javax.security.auth.x500.X500Principal,
+			publicKey : java.security.PublicKey,
+			_
+		);
+	}
+}

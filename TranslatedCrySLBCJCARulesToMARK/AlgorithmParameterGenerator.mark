@@ -1,0 +1,42 @@
+package java.bcjca
+
+entity AlgorithmParameterGenerator {
+	
+	var algorithm;
+	var algParams;
+	var size;
+	var random;
+	var genParamSpec;
+	
+	
+	op instantiate {
+		java.security.AlgorithmParameterGenerator.getInstance(
+			algorithm : java.lang.String
+		);
+		java.security.AlgorithmParameterGenerator.getInstance(
+			algorithm : java.lang.String,
+			_
+		);
+	}
+	
+	op initialize {
+		java.security.AlgorithmParameterGenerator.init(
+			size : int
+		);
+		java.security.AlgorithmParameterGenerator.init(
+			size : int,
+			random : java.security.SecureRandom
+		);
+		java.security.AlgorithmParameterGenerator.init(
+			genParamSpec : java.security.spec.AlgorithmParameterSpec
+		);
+		java.security.AlgorithmParameterGenerator.init(
+			genParamSpec : java.security.spec.AlgorithmParameterSpec,
+			random : java.security.SecureRandom
+		);
+	}
+	
+	op generate {
+		algparams = java.security.AlgorithmParameterGenerator.generateParameters();
+	}//have more
+}

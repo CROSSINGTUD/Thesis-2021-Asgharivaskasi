@@ -1,0 +1,12 @@
+package java.bcjca
+
+entity HMACParameterSpec {
+	
+	var outputLen;
+	
+	op instantiate {
+		javax.xml.crypto.dsig.spec.HMACParameterSpec(
+			outputLen : int
+		);
+	}
+}

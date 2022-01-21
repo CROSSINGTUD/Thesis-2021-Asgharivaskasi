@@ -1,0 +1,62 @@
+package java.bcjca
+
+rule BCProvider_DSAGenParameterSpec_order{
+	using
+		DSAGenParameterSpec as dsagps
+	ensure
+		order
+			dsagps.instantiate()
+	onfail
+		InvalidOrderOfDSAGenParameterSpec
+}
+//constrains
+rule BCProvider_DSAGenParameterSpec_primeplen{
+	using
+		DSAGenParameterSpec as dsagps
+	when
+		_has_value(dsagps.primePLen)
+	ensure
+		dsagps.primePLen in [1024, 2048, 3072]
+	onfail
+		InvalidprimePLenOfDSAGenParameterSpec
+}
+rule BCProvider_DSAGenParameterSpec_subprimeqlen{
+	using
+		DSAGenParameterSpec as dsagps
+	when
+		_has_value(dsagps.subPrimeQLen )
+	ensure
+		dsagps.subPrimeQLen  in [160, 224, 256]
+	onfail
+		InvalidsubPrimeQLenOfDSAGenParameterSpec
+}
+rule BCProvider_DSAGenParameterSpec_primetosubprime1{
+	using
+		DSAGenParameterSpec as dsagps
+	when
+		_has_value(dsagps.primePLen) && dsagps.primePLen in [1024]
+	ensure
+		dsagps.subPrimeQLen  in [160]
+	onfail
+		InvalidprimetosubprimeOfDSAGenParameterSpec
+}
+rule BCProvider_DSAGenParameterSpec_primetosubprime2{
+	using
+		DSAGenParameterSpec as dsagps
+	when
+		_has_value(dsagps.primePLen) && dsagps.primePLen in [2048]
+	ensure
+		dsagps.subPrimeQLen  in [224, 256]
+	onfail
+		InvalidprimetosubprimeOfDSAGenParameterSpec
+}
+rule BCProvider_DSAGenParameterSpec_primetosubprime3{
+	using
+		DSAGenParameterSpec as dsagps
+	when
+		_has_value(dsagps.primePLen) && dsagps.primePLen in [3072]
+	ensure
+		dsagps.subPrimeQLen  in [256]
+	onfail
+		InvalidprimetosubprimeOfDSAGenParameterSpec
+}

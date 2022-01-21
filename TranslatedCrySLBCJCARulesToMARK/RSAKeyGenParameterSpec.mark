@@ -1,0 +1,14 @@
+package java.bcjca
+
+entity RSAKeyGenParameterSpec {
+	
+	var keysize;
+	var publicExponent;
+	
+	op instantiate {
+		java.security.spec.RSAKeyGenParameterSpec(
+			keysize : int,
+			publicExponent : java.math.BigInteger
+		);
+	}
+}

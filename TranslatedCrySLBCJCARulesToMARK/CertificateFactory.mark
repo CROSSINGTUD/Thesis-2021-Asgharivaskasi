@@ -1,0 +1,37 @@
+package java.bcjca
+
+entity CertificateFactory {
+	
+	var inStream;
+	var encoding;
+	var type;
+	
+	op instantiate {
+		java.security.cert.CertificateFactory.getInstance(
+			type : java.lang.String
+		);
+		java.security.cert.CertificateFactory.getInstance(
+			type : java.lang.String,
+			_
+		);
+		
+	}
+	op generateCertificate {
+		java.security.cert.CertificateFactory.generateCertificate(
+			inStream : java.io.InputStream);	
+	}
+	op generateCertPath {
+		java.security.cert.CertificateFactory.generateCertPath(
+			inStream : java.io.InputStream
+		);
+		java.security.cert.CertificateFactory.generateCertPath(
+			inStream : java.io.InputStream,
+			encoding : java.lang.String
+		);
+	}
+	op generateCRL {
+		certificate = java.security.cert.CertificateFactory.generateCRL(
+			inStream : java.io.InputStream
+		);
+	}
+}

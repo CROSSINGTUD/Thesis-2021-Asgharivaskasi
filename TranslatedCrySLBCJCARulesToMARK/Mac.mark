@@ -1,0 +1,52 @@
+package java.bcjca
+
+entity Mac {
+    
+    var mac;
+    var key;
+    var inputByte;
+    var preInput;
+    var input;
+    var output1;
+    var output2;
+    var preInputByteBuffer;
+    var algorithm;
+    var params;
+    var offset;
+    var outOffset;
+    var len;
+   
+    
+    op instantiate {
+        javax.crypto.Mac.getInstance(
+            algorithm : java.lang.String
+        );
+        javax.crypto.Mac.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op initialize {
+        javax.crypto.Mac.init(key : java.security.Key);
+        javax.crypto.Mac.init(
+            key : java.security.Key,
+            params : java.security.spec.AlgorithmParameterSpec
+        );
+    }
+    
+    op update {
+        javax.crypto.Mac.update(inputByte : byte);
+        javax.crypto.Mac.update(preInput : byte[]);
+        javax.crypto.Mac.update(preInput : byte[], offset: int, len: int);
+    }
+    
+    op finalizeWU {
+        output1 = javax.crypto.Mac.doFinal();
+        javax.crypto.Mac.doFinal(output1 : byte[], outOffset: int);
+    }
+    op finalize{
+    	output2 = javax.crypto.Mac.doFinal(input : byte[]);
+    }
+    
+}

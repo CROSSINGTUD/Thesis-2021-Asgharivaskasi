@@ -1,0 +1,49 @@
+package java.bcjca
+
+rule BCProvider_PBEKeySpec_order{
+	using
+		PBEKeySpec as pbeks
+	ensure
+		order
+			pbeks.instantiate(),
+			pbeks.clear()
+	onfail
+		InvalidOrderOfPBEKeySpec
+}
+//constrains
+rule BCProvider_PBEKeySpec_iterationcount{
+	using
+		PBEKeySpec as pbeks
+	when 
+		_has_value(pbeks.iterationCount)
+	ensure
+		pbeks.iterationCount >= 10000
+	onfail
+		InvaliditerationCountOfPBEKeySpec
+}
+rule BCProvider_PBEKeySpec_passtype{
+	using
+		PBEKeySpec as pbeks
+	when 
+		_has_value(pbeks.password)
+	ensure
+		!(_is_instance(pbeks.password, "java.lang.String"))
+	onfail
+		PasswordShouldNotBeStringOfPBEKeySpec
+}
+//nothardcoded
+//requires
+//returns violated and verified at the same time!!
+// check how it behaves with sr.bytes added
+//behaves the same whyyyyyyyyyyy??
+rule BCProvider_PBEKeySpec_randomized{
+	using
+		PBEKeySpec as pbeks,
+		SecureRandom as sr
+	when
+		_has_value(pbeks.salt)
+	ensure
+		_is(pbeks.salt, sr.genSeed) || _is(pbeks.salt, sr.bytes)
+	onfail
+		NotRandomSaltPBEKeySpec
+}

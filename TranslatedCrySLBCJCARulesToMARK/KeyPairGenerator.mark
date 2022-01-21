@@ -1,0 +1,41 @@
+package java.bcjca
+
+entity KeyPairGenerator {
+    
+    var algorithm;
+    var keyPair;
+    var params;
+    var keysize;
+    
+    op instantiate {
+        java.security.KeyPairGenerator.getInstance(
+            algorithm : java.lang.String
+        );
+        java.security.KeyPairGenerator.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op initialize {
+        java.security.KeyPairGenerator.initialize(
+            keysize : int
+        );
+        java.security.KeyPairGenerator.initialize(
+            keysize : int,
+            _
+        );
+        java.security.KeyPairGenerator.initialize(
+            params : java.security.spec.AlgorithmParameterSpec
+        );
+        java.security.KeyPairGenerator.initialize(
+            params : java.security.spec.AlgorithmParameterSpec,
+            _
+        );
+    }
+    
+    op generate {
+        keyPair = java.security.KeyPairGenerator.generateKeyPair();
+        keyPair = java.security.KeyPairGenerator.genKeyPair();
+    }
+}

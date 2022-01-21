@@ -1,0 +1,37 @@
+package java.bcjca
+
+entity KeyGenerator {
+    
+    var keySize;
+    var params;
+    var key;
+    var algorithm;
+    var random;
+    
+    
+    op instantiate {
+        javax.crypto.KeyGenerator.getInstance(algorithm : java.lang.String);
+        javax.crypto.KeyGenerator.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op init {
+        javax.crypto.KeyGenerator.init(keysize : int);
+        javax.crypto.KeyGenerator.init(
+            keysize : int,
+            random : java.security.SecureRandom
+        );
+        javax.crypto.KeyGenerator.init(random : java.security.SecureRandom);
+        javax.crypto.KeyGenerator.init(params : java.security.spec.AlgorithmParameterSpecs);
+        javax.crypto.KeyGenerator.init(
+            params : java.security.spec.AlgorithmParameterSpec,
+            random : java.security.SecureRandom
+        );
+    }
+    
+    op generate {
+        key = javax.crypto.KeyGenerator.generateKey();
+    }
+}

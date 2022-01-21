@@ -1,0 +1,31 @@
+package java.bcjca
+
+rule BCProvider_DSAParameterSpec_order{
+	using
+		DSAParameterSpec as dsaps
+	ensure
+		order
+			dsaps.initialize()
+	onfail
+		InvalidOrderOfDSAParameterSpec
+}
+rule BCProvider_DSAParameterSpec_pparameter{
+	using
+		DSAParameterSpec as dsaps
+	when
+	 	_has_value(dsaps.p)
+	ensure
+		dsaps.p >=1^2048
+	onfail
+		InvalidPParameterOfDSAParameterSpec
+}
+rule BCProvider_DSAParameterSpec_gparameter{
+	using
+		DSAParameterSpec as dsaps
+	when
+	 	_has_value(dsaps.g)
+	ensure
+		dsaps.g >=1^2048
+	onfail
+		InvalidGParameterOfDSAParameterSpec
+}

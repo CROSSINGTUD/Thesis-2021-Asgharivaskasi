@@ -1,0 +1,32 @@
+package java.bcjca
+
+rule BCProvider_DHParameterSpec_order{
+	using
+		DHParameterSpec as dhps
+	ensure
+		order
+			dhps.instantiate()
+	onfail
+		InvalidOrderOfDHParameterSpec
+}
+//constraints
+rule BCProvider_DHParameterSpec_pparameter{
+	using
+		DHParameterSpec as dhps
+	when
+		_has_value(dhpc.p)
+	ensure
+		dhpc.p >= 1^2048
+	onfail
+		InvalidPParameterOfDHParameterSpec
+}
+rule BCProvider_DHParameterSpec_gparameter{
+	using
+		DHParameterSpec as dhps
+	when
+		_has_value(dhpc.g)
+	ensure
+		dhpc.g >= 1^2048
+	onfail
+		InvalidGParameterOfDHParameterSpec
+}

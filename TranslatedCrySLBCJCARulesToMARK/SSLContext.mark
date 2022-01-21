@@ -1,0 +1,32 @@
+package java.bcjca
+
+entity SSLContext {
+	
+	var protocol;
+	var km;
+	var tm;
+	var eng;
+	var random;
+	
+	op instantiate {
+		javax.net.ssl.SSLContext.getInstance(
+			protocol: java.lang.String
+		);
+		javax.net.ssl.SSLContext.getInstance(
+			protocol: java.lang.String,
+			_
+		);
+		forbidden javax.net.ssl.SSLContext.getDefault();
+	}
+	op initialize{
+		javax.net.ssl.SSLContext.init(
+			km: javax.net.ssl.KeyManager[],
+			tm: javax.net.ssl.TrustManager[],
+			random: java.security.SecureRandom
+		);
+	}
+	op create{
+		eng = javax.net.ssl.SSLContext.createSSLEngine();
+		eng = javax.net.ssl.SSLContext.createSSLEngine(_,_);
+	}
+}

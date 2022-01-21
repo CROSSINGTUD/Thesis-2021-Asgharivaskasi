@@ -1,0 +1,27 @@
+package java.bcjca
+
+entity TrustManagerFactory {
+	
+	var algorithm;
+	var keyStore;
+	var params;
+	var trustManager;
+	
+	op instantiate{
+		javax.net.ssl.TrustManagerFactory.getInstance(
+			algorithm : java.lang.String
+		);
+		javax.net.ssl.TrustManagerFactory.getInstance(
+			algorithm : java.lang.String,
+			_
+		);
+	}
+	
+	op initialize{
+		javax.net.ssl.TrustManagerFactory.init(keyStore: java.security.KeyStore);
+		javax.net.ssl.TrustManagerFactory.init(params: javax.net.ssl.ManagerFactoryParameters);
+	}
+	op getTrustManagers{
+		trustManager = javax.net.ssl.TrustManagerFactory.getTrustManagers();
+	}
+}

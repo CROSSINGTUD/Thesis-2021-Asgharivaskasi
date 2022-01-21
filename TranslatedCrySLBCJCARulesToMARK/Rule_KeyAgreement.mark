@@ -1,0 +1,37 @@
+package java.bcjca
+
+rule BCProvider_KeyAgreement_order{
+	using
+		KeyAgreement as ka
+	ensure
+		order
+			ka.instantiate(),
+			ka.initialize(),
+			ka.doPhase(),
+			ka.generate()
+	onfail
+		InvalidOrderOfKeyAgreement
+}
+//constraints
+rule BCProvider_KeyAgreement_algorithm{
+	using
+		KeyAgreement as ka
+	when 
+		_has_value(ka.algorithm)
+	ensure
+		ka.algorithm in ["DH", "DiffieHellman", "NH" ,"ECDH", "ECDHC"]
+	onfail
+		InvalidAlgorithmOfKeyAgreement
+}
+//requires
+rule BCProvider_KeyAgreement_randomized{
+	using
+		KeyAgreement as ka,
+		SecureRandom as sr
+	when
+		_has_value(ka.random)
+	ensure
+		_is(ka.random, sr)
+	onfail
+		NotRandomRandomOfKeyAgreement
+}

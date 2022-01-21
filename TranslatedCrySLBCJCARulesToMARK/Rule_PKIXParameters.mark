@@ -1,0 +1,14 @@
+package java.bcjca
+
+//requires
+rule BCProvider_PKIXParameters_generatedkeystore{
+	using
+		PKIXParameters as pkixp,
+		KeyStore as ks
+	when 
+		_has_value(pkixp.keyStore)
+	ensure
+		_is(pkixp.keyStore, ks)
+	onfail
+		InvalidKeyStoreOfPKIXParameters
+}
