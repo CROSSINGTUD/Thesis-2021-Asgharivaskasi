@@ -1,0 +1,20 @@
+SPEC org.bouncycastle.jce.provider.BouncyCastleProvider
+
+OBJECTS
+*
+
+EVENTS
+	p1: BouncyCastleProvider();
+	Con := p1;
+
+ORDER
+	Con?
+
+//CONSTRAINTS
+//*
+
+//REQUIRES
+//*
+
+ENSURES
+	BCProvider[this];

@@ -1,0 +1,19 @@
+SPEC java.security.spec.DSAPublicKeySpec
+OBJECTS
+	java.math.BigInteger y;
+	java.math.BigInteger p;
+	java.math.BigInteger q;
+	java.math.BigInteger g;
+
+EVENTS
+	d : DSAPublicKeySpec(y, p, q, g);
+	DSAPubKey := d;
+	
+ORDER
+	DSAPubKey?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

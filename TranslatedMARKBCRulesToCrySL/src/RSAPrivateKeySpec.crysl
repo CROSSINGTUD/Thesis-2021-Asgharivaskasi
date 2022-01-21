@@ -1,0 +1,20 @@
+SPEC java.security.spec.RSAPrivateKeySpec
+OBJECTS
+	java.math.BigInteger modulus;
+	java.math.BigInteger privateExponent;
+	java.security.spec.AlgorithmParameterSpec params;
+	
+EVENTS
+
+	r1 : RSAPrivateKeySpec(modulus, privateExponent);
+	r2 : RSAPrivateKeySpec(modulus, privateExponent, params);
+	rSAPRIVKS := r1| r2;
+	
+ORDER
+	rSAPRIVKS?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

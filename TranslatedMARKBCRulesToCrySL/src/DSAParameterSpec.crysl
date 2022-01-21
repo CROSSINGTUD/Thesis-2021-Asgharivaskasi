@@ -1,0 +1,19 @@
+SPEC java.security.spec.DSAParameterSpec
+OBJECTS
+	java.math.BigInteger p;
+	java.math.BigInteger q;
+	java.math.BigInteger g;
+
+EVENTS	
+	d : DSAParameterSpec(p, q, g);
+	ParamS := d;
+	
+ORDER
+	ParamS?
+
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

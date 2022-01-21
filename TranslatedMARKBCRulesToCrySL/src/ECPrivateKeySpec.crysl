@@ -1,0 +1,17 @@
+SPEC java.security.spec.ECPrivateKeySpec
+OBJECTS
+	java.math.BigInteger s;
+	java.security.spec.ECParameterSpec params;
+
+EVENTS
+	e : ECPrivateKeySpec(s, params);
+	ECPrivKey := e ;
+	
+ORDER
+	ECPrivKey?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

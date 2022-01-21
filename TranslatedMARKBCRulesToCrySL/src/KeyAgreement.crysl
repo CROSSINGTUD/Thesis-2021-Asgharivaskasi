@@ -1,0 +1,45 @@
+SPEC javax.crypto.KeyAgreement
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.Key key;
+	java.security.SecureRandom random;
+	java.security.spec.AlgorithmParameterSpec params;
+	boolean lastPhase;
+	byte[] sharedSecret;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+	//ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	i1 : init(key);
+	i2 : init(key, random);
+	i3 : init(key, params);
+	i4 : init(key, params, random);
+	Inits := i1| i2| i3| i4;
+
+	d : doPhase(key, lastPhase);
+	Do := d;
+	
+	g1 : generateSecret();
+	g2 : generateSecret(sharedSecret, _);
+	g3 : generateSecret(algorithm);
+	GenerateSecrets := g1| g2| g3;
+
+
+ORDER
+	Instances?, Inits?, Do?, GenerateSecrets?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

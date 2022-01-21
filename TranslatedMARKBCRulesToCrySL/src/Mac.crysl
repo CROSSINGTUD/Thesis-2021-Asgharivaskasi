@@ -1,0 +1,59 @@
+SPEC javax.crypto.Mac
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.Key key;
+	java.security.spec.AlgorithmParameterSpec params;
+	byte input;
+	byte[] inputL;
+	java.nio.ByteBuffer inputB;
+	byte[] output;
+	byte[] inputF;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	i1 : init(key);
+	i2 : init(key, params);
+	Inits := i1| i2;
+
+	u1 : update(input);
+	u2 : update(inputL);
+	u3 : update(inputB);
+	u4 : update(inputL, _, _);
+	Updates := u1| u2| u3| u4;
+	
+	d1 : output = doFinal();
+	d2 : output = doFinal(inputF);
+	d3 : doFinal(output, _);
+	DoFinals := d1| d2| d3;
+
+	r : reset();
+	Res := r;
+
+ORDER
+	Instances?, Inits?, Updates?, DoFinals?, Res?
+
+CONSTRAINTS
+	providerS in {"BC"} || instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+	algorithm in { "AESCMAC", // CMACs
+            "HMACSHA256", "HMACSHA512/256", "HMACSHA384", "HMACSHA512", "HMACSHA3-256", "HMACSHA3-384", "HMACSHA3-512", // HMACs
+            "AES-GMAC" // GMACs
+            };
+    
+
+REQUIRES
+	algorithm in {"AESCMAC"} => generatedKey[key] || secretKeyFactory[key];
+	algorithm in {"HMACSHA256", "HMACSHA512/256", "HMACSHA384", "HMACSHA512", "HMACSHA3-256", "HMACSHA3-384", "HMACSHA3-512"} => generatedKey[key] || generatedKey[key, algorithm] || secretKeyFactory[key];
+	algorithm in {"HMACSHA256", "HMACSHA512/256", "HMACSHA384", "HMACSHA512", "HMACSHA3-256", "HMACSHA3-384", "HMACSHA3-512"} => hmacParamSpec[params];
+	algorithm in {"AES-GMAC"} => generatedKey[key] || secretKeyFactory[key];
+	
+ENSURES
+	macced[inputB];

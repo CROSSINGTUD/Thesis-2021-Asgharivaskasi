@@ -1,0 +1,37 @@
+SPEC java.security.KeyFactory
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.spec.KeySpec keySpec;
+	java.security.PrivateKey priKey;
+	java.security.PublicKey pubKey;
+	java.security.Key inKey;
+	java.security.Key outKey;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+	i1 : getInstance(algorithm, provider);
+	i2 : getInstance(algorithm, providerS);
+//	i3 : getInstance(algorithm);
+	Instances := i1| i2;
+	
+	gPriv : generatePrivate(keySpec);
+	gPub : generatePublic(keySpec);
+	Gen := gPriv | gPub;
+	
+	t : outKey = translateKey(inKey);
+	Trans := t;
+	
+ORDER
+	Instances?, Gen?, Trans?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

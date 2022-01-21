@@ -1,0 +1,30 @@
+SPEC java.security.cert.CertPathBuilder
+OBJECTS
+
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.cert.CertPathParameters params;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS	
+//	i1 : getInstance(algorithm);
+	i2 : getInstance(algorithm, provider);
+	i3 : getInstance(algorithm, providerS);
+	Instances := i2| i3;
+	
+	b1 : build(params);
+	Build := b1;
+
+ORDER
+	Instances?, Build?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

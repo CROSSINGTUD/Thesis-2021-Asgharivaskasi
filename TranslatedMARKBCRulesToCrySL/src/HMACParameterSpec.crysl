@@ -1,0 +1,18 @@
+SPEC javax.xml.crypto.dsig.spec.HMACParameterSpec
+OBJECTS
+	int outputLength;
+
+EVENTS	
+	h : HMACParameterSpec(outputLength);
+	HMAC := h;
+	
+ORDER
+	HMAC?
+
+CONSTRAINTS	
+	outputLength >= 96;
+
+//REQUIRES//*
+
+ENSURES
+	hmacParamSpec[this];

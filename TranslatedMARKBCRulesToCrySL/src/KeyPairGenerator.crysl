@@ -1,0 +1,41 @@
+SPEC java.security.KeyPairGenerator
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	int keySize;
+	java.security.SecureRandom random;
+	java.security.spec.AlgorithmParameterSpec params;
+
+	java.security.KeyPair keyPair;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	i1 : initialize(keySize);
+	i2 : initialize(keySize, random);
+	i3 : initialize(params);
+	i4 : initialize(params, random);
+	Initializes := i1| i2| i3| i4;
+	
+	gen1 : keyPair = generateKeyPair();
+	gen2 : keyPair = genKeyPair();
+	Gen := gen1| gen2;
+	
+ORDER
+	Instances?, Initializes?, Gen?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES
+//*
+
+//ENSURES//*

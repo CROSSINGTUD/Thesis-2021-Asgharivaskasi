@@ -1,0 +1,110 @@
+SPEC javax.crypto.Cipher
+OBJECTS
+	java.lang.String transform;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	int opmode;
+	java.security.cert.Certificate certificate;
+	java.security.SecureRandom random;
+	java.security.Key key;
+	java.security.Key keyW;
+	java.security.Key keyUnWrap;
+	java.security.AlgorithmParameters params;
+	java.security.spec.AlgorithmParameterSpec paramSpec;
+	javax.crypto.spec.IvParameterSpec paramSpecIv;
+	byte[] inputU1;
+	java.nio.ByteBuffer inputU2;
+	byte[] outputU1;
+	java.nio.ByteBuffer outputU2;
+	byte[] inputF1;
+	java.nio.ByteBuffer inputF2;
+	byte[] outputF1;
+	java.nio.ByteBuffer outputF2;
+	byte[] wrappedkey;
+	java.lang.String wrappedkeyalgorithm;
+	int wrappedkeytype;
+	byte[] src1;
+	java.nio.ByteBuffer src2;
+
+//FORBIDDEN
+//	getInstance(transform) => Instances;
+	
+EVENTS
+//	ins1 : getInstance(transform);
+	ins2 : getInstance(transform, provider);
+	ins3 : getInstance(transform, providerS);
+	Instances:= ins2 | ins3;
+//	Instances := instanceP| ins1;
+	
+	i1 : init(opmode, certificate);
+	i2 : init(opmode, certificate, random);
+	i3 : init(opmode , key);
+	i4 : init(opmode , key, params);
+	i5 : init(opmode , key, params, random);
+	i6 : init(opmode , key, random);
+	i7 : init(opmode , key, paramSpec);
+	i8 : init(opmode , key, paramSpecIv);
+	i9 : init(opmode , key, paramSpec, random);
+	i10 : init(opmode , key, paramSpecIv, random);
+	Inits := i1| i2| i3| i4| i5| i6| i7| i8| i9| i10;
+	
+	aAD1 : updateAAD(src1);
+	aAD2 : updateAAD(src2);
+	aAD3 : updateAAD(src1,_,_);
+	UpdateAADs := aAD1| aAD2| aAD3;
+	
+	u1 : outputU1 = update(inputU1);
+	u2 : outputU1 = update(inputU1, _,_);
+	u3 : update(inputU1, _,_, outputU1);
+	u4 : update(inputU1, _,_, outputU1);
+	u5 : update(inputU2, outputU2);
+	Updates := u1| u2| u3| u4| u5;
+	
+	d1 : outputF1 = doFinal();
+	d2 : outputF1 = doFinal(inputF1);
+	d3 : doFinal(outputF1, _);
+	d4 : outputF1 = doFinal(inputF1, _, _);
+	d5 : doFinal(inputF1, _, _, outputF1);
+	d6 : doFinal(inputF1, _, _, outputF1, _);
+	d7 : doFinal(inputF2, outputF2);
+	DoFinals := d1| d2| d3| d4| d5| d6| d7;
+
+
+	w1 : wrappedkey = wrap(keyW);
+	w2 : keyUnWrap = unwrap(wrappedkey, wrappedkeyalgorithm, wrappedkeytype);
+	keyWrap := w1| w2;
+	
+ORDER
+	Instances, Inits, UpdateAADs*, Updates*, DoFinals, keyWrap?
+
+CONSTRAINTS
+//	callTo[instanceP];
+	alg(transform) in {"AES", "RSA"};
+	alg(transform) in {"AES"} => mode(transform) in {"CCM", "GCM", "CBC", "CTR"};
+	alg(transform) in {"AES"} && mode(transform) in {"CBC"} => pad(transform) in {"ISO7816-4Padding", "PKCS5Padding", "PKCS7Padding"};
+	alg(transform) in {"RSA"} 
+//	&& opmode in {1,2}
+	=> pad(transform) in {
+//	"OAEPWITHSHA1ANDMGF1PADDING", "OAEPWITHSHA-1ANDMGF1PADDING" 
+                // "OAEPWITHSHA224ANDMGF1PADDING", "OAEPWITHSHA-224ANDMGF1PADDING
+	"OAEPWITHSHA256ANDMGF1PADDING", "OAEPWITHSHA-256ANDMGF1PADDING",
+                "OAEPWITHSHA384ANDMGF1PADDING", "OAEPWITHSHA-384ANDMGF1PADDING",
+                "OAEPWITHSHA512ANDMGF1PADDING", "OAEPWITHSHA-512ANDMGF1PADDING"
+                // "OAEPWITHSHA3-256ANDMGF1PADDING,
+                // "OAEPWITHSHA3-384ANDMGF1PADDING",
+                // "OAEPWITHSHA3-512ANDMGF1PADDING" 
+                };
+    mode(transform) in {"CBC", "CTR"} && opmode in {1,2} => noCallTo[UpdateAADs] && noCallTo[keyWrap];
+    mode(transform) in {"CCM", "GCM"} && opmode in {1,2} => noCallTo[keyWrap];
+    providerS in {"BC"};
+    instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+    
+REQUIRES
+	alg(transform) in {"AES"} && mode(transform) in {"CCM"} => GCMParameter[paramSpec]; //this require in GCM >=64 which is not.
+	alg(transform) in {"AES"} && mode(transform) in {"GCM"} => GCMParameter[paramSpec];
+	alg(transform) in {"AES"} && mode(transform) in {"CBC"} => ivparams[paramSpec];
+	alg(transform) in {"AES"} && mode(transform) in {"CTR"} => macced[outputU2];
+	alg(transform) in {"AES"} && mode(transform) in {"CTR"} => macced[outputF2];
+
+//ENSURES//*

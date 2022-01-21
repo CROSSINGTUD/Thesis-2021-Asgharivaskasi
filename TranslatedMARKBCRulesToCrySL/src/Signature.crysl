@@ -1,0 +1,68 @@
+SPEC java.security.Signature
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.PrivateKey privateKey;
+	java.security.SecureRandom random;
+	java.security.cert.Certificate certificate;	
+	java.security.PublicKey publicKey;
+	byte b;
+	java.nio.ByteBuffer dataBuf;
+	byte[] data;
+	int off;
+	byte[] outBuf;
+	int offsetS;
+	int len;
+	
+	byte[] signature;
+	int offsetV;
+	int leng;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	i1 : initSign(privateKey);
+	i2 : initSign(privateKey, random);
+	InitSigns := i1| i2;
+
+	ver1 : initVerify(certificate);
+	ver2 : initVerify(publicKey);
+	InitVerifys := ver1| ver2;
+
+	u1 : update(b);
+	u2 : update(data);
+	u3 : update(data, off, len);
+	u4 : update(dataBuf);
+	Updates := u1| u2| u3| u4;
+	
+	s1 : sign();
+	s2 : sign(outBuf, offsetS, len);
+	Signs := s1| s2;
+
+	v1 : verify(signature);
+	v2 : verify(signature, offsetV, leng);
+	Verifys := v1| v2;
+
+ORDER
+	Instances?, InitSigns?, InitVerifys?, Updates?, Signs?, Verifys?
+
+CONSTRAINTS
+	algorithm in { "SHA256WITHRSAANDMGF1", "SHA512(256)WITHRSAANDMGF1", "SHA384WITHRSAANDMGF1", "SHA512WITHRSAANDMGF1", "SHA3-256WITHRSAANDMGF1", "SHA3-384WITHRSAANDMGF1", "SHA3-512WITHRSAANDMGF1", // RSA, EMSA-PSS
+            "SHA256WITHRSA/ISO9796-2", "SHA512(256)WITHRSA/ISO9796-2", "SHA384WITHRSA/ISO9796-2", "SHA512WITHRSA/ISO9796-2", // RSA, Digital Signature Scheme (DS) 2 und 3
+            "SHA256WITHDSA", "SHA384WITHDSA", "SHA512WITHDSA", "SHA3-256WITHDSA", "SHA3-384WITHDSA", "SHA3-512WITHDSA", // DSA
+            "SHA256WITHECDSA", "SHA384WITHECDSA", "SHA512WITHECDSA", "SHA3-256WITHECDSA", "SHA3-384WITHECDSA", "SHA3-512WITHECDSA" // ECDSA
+        };
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES
+//*
+
+//ENSURES//*

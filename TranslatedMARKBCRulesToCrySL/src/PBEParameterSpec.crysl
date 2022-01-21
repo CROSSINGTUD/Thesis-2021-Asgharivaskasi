@@ -1,0 +1,20 @@
+SPEC javax.crypto.spec.PBEParameterSpec
+OBJECTS
+	int iterationCount;
+	byte[] salt;
+	java.security.spec.AlgorithmParameterSpec paramSpec;
+
+EVENTS
+	
+	pBE1 : PBEParameterSpec(salt, iterationCount);
+	pBE2 : PBEParameterSpec(salt, iterationCount, paramSpec);
+	pBEs := pBE1| pBE2;
+
+ORDER
+	pBEs?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

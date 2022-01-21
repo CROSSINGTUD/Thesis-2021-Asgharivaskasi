@@ -1,0 +1,20 @@
+SPEC java.security.spec.RSAPublicKeySpec
+OBJECTS
+	java.math.BigInteger modulus;
+	java.math.BigInteger publicExponent;
+	java.security.spec.AlgorithmParameterSpec params;
+
+EVENTS
+	
+	r1 : RSAPublicKeySpec(modulus, publicExponent);
+	r2 : RSAPublicKeySpec(modulus, publicExponent, params);
+	rSAPubKS := r1| r2;
+	
+ORDER
+	rSAPubKS?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

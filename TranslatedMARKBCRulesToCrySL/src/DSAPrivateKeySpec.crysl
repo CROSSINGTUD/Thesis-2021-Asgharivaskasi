@@ -1,0 +1,19 @@
+SPEC java.security.spec.DSAPrivateKeySpec
+OBJECTS
+	java.math.BigInteger x;
+	java.math.BigInteger p;
+	java.math.BigInteger q;
+	java.math.BigInteger g;
+
+EVENTS	
+	d : DSAPrivateKeySpec(x, p, q, g);
+	DSAPrivKey := d;
+	
+ORDER
+	DSAPrivKey?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,36 @@
+SPEC java.security.cert.CertStore
+OBJECTS
+	java.lang.String type;
+	java.security.cert.CertStoreParameters params;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.cert.CertSelector certSelector;
+	java.security.cert.CRLSelector CRLSelector;
+	java.util.List<> certificates;
+	java.util.List<> crls;
+	
+//FORBIDDEN
+//	getInstance(type) => Instances;
+
+EVENTS
+//	i1 : getInstance(type, params);
+	i2 : getInstance(type , params, provider);
+	i3 : getInstance(type , params, providerS);
+	Instances := i2| i3;
+	
+	cer1 : certificates  = getCertificates(certSelector);
+	Cer := cer1;
+	
+	cRLRLsLs : crls = getCRLs(CRLSelector);
+	CRL := cRLRLsLs;
+	
+ORDER
+	Instances?, Cer?, CRL?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

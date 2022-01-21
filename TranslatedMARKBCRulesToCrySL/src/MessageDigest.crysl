@@ -1,0 +1,50 @@
+SPEC java.security.MessageDigest
+OBJECTS
+	
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	byte input;
+	byte[] inputArr;
+	java.nio.ByteBuffer inputBuff;
+	byte[] digest;
+	byte[] inputDigest;
+	byte[] outputDigest;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	u1 : update(input);
+	u2 : update(inputBuff);
+	u3 : update(inputArr);
+	u4 : update(inputArr, _, _);
+	Updates := u1| u2| u3| u4;
+	
+	d1 : outputDigest = digest();
+	d2 : outputDigest = digest(inputDigest);
+	d3 : digest(digest, _, _);
+	Digests := d1| d2| d3;
+
+	r : reset();
+	Res := r;
+	
+ORDER
+	Instances?, Updates?, Digests?, Res?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	algorithm in { "SHA-256", "SHA-512/256", "SHA-384", "SHA-512", // SHA-2
+            "SHA3-256", "SHA3-384", "SHA3-512" // SHA-3
+            };
+    instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES
+//*
+
+//ENSURES//*

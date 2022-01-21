@@ -1,0 +1,17 @@
+SPEC java.security.spec.MGF1ParameterSpec
+OBJECTS
+	java.lang.String mdName;
+
+EVENTS
+	
+	m : MGF1ParameterSpec(mdName);
+	MGF := m;
+	
+ORDER
+	MGF?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

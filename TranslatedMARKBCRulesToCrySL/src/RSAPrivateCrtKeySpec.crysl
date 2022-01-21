@@ -1,0 +1,26 @@
+SPEC java.security.spec.RSAPrivateCrtKeySpec
+OBJECTS
+	java.math.BigInteger modulus;
+	java.math.BigInteger publicExponent;
+	java.math.BigInteger privateExponent;
+	java.math.BigInteger primeP;
+	java.math.BigInteger primeQ;
+	java.math.BigInteger primeExponentP;
+	java.math.BigInteger primeExponentQ;
+	java.math.BigInteger crtCoefficient;
+	java.security.spec.AlgorithmParameterSpec keyParams;
+
+EVENTS
+	
+	r1 : RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
+	r2 : RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient, keyParams);
+	rSAPRIVKS := r1| r2; 
+	
+ORDER
+	rSAPRIVKS?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

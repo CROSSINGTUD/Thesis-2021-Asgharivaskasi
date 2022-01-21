@@ -1,0 +1,21 @@
+SPEC java.security.spec.RSAKeyGenParameterSpec
+OBJECTS
+	int keySize;
+	java.math.BigInteger publicExponent;
+	java.security.spec.AlgorithmParameterSpec keyParams;
+
+EVENTS
+	
+	r1 : RSAKeyGenParameterSpec(keySize , publicExponent);
+	r2 : RSAKeyGenParameterSpec(keySize , publicExponent, keyParams);
+	rKGPS := r1| r2; 
+	
+ORDER
+	rKGPS?
+
+CONSTRAINTS
+	keySize >= 2000;
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,15 @@
+SPEC java.security.spec.ECGenParameterSpec
+OBJECTS
+	java.lang.String stdName;
+
+EVENTS	
+	e : ECGenParameterSpec(stdName);
+	ECGen := e;
+ORDER
+	ECGen?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,17 @@
+SPEC java.security.spec.X509EncodedKeySpec
+OBJECTS
+	byte[] encodedKey;
+	java.lang.String algorithm;
+
+EVENTS
+	x1 : X509EncodedKeySpec(encodedKey);
+	x2 : X509EncodedKeySpec(encodedKey, algorithm);
+	X509 := x1| x2;
+	
+ORDER
+	X509?
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

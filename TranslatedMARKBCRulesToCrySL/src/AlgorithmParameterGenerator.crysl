@@ -1,0 +1,38 @@
+SPEC java.security.AlgorithmParameterGenerator
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	int size;
+	java.security.SecureRandom random;
+	java.security.spec.AlgorithmParameterSpec params;
+	java.security.spec.AlgorithmParameterSpec genParamSpec;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+	
+EVENTS
+//	ins1 : getInstance(algorithm);
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+	Instances := ins2| ins3;
+	
+	i1 : init(size);
+	i2 : init(size, random);
+	i3 : init(genParamSpec);
+	i4 : init(genParamSpec, random);
+	Inits := i1| i2| i3| i4;
+
+	g : params = generateParameters();
+	GenP := g;
+	
+ORDER
+	Instances?, Inits?, GenP?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

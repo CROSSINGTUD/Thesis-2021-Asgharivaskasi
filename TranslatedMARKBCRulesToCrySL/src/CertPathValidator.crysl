@@ -1,0 +1,31 @@
+SPEC java.security.cert.CertPathValidator
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.security.cert.CertPath certPath;
+	java.security.cert.CertPathParameters params;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	i1 : getInstance(algorithm);
+	i2 : getInstance(algorithm, provider);
+	i3 : getInstance(algorithm, providerS);
+	Instances := i2| i3;
+	
+	v1 : validate(certPath , params);
+	Val := v1;
+	
+ORDER
+	Instances?, Val?
+
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

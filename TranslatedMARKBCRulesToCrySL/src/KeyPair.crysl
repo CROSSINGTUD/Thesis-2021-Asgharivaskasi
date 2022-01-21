@@ -1,0 +1,17 @@
+SPEC java.security.KeyPair
+OBJECTS
+	java.security.PrivateKey privateKey;
+	java.security.PublicKey publicKey;
+
+EVENTS
+	k : KeyPair(publicKey, privateKey);
+	KP := k;
+	
+ORDER
+	KP?
+	
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

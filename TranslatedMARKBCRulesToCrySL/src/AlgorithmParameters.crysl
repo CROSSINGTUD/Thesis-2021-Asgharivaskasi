@@ -1,0 +1,34 @@
+SPEC java.security.AlgorithmParameters
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	byte[] params;
+	java.lang.String format;
+	java.security.spec.AlgorithmParameterSpec paramSpec;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+//	ins1 : 
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm ,providerS);
+	Instances := ins2| ins3;
+	
+	i1 : init(params);
+	i2 : init(params, format);
+	i3 : init(paramSpec);
+	Inits := i1| i2| i3;	
+	
+	
+ORDER
+	Instances?, Inits?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

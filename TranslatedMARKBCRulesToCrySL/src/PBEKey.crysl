@@ -1,0 +1,15 @@
+SPEC javax.crypto.interfaces.PBEKey
+OBJECTS
+*
+
+EVENTS
+*
+	
+ORDER
+*
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

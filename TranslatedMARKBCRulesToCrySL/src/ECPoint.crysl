@@ -1,0 +1,18 @@
+SPEC java.security.spec.ECPoint
+OBJECTS
+	java.math.BigInteger x;
+	java.math.BigInteger y;
+
+EVENTS
+	eCP : ECPoint(x, y);
+	ECP := eCP;
+
+ORDER
+	ECP?
+
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

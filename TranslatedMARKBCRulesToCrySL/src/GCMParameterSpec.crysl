@@ -1,0 +1,25 @@
+SPEC javax.crypto.spec.GCMParameterSpec
+OBJECTS
+	int tLen;
+	byte[] src;
+	int offset;
+	int len;
+
+EVENTS
+	g1 : GCMParameterSpec(tLen, src);
+	g2 : GCMParameterSpec(tLen, src, offset, len);
+	gs := g1| g2;
+	
+
+ORDER
+	gs?
+
+CONSTRAINTS
+	tLen >= 96; // for cipher if the algorithm is AES then it must be >= 64
+	length[src] == 12 || length[len] == 12; //also coming from cipher rule for alg AES and mode GCM
+	
+
+//REQUIRES//*
+
+ENSURES
+	GCMParameter[this];

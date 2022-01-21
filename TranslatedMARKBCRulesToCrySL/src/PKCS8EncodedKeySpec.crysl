@@ -1,0 +1,19 @@
+SPEC java.security.spec.PKCS8EncodedKeySpec
+OBJECTS
+	java.lang.String algorithm;
+	byte[] encodedKey;
+
+EVENTS
+	
+	p1 : PKCS8EncodedKeySpec(encodedKey);
+	p2 : PKCS8EncodedKeySpec(encodedKey, algorithm);
+	pKS := p1| p2;
+	
+ORDER
+	pKS?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

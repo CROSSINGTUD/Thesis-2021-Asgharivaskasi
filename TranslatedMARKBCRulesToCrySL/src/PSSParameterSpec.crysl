@@ -1,0 +1,23 @@
+SPEC java.security.spec.PSSParameterSpec
+OBJECTS
+	int saltLen;
+	java.lang.String mdName;
+	java.lang.String mgfName;
+	java.security.spec.AlgorithmParameterSpec mgfSpec;
+	int trailerField;
+
+EVENTS
+	
+	p1 : PSSParameterSpec(saltLen);
+	p2 : PSSParameterSpec(mdName, mgfName, mgfSpec, saltLen, trailerField);
+	ps := p1| p2;
+
+ORDER
+	ps?
+
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,22 @@
+SPEC javax.crypto.spec.PBEKeySpec
+OBJECTS
+	byte[] password;
+	byte[] salt;
+	int iterationCount;
+	int keyLength;
+
+EVENTS
+	
+	pBE1 : PBEKeySpec(password, salt, iterationCount);
+	pBE2 : PBEKeySpec(password, salt, iterationCount, keyLength);
+	pBE3 : PBEKeySpec(password);
+	pBEs := pBE1| pBE2| pBE3;
+
+ORDER
+	pBEs?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

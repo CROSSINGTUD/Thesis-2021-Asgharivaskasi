@@ -1,0 +1,21 @@
+SPEC java.security.spec.DSAGenParameterSpec
+OBJECTS
+	int primePLen;
+	int subprimeQLen;
+	int seedLen;
+
+EVENTS
+	
+	d1 : DSAGenParameterSpec(primePLen, subprimeQLen);
+	d2 : DSAGenParameterSpec(primePLen, subprimeQLen, seedLen);
+	ds := d1| d2;
+
+ORDER
+	ds?
+
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

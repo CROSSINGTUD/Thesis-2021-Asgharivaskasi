@@ -1,0 +1,19 @@
+SPEC java.security.spec.EncodedKeySpec
+OBJECTS
+	java.lang.String algorithm;
+	byte[] encodedKey;
+
+EVENTS
+	
+	enc1 : EncodedKeySpec(encodedKey);
+	enc2 : EncodedKeySpec(encodedKey, algorithm);
+	EncKeySpec := enc1| enc2;
+	
+ORDER
+	EncKeySpec?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

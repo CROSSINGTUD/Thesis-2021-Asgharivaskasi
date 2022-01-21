@@ -1,0 +1,18 @@
+SPEC javax.crypto.spec.DHGenParameterSpec
+OBJECTS
+	int primeSize;
+	int exponentSize;
+
+EVENTS
+	
+	d : DHGenParameterSpec(primeSize, exponentSize);
+	Gen := d;
+	
+ORDER
+	Gen?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,60 @@
+SPEC java.security.SecureRandom
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+//	java.security.SecureRandomParameters params;
+	byte[] genSeed;
+	byte[] seed;
+	long seedL;
+	int numBytes;
+	int next;
+	byte[] randomBytes;
+
+FORBIDDEN
+	SecureRandom() ;
+//	SecureRandom(seed);
+//	getInstance(algorithm) => Instances;
+//	getInstance(algorithm, params) => Instances;
+	
+
+EVENTS
+
+	ins2 : getInstance(algorithm, provider);
+	ins3 : getInstance(algorithm, providerS);
+//	ins5 : getInstance(algorithm, params, provider);
+//	ins6 : getInstance(algorithm, params, providerS);
+//	ins7: getInstanceStrong();
+	Instances := ins2| ins3;
+	
+	see1 : setSeed(seed);
+	see2 : setSeed(seedL);
+	SetSeeds := see1| see2;
+	
+//	reS1 : reseed();
+//	reS2 : reseed(params); 
+//	ReSeed := reS1| reS2;
+	
+	genS : genSeed = generateSeed(numBytes);
+	GenS := genS;
+	
+
+	gen1 : next(next);
+	gen2 : nextBytes(randomBytes);
+//	gen3 : nextBytes(randomBytes, params);
+	Gen := gen1|gen2;
+
+ORDER
+	Instances?, SetSeeds?, GenS?, Gen?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES
+//*
+
+ENSURES
+	randomized[randomBytes];
+	randomized[genSeed];
+	randomized[next];

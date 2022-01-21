@@ -1,0 +1,45 @@
+SPEC java.security.cert.CertificateFactory
+OBJECTS
+	java.lang.String type;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	java.io.InputStream inStream;
+	java.security.cert.Certificate certificate;
+	java.lang.String encoding;
+	java.util.List<> certificates;
+//	extends java.security.cert.Certificate
+	java.security.cert.CertPath certPath;
+	
+//FORBIDDEN
+//	getInstance(type) => Instances;
+
+EVENTS
+//	i1 : getInstance(type);
+	i2 : getInstance(type, provider);
+	i3 : getInstance(type, providerS);
+	Instances := i2| i3;
+	
+	g1 : certificate = generateCertificate(inStream);
+	g2 : certificates = generateCertificates(inStream);
+	GenCertificate := g1| g2;
+	
+	gp1 : certPath = generateCertPath(inStream);
+	gp2 : certificates = generateCertPath(inStream, encoding);
+	gp3 : certificates = generateCertPath(certificates);
+	GenerateCertPaths := gp1| gp2| gp3;
+	
+	cRL1 : certificate = generateCRL(inStream);
+	cRL2 : certificates = generateCRL(inStream);
+	GenCRL := cRL1 | cRL2;
+	
+	
+ORDER
+	Instances?, GenCertificate?, GenerateCertPaths?, GenCRL?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+
+//REQUIRES//*
+
+//ENSURES//*

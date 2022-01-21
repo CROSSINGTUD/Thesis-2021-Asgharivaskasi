@@ -1,0 +1,16 @@
+SPEC java.security.PublicKey
+
+OBJECTS
+*
+
+EVENTS
+*
+	
+ORDER
+*
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

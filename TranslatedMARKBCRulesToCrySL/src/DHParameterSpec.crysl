@@ -1,0 +1,21 @@
+SPEC javax.crypto.spec.DHParameterSpec
+OBJECTS
+	java.math.BigInteger p;
+	java.math.BigInteger g;
+	int l;
+
+EVENTS
+
+	
+	d1 : DHParameterSpec(p, g);
+	d2 : DHParameterSpec(p, g, l);
+	ds := d1| d2;
+
+ORDER
+	ds?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

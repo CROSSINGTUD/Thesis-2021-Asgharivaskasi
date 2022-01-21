@@ -1,0 +1,44 @@
+SPEC javax.crypto.KeyGenerator
+OBJECTS
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	int keySize;
+	java.security.SecureRandom random;
+	java.security.spec.AlgorithmParameterSpec params;
+	javax.crypto.SecretKey key;
+
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS
+	ins1 : getInstance(algorithm, provider);
+	ins2 : getInstance(algorithm, providerS);
+//	ins3 : getInstance(algorithm);
+	Instances := ins1| ins2;
+	
+	i1 : init(keySize);
+	i2 : init(keySize, random);
+	i3 : init(random);
+	i4 : init(params);
+	i5 : init(params, random);
+	Inits := i1| i2| i3| i4| i5;
+
+	g : key = generateKey();
+	GenK := g;
+	
+ORDER
+	Instances?, Inits?, GenK?
+
+CONSTRAINTS
+	providerS in {"BC"};
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+	keySize >= 128;
+	
+
+//REQUIRES
+//*
+
+ENSURES
+	generatedKey[key];
+	generatedKey[key, algorithm];

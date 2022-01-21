@@ -1,0 +1,22 @@
+SPEC javax.crypto.spec.IvParameterSpec
+OBJECTS
+	byte[] iv;
+	int offset;
+	int len;
+
+EVENTS
+	
+	ivPParSpe1 : IvParameterSpec(iv);
+	ivPParSpe2 : IvParameterSpec(iv, offset, len);
+	ivPParSpes := ivPParSpe1| ivPParSpe2;
+
+ORDER
+	ivPParSpes?
+
+//CONSTRAINTS//*
+
+REQUIRES
+	randomized[iv];
+
+ENSURES
+	ivparams[this];

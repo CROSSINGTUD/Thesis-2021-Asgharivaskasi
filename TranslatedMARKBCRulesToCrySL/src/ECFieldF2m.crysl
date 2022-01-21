@@ -1,0 +1,21 @@
+SPEC java.security.spec.ECFieldF2m
+OBJECTS
+	int m;
+    int[] ks;
+    java.math.BigInteger rp;
+
+EVENTS
+	
+	eCFM1 : ECFieldF2m(m);
+	eCFM2 : ECFieldF2m(m, ks);
+	eCFM3 : ECFieldF2m(m, rp);
+	ECF := eCFM1 | eCFM2 | eCFM3;
+	
+ORDER
+	ECF?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*

@@ -1,0 +1,17 @@
+SPEC java.security.spec.ECPublicKeySpec
+OBJECTS
+	java.security.spec.ECPoint w;
+	java.security.spec.ECParameterSpec params;
+
+EVENTS	
+	e : ECPublicKeySpec(w, params);
+	ECPubKey := e;
+	
+ORDER
+	ECPubKey?
+
+//CONSTRAINTS//*
+
+//REQUIRES//*
+
+//ENSURES//*
