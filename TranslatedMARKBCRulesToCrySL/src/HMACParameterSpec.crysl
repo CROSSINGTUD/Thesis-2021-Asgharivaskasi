@@ -10,7 +10,7 @@ ORDER
 	HMAC?
 
 CONSTRAINTS	
-	outputLength >= 96;
+*
 
 //REQUIRES//*
 
