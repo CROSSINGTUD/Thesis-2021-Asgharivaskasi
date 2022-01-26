@@ -75,29 +75,20 @@ EVENTS
 	keyWrap := w1| w2;
 	
 ORDER
-	Instances, Inits, UpdateAADs*, Updates*, DoFinals, keyWrap?
+	Instances?, Inits?, UpdateAADs*, Updates*, DoFinals?, keyWrap?
 
 CONSTRAINTS
 //	callTo[instanceP];
 	alg(transform) in {"AES", "RSA"};
 	alg(transform) in {"AES"} => mode(transform) in {"CCM", "GCM", "CBC", "CTR"};
 	alg(transform) in {"AES"} && mode(transform) in {"CBC"} => pad(transform) in {"ISO7816-4Padding", "PKCS5Padding", "PKCS7Padding"};
-	alg(transform) in {"RSA"} 
-//	&& opmode in {1,2}
-	=> pad(transform) in {
-//	"OAEPWITHSHA1ANDMGF1PADDING", "OAEPWITHSHA-1ANDMGF1PADDING" 
-                // "OAEPWITHSHA224ANDMGF1PADDING", "OAEPWITHSHA-224ANDMGF1PADDING
-	"OAEPWITHSHA256ANDMGF1PADDING", "OAEPWITHSHA-256ANDMGF1PADDING",
+	alg(transform) in {"RSA"} => pad(transform) in {"OAEPWITHSHA256ANDMGF1PADDING", "OAEPWITHSHA-256ANDMGF1PADDING",
                 "OAEPWITHSHA384ANDMGF1PADDING", "OAEPWITHSHA-384ANDMGF1PADDING",
-                "OAEPWITHSHA512ANDMGF1PADDING", "OAEPWITHSHA-512ANDMGF1PADDING"
-                // "OAEPWITHSHA3-256ANDMGF1PADDING,
-                // "OAEPWITHSHA3-384ANDMGF1PADDING",
-                // "OAEPWITHSHA3-512ANDMGF1PADDING" 
-                };
-    mode(transform) in {"CBC", "CTR"} && opmode in {1,2} => noCallTo[UpdateAADs] && noCallTo[keyWrap];
-    mode(transform) in {"CCM", "GCM"} && opmode in {1,2} => noCallTo[keyWrap];
-    providerS in {"BC"};
-    instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
+                "OAEPWITHSHA512ANDMGF1PADDING", "OAEPWITHSHA-512ANDMGF1PADDING"};
+    	mode(transform) in {"CBC", "CTR"} && opmode in {1,2} => callTo[Instances] && callTo[Inits] && callTo[Updates] && callTo[DoFinals];
+    	mode(transform) in {"CCM", "GCM"} && opmode in {1,2} => callTo[Instances] && callTo[Inits] && callTo[UpdateAADs] && callTo[Updates] && callTo[DoFinals];
+    	providerS in {"BC"};
+    	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];
 
     
 REQUIRES
