@@ -6,3 +6,4 @@ There are three sets of translated rules that include:
 2. Translation of CrySL ruleset for the Bouncy Castle JCA API till commit [443cca5](https://github.com/CROSSINGTUD/Crypto-API-Rules/tree/master/BouncyCastle-JCA) to MARK.
 3. Translation of MARK ruleset for the Bouncy Castle API till commit [8c74a13](https://github.com/Fraunhofer-AISEC/codyze/tree/main/src/dist/mark/bouncycastle) to Crysl.
 
+There is also a pdf of BSI TR-02102-1 guideline version 2019-01 that the original MARK rules are written based on it.
