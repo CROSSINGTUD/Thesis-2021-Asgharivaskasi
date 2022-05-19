@@ -1,0 +1,145 @@
+There are \MARK{} rules for 60 classes Bouncy Castle JCA API on Github\footnote{https://github.com/Fraunhofer-AISEC/codyze/tree/main/src/dist/mark}. However, we could only translate 57 of them cause three classes require Java 9 or higher versions, which are javax.crypto.spec.ChaCha20ParameterSpec, java.security.spec.XECPrivateKeySpec and java.\-security.SecureRandomParameters. Our first step was to translate \MARK{} entities to \crysl, then we added the written \MARK{} rules from rule files to the \crysl{} rules. In \MARK, interfaces, such as PrivateKey and PublicKey, should also be added, as a rule; otherwise, they are not recognized by \MARK. The same is not true in \crysl, but we translated them too as a matter of fairness.
+
+The vars (Lines \ref{line:varsbeg} to \ref{line:varsend}) and ops (Lines \ref{line:opsbeg} to \ref{line:opsbeg}) of KeyGenerator entity \MARK{} file in Listing \ref{lst:orgkeygenmarken} translate to OBJECTS and EVENTS in \crysl. Listing \ref{lst:transkeygencrysl} shows the KeyGenerator \crysl{} rule that is translated from the \MARK{} rule. OBJECTS and EVENTS are shown on Lines \ref{line:OBJECTS} and \ref{line:EVENTS} respectively.
+\pagebreak
+\begin{lstlisting}[language= CrySL,caption= {Translated KeyGenerator \MARK{} rule\protect\footnotemark~to \crysl{} from Bouncy Castle JCA API.}, label={lst:transkeygencrysl}, escapechar=@]
+SPEC javax.crypto.KeyGenerator
+OBJECTS @\label{line:OBJECTS}@
+	java.lang.String algorithm;
+	java.security.Provider provider;
+	java.lang.String providerS;
+	int keySize;
+	java.security.SecureRandom random;
+	java.security.spec.AlgorithmParameterSpec params;
+	javax.crypto.SecretKey key;
+	
+//FORBIDDEN
+//	getInstance(algorithm) => Instances;
+
+EVENTS @\label{line:EVENTS}@
+	ins1 : getInstance(algorithm, provider);
+	ins2 : getInstance(algorithm, providerS);
+	//ins3 : getInstance(algorithm);@\label{line:noprovider}@
+	Instances := ins1| ins2;@\label{line:agg}@
+	
+	i1 : init(keySize);
+	i2 : init(keySize, random);
+	i3 : init(random);
+	i4 : init(params);
+	i5 : init(params, random);
+	Inits := i1| i2| i3| i4| i5;
+
+	g : key = generateKey();
+	GenK := g;
+	
+ORDER
+	Instances?, Inits?, GenK? @\label{line:order}@
+
+CONSTRAINTS
+	providerS in {"BC"};@\label{line:BC}@
+	instanceOf[provider, org.bouncycastle.jce.provider.BouncyCastleProvider];@\label{line:provider}@
+	keySize >= 128; @\label{line:keysize}@
+
+//REQUIRES
+//*
+
+ENSURES
+	generatedKey[key];
+	generatedKey[key, algorithm];
+\end{lstlisting}
+\footnotetext{\url{https://github.com/Fraunhofer-AISEC/codyze}}
+
+There is no single file containing all the \MARK{} rules that are related to a single class in the Github. Among all the \MARK{} rule files for Bouncy Castle JCA API, there were four rules containing the KeyGenerator class (Listing \ref{lst:keygenmarkrules})
+
+\begin{lstlisting}[language=MARK2,caption= {\MARK{} rules for KeyGenerator of Bouncy Castle JCA API.}, label={lst:keygenmarkrules}, escapechar=@]
+rule BouncyCastleProvider_KeyGenerator { @\label{line:rule1}@
+    using
+        KeyGenerator as kg
+    ensure 
+        _has_value(kg.provider)
+        && (
+            kg.provider == "BC"
+            || _is_instance(kg.provider, "org.bouncycastle.jce.provider.BouncyCastleProvider")
+        )
+    onfail
+        InvalidProvider_KeyGenerator
+}
+rule ID_5_3_02_GMAC {@\label{line:rule2}@
+    using
+        Mac as m,
+        KeyGenerator as kg,
+        SecretKeySpec as sks,
+        SecretKeyFactory as kf
+    when
+        m.algorithm in ["AES-GMAC"] && ( _is(m.key, kg.key)
+        || ( _is(m.key, kf.outkey) && _is(kf.keyspec, sks) ) )
+    ensure
+        // find a keygenerator of sufficient size
+        kg.keysize >= 128
+        || (_has_value(sks.len) && sks.len >= 128)
+        || (!(_has_value(sks.len)) && _has_value(sks.key) && _length(sks.key) >= 16)
+    onfail
+        InsufficientGMACKeyLength
+}
+rule ID_5_3_02_CMAC_Keygen {@\label{line:rule3}@
+    using
+        Mac as m,
+        KeyGenerator as kg
+    when
+        m.algorithm in ["AESCMAC"]
+        && _is(m.key, kg.key)
+    ensure
+        // find a keygenerator of sufficient size
+        _is(m.key, kg.key)
+        && kg.keysize >= 128
+    onfail
+        InsufficientCMACKeyLength
+}
+
+rule ID_5_3_02_HMAC_Keygen {@\label{line:rule4}@
+    using
+        Mac as m,
+        KeyGenerator as kg
+    when
+        m.algorithm in ["HMACSHA256", "HMACSHA512/256", "HMACSHA384",@\label{line:algos}@ "HMACSHA512", "HMACSHA3-256", "HMACSHA3-384", "HMACSHA3-512"]
+        && _is(m.key, kg.key)
+    ensure
+        // find a keygenerator of sufficient size
+        (
+            _is(m.key, kg.key)
+            && kg.keysize >= 128 @\label{line:keysizemark}@
+        )
+        || (
+             _is(m.key, kg.key)
+             && kg.algorithm == m.algorithm
+        )
+    onfail
+        InsufficientHMACKeyLength
+        }
+\end{lstlisting}
+
+
+In order to avoid complexity, we will only explain the parts of the rule relevant to KeyGenerator, although the explanations apply to other parts, as well.
+
+According to the first rule (Line \ref{line:rule1}), when using the KeyGenerator class, the \code{getInstance} method must pass the \code{provider} parameter, which should either be the string "BC" or of type org.bouncycastle.jce.provider.BouncyCastleProvider. Lines \ref{line:BC} and \ref{line:provider} of Listing \ref{lst:transkeygencrysl} present the translation of this rule, in which we define constraints on the variables, \code{providerS} and \code{provider}. Because the existence of a provider is required, we removed \code{getInstance} method patterns in the EVENTS section that did not include a provider as a parameter (Line \ref{line:noprovider}) and created an aggregation of the rest (Line \ref{line:agg}). Moreover, the first rule suggests that this pattern of \code{getInstance} method (Line \ref{line:noprovider}) should not be used, which implies that the usage of this pattern is forbidden. We therefore added this method pattern to the FORBIDDEN section, but an error occurred as there is an issue with the \crysl{} grammar that currently allows us only to add constructor calls to the FORBIDDEN section. As a result, we commented the FORBIDDEN section.
+Unlike \crysl, a variable may have multiple types in \MARK, which is why the variable \code{provider} in \MARK{} is divided into two variables in \crysl, \code{provider} of type java.security.Provider, and \code{providerS} of type java.lang.String.
+
+The second rule (Line \ref{line:rule2}) states that whenever a Mac object is used with the AES-GMAC algorithm and a key generated by the KeyGenerator, the \code{keySize} must be greater than or equal to 128. In \crysl{} we are not able to write such clauses with those premises; in other words, we cannot add constraints to a rule's OBJECTS from another rule.
+The solution would be to make a constraint on that variable, \code{keySize}, in the CONSTRAINTS section of the KeyGenerator \crysl{} rule (Line \ref{line:keysize}). This solution is logical since BSI (Bundesamt Für Sicherheit in der Informatikstechnik) has demonstrated that a \code{keySize} less than 128 bits is considered insecure \cite{BSI}.
+
+As indicated by the third rule (Line \ref{line:rule3}), if the Mac object is used with the AESCMAC algorithm and a key generated by KeyGenerator, \code{keySize} must be at least 128 bits. Translation of this rule is the same as for the second rule we previously translated.
+
+If a Mac object uses the algorithms specified in the Line \ref{line:algos} of the fourth rule (Line \ref{line:rule4}), and the key was generated by KeyGenerator, then either the \code{keySize} should be greater than or equal to 128 or the algorithm used in Mac and KeyGenerator are the same. We have already implemented the first part in the second and third rules. However, for the second part of the rule, we added a predicate to the ENSURES section of the KeyGenerator rule that guarantees a key with a specific algorithm, and we used this predicate in the REQUIRES section of the Mac rule.
+
+The \crysl{} language was designed to define a usage pattern for each rule in the ORDER section, even if the class only contains a constructor call. A rule will not function without a usage pattern. Therefore, we have included the order in a regular expression that includes all the aggregates from the EVENTS section in such a way that there is no correct order established (Line \ref{line:order}), except for the rules for which we had a defined order in the \MARK{} version. Thus, the translation of \MARK{} rules into \crysl{} may not be syntactically identical; however, they convey the same semantic information.
+
+
+\subsubsection*{Discussion}
+The \MARK{} compiler does not support some of the features that the documentation \cite{cod} describes. The language lacks case-sensitivity and auto-completion, and it does not recognize non-defined variables but provides syntax checking. In \MARK{} we have to write an entity file for every interface or class that we intend to use, even if there is only a package and entity name. For example, PrivateKey or PublicKey interfaces. The \MARK{} grammar can detect if a class used in a rule is not defined in the folder in which all \MARK{} rules are stored.
+
+As mentioned previously, a variable of one class cannot be constrained by a rule of another class in \crysl. As a result, we had to add the constraint in the CONSTRAINTS section without considering the precondition, so the rule for \crysl{} was not exactly the same as the \MARK{} rule. For instance, the translation of the \MARK{} rule on Line \ref{line:keysizemark} of Listing \ref{lst:keygenmarkrules} is the Line \ref{line:keysize} in the \crysl{} rule in Listing \ref{lst:transkeygencrysl}. In some cases, there were different constraints for the same variables under different preconditions. For example, the constraint for the \code{tLen} (the authentication tag length) variable of the GCMParameterSpec (gcm) class are \code{gcm.tLen >= 64} and \code{gcm.tLen >= 96} in 2 different rules with different preconditions. Our solution was to add the conjunction (\code{gcm.tLen >= 96}).
+
+\MARK{} and \crysl{} do not have fully equivalent built-in functions. The built-in functions \code{\_is\_instance}, and \code{\_length} in \MARK{} have the same functionality as \code{instanceOf}, and \code{length} in \crysl, respectively.
+There are \MARK{} built-in functions that are not used in the current \MARK{} rules but are defined in the \codyze{} Github repository \cite{codyzegit}, namely: \code{\_direct\_eog\_connection}, \code{\_eog\_connection}, \code{\_inside\_same\_function}, \code{\_get\_code}, \code{\_now}, \code{\_receives\_value\_from}, \code{\_split\_disjoint}, \code{\_split\_match\_unordered}, \code{\_starts\_with}, \code{\_year} \cite{codyzegit}.
+
+

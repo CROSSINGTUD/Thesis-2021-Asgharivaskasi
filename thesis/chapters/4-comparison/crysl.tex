@@ -1,0 +1,94 @@
+\subsection{\crysl{}}
+\label{subsec:crysl}
+\crysl{} is a domain-specific language (DSL) that allows cryptography experts to describe secure usage of their crypto APIs in a lightweight special-purpose syntax \cite{skm19}. The \crySL compiler is built upon Xtext \cite{xtext}, an open-source framework for developing domain-specific languages. Based on the \crysl{} grammar, Xtext provides parsing, type checking, and syntax highlighting capabilities. A \crysl{} rule is a simple text file and can be written in any text editor. Eclipse can be used to create \crysl{} rules with syntax correction by installing the \crysl{} editor. 
+
+Currently, \crysl{} rules have been developed by crypto experts of \cognicrypt{} developers for JCA, Bouncy Castle \cite{bc}, a Java library that extends Java Cryptographic Extension (JCE)\footnote{JCE is an API that provides a framework that allows Java developers to implement security features \cite{jce}.}, Bouncy Castle JCA \cite{bc}, Bouncy Castle provider for the JCA, and Tink \cite{tk}, an open-source easy to use and secure cryptographic library made by Google to reduce API misuses \cite{apirules}.
+
+A \crysl{} rule is written for each class and consists of 6 mandatory and 3 optional parts. We introduce the semantics of \crysl{} rules by using the \crysl{} rule for javax.crypto.KeyGenerator in Listing \ref{lst:orgkeygencrysl} as an example. We further use part of the \crysl{} rule for javax.crypto.spec.PBEKeySpec (Listing \ref{lst:orgpbecryslRule}) to elaborate some infrequently used terms.
+\pagebreak
+\begin{lstlisting}[language=crysl,caption= {KeyGenerator \crysl{} rule from JCA API \cite{apirules}}., label={lst:orgkeygencrysl}, escapechar=^]
+SPEC javax.crypto.KeyGenerator ^\label{line:spec}^
+
+OBJECTS
+	int keysize; ^\label{line:objects1}^
+	java.security.spec.AlgorithmParameterSpec params;
+	javax.crypto.SecretKey key;
+	java.lang.String algorithm;
+	java.security.SecureRandom random;^\label{line:objects2}^
+
+EVENTS
+	g1: getInstance(algorithm);^\label{line:g1}^
+	g2: getInstance(algorithm, _); ^\label{line:g2}^
+	Get := g1 | g2; ^\label{line:get}^
+
+	i1: init(keysize); ^\label{line:i1}^
+	i2: init(keysize, random);
+	i3: init(params);
+	i4: init(params, random);
+	i5: init(random); ^\label{line:i2}^
+	Init := i1 | i2 | i3 | i4 | i5;
+    
+	gk1: key = generateKey(); ^\label{line:gk1}^
+	GenKey := gk1; ^\label{line:genkey}^
+
+ORDER
+	Get, Init?, GenKey ^\label{line:ordercrysl}^
+
+CONSTRAINTS
+	algorithm in {"AES", "HmacSHA256", "HmacSHA384", "HmacSHA512"};^\label{line:const1}^
+	algorithm in {"AES"} => keysize in {128, 192, 256};^\label{line:const2}^
+   
+REQUIRES
+	randomized[random]; ^\label{line:requirerandom}^
+    
+ENSURES 
+	generatedKey[key, algorithm]; ^\label{line:generatedkey}^
+\end{lstlisting}
+
+
+\subsubsection{Mandatory sections}
+On the first line (\ref{line:spec}), there is SPEC that indicates the class name. The OBJECTS (Line \ref{line:objects1} to \ref{line:objects1}) are parameters or return values of methods in the EVENTS section. All methods that may contribute to the successful use of an object of the \crysl{} rule are described in the EVENTS section. Each method pattern is represented by a label in the EVENTS section (e.g., \code{Get} in Line \ref{line:get}). When different patterns of the same method are possible, only one of them based on the implementation will be chosen in the ORDER section. For example, in Listing \ref{lst:orgkeygencrysl} Lines \ref{line:g1} and \ref{line:g2} show two patterns of \code{getInstance} method: \code{g1} with only one parameter, and \code{g2} with two parameters. \crysl{} uses aggregates to represent the disjunction of labels (e.g., \code{Get} in line \ref{line:get}).
+
+The ORDER section defines a usage pattern in the form of regular expression for methods in the EVENTS section. An example would be the \code{getInstance} call (Line~\ref{line:ordercrysl}) followed by the \code{init} call (which is optional), followed by a call to the \code{generateKey} method in Listing \ref{lst:orgkeygencrysl}.
+
+The CONSTRAINTS show constraints for objects. For instance, Line~\ref{line:const1} maintains that \code{algorithm} must be one of the following: AES, HmacSHA256, HmacSHA384, HmacSHA512. The Line \ref{line:const2} indicates that if the \code{algorithm} is AES, then the \code{keySize} must be one of 128, 192, or 256.
+ 
+Assuming that the object is used appropriately, meaning that all limitations in the CONSTRAINTS section and usage patterns in the ORDER section are considered, the ENSURES section defines what a class predicates. Line \ref{line:generatedkey} of the keyGenerator \crysl rule demonstrates that using this class properly ensures the generation of a \code{key} with a specific \code{algorithm}.
+  
+\crysl{} allows us to define a method-event pattern using the \emph{after} keyword (Line~\ref{line:enskey}). For example, in Line~\ref{line:enskey} of Listing \ref{lst:orgpbecryslRule}, \code{speccedKey} predicate is created if the appropriate method is called. Thus, the PBEKeySpec class ensures the generation of a key after a call to the appropriate constructor with a specified \code{keyLength}.
+
+ 
+
+\begin{lstlisting}[language= CrySL,caption= Part of \crysl{} rule for javax.crypto.spec.PBEKeySpec from JCA ruleset \cite{apirules}., label={lst:orgpbecryslRule}, escapechar=|]
+SPEC javax.crypto.spec.PBEKeySpec
+
+OBJECTS
+    ...
+FORBIDDEN
+	PBEKeySpec(char[]) => Con; |\label{line:forbidden1}|
+	PBEKeySpec(char[],byte[],int) => Con; |\label{line:forbidden2}|
+	
+EVENTS
+	Con: PBEKeySpec(password, salt, iterationCount, keyLength); |\label{line:eventcon}|
+	
+	ClearPass: clearPassword();|\label{line:clearpass}|
+...
+CONSTRAINTS
+	iterationCount >= 10000;
+	neverTypeOf[password, java.lang.String]; |\label{line:nevertyp}|
+	notHardCoded[password]; |\label{line:nothardcod}|
+...
+ENSURES
+	speccedKey[this, keyLength] after Con; |\label{line:enskey}|
+	
+NEGATES
+	speccedKey[this, _] after ClearPass; |\label{line:neg}|
+\end{lstlisting}
+
+
+\subsubsection{Optional sections}
+Apart from mandatory sections that each \crysl{} rule must have, some \crysl{} rules may contain optional sections. The FORBIDDEN section involves calls to the methods that are insecure. The PBEkeySpec constructor call must consume a salt to generate a more secure key, whereas the signatures of the constructors in Lines~\ref{line:forbidden1} and~\ref{line:forbidden2} do not consume a salt; therefore, those calls are insecure and forbidden. After the \code{clearPassword} call, a PBEKeySpec object made by a constructor is no longer valid. \crysl{} allows invalidating a current predicate in the NEGATES field. As shown in Line~\ref{line:neg}, after \code{clearPassword} is called, the PBEkeySpec object is no longer effective. The predicates that one rule ENSURES can be used in the REQUIRES section of another rule. For example, Line~\ref{line:requirerandom} requires that the salt be generated from a random seed.
+
+
+\crysl{} developers have added some simple built-in auxiliary functions to make it more expressive. For example, in Listing \ref{lst:orgpbecryslRule}, the function
+\code{neverTypeOf} in Line \ref{line:nevertyp} states that the password should never be of type \code{String} and Line \ref{line:nothardcod} states that the password should not be hard-coded. \cite{stefanphd} fully described all of the built-ins in \crysl.

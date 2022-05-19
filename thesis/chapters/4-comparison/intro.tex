@@ -1,0 +1,69 @@
+\chapter{Comparison}
+\label{ch:compare}
+In the previous chapter (cf. Chapter \ref{ch:intro}), we learned how each analysis operates, so now we can begin comparing their approaches.\codyze{} and \cognicryptsast{} use rules that are written in different DSLs, \MARK, and \crysl, respectively.Both tools employ graph structures to represent source code and facilitate the analysis of the code; however, \cognicryptsast{} generates call graphs (CG), whereas \codyze{} generates code property graphs (CPG). \codyze{} creates a CPG from the source code, then analyzes this graph based on the written rules, however, as stated in Section \ref{sec:cc}, \cognicryptsast{} creates a Soot IR from the source code and performs the analysis on the IR, not the source code itself. Therefore, it is important that we take an in-depth examination of the approaches of these tools in order to discover more similarities and differences, as well as the advantages and disadvantages associated with them.
+
+Throughout this chapter, we compare the tools theoretically, then we compare them in practice, and finally, we compare their respective DSLs thoroughly.
+
+\section{Theoretical Comparison of \cognicryptsast{} and \codyze{}}
+\label{sec:theotools}
+\input{thesis/chapters/4-comparison/theoretical}
+
+\section{Comparison of \cognicryptsast{} and \codyze{} in practice}
+\label{sec:practical}
+\input{thesis/chapters/4-comparison/practicalcomparison}
+
+\section{DSL Comparison}
+\label{sec:dsl}
+\input{thesis/chapters/4-comparison/dsl}
+
+\subsubsection{Translation from \crysl{} to \MARK{}}
+\input{thesis/chapters/4-comparison/crysltomark}
+\label{sec:marktocrysl}
+
+% \subsection{Translate Bouncy Castle JCA API from \MARK{} to \crysl{}}
+% \input{thesis/chapters/4-comparison/bcmarktocrysl}
+
+\subsubsection{Translation from \MARK{} to \crysl{}}
+\input{thesis/chapters/4-comparison/marktocrysl}
+\label{sec:crysltomark}
+
+\subsection{Theoretical comparison of \crysl{} and \MARK{}}
+\label{sec:theodsl}
+
+\MARK{} and \crysl{} DSLs are both designed to specify the correct use of cryptographic APIs. \crysl{} is intended to be used to write rules only for Java cryptographic APIs. Nevertheless, as we discussed in Section \ref{subsec:mark}, \MARK{} enables us to write rules for C and C++, as well as Java since the \MARK{} parser is designed to parse \MARK{} rules for C++ or C cryptographic APIs. 
+
+The DSLs \MARK{} and \crysl{} are both external DSLs. Internal DSLs are those that are implemented within a general-purpose language as the host. An external DSL is a language that is parsed independently of the host \cite{dsl}. \crysl{} was designed specifically for cryptography experts and the existing \crysl{} rules were written by cryptography experts of the \crysl{} developers \cite{stefanphd}.
+The current \MARK{} rules are based on the BSI \cite{BSI} TR-02102-1 version 2019-01
+guideline for using cryptographic APIs.
+
+\crysl{} and \MARK{} have different syntaxes; however, their semantics are similar in some cases, for example, vars in \MARK{} are equivalent to OBJECTS in \crysl, or ops are equivalent to EVENTS in \crysl. Since there is limited information about \MARK, we cannot be certain of similarities and differences in semantics. Therefore, we were required to perform a practical comparison in which we converted \MARK{} policies to \crysl{} and vice versa in Section \ref{sec:practicdsl}.
+
+This also applies to the built-in functions. In order to determine how close we could get to expressing one language in another, we are required to ensure that each DSL contains sufficient built-in functions to enable us to translate rules written in the other DSL into this one. \MARK{} has several built-in functions, some of which are used by the current \MARK{} rules for Java cryptographic APIs. However, some other \MARK{} built-in functions are listed in the \codyze{} Github repository \cite{codyzegit} in the builtin folder but have not been used in the current \MARK{} rules (in the path src\textbackslash main \textbackslash java\textbackslash de\textbackslash fraunhofer\textbackslash aisec\textbackslash codyze\textbackslash crymlin\textbackslash builtin). Further investigation of these functions was necessary to evaluate the expressiveness of the \MARK{} DSL. In the end of translation, only the built-in functions of \MARK, which are used by current \MARK{} rules, proved helpful. Here is an example of a built-in function that was not helpful: the \code{\_starts\_with(String str, String start)} function that returns true if \code{str} starts with the \code{start} value.
+
+The results of translations are discussed in Section \ref{sec:practicdsl}. We determined that \crysl{} and \MARK{} express different things, but there are also concepts that they both can express. For example, specifying the proper algorithm in KeyGenerator (Section \ref{sec:crysltomark}). Furthermore, some language features of one language cannot be translated into another. As an example, \MARK{} has no equivalent of the NEGATES section of \crysl, and in \crysl, it is not possible to restrict a parameter of one class from another class. Furthermore, we understood that the built-ins had some overlap. For example, \code{\_is\_instance} built-in in the \MARK{} has its equivalence in \crysl, which is \code{instanceOf}. They were also built-in functions without counterparts in other DSLs. For instance, \MARK{} does not provide a corresponding \code{callTo} function. Although \crysl{} did not include corresponding built-in functions for all the \MARK{} built-in functions, all the useful functions in \MARK{} had built-in equivalents in \crysl, apart from \code{\_has\_value}, which is not necessary because it is used to check if a parameter exists in a program and there is no use for it in \crysl{} as discussed in Section \ref{sec:crysltomark}. We may add additional built-in functions to each DSL in the future to determine whether they will be equally expressive or not. We will discuss this in Chapter \ref{ch:fwork}.
+
+
+Additionally, we observed that \MARK{} rules require more space than \crysl{} rules. Table \ref{tab:filesize} shows the sizes of all rulesets for different APIs. For example, the size of all \crysl{} rules for the JCA API (on the second column) and the size of translated JCA \MARK{} rules (on the third column). In all cases, the size of the \crysl{} rules is less than the size of the \MARK{} rules, as shown in the table. This indicates that \MARK{} requires more space than \crysl{} when expressing the same rules. The primary reason is that every \MARK{} rule must be written in a specific format with a \code{rule} name, a \code{when} clause, an \code{ensure} clause and an \code{onfail} error message. In contrast, \crysl{} rules are much more concise in describing the rules, and each rule need only be added to the corresponding section.
+For example, the file of KeyGenerator \crysl{} rule of JCA ruleset (Listing \ref{lst:orgkeygencrysl}) has 36 lines and takes 717 bytes, while its translated version to \MARK{} has combined (entity in Listing \ref{lst:keygenmarkentrans} and rule in Listing \ref{lst:keygenmarkruletrans}), 82 lines and takes 2003 Bytes. The entity (Listing \ref{lst:orgkeygenmarken}) and rule (Listing \ref{lst:keygenmarkrules}) files of the \MARK{} KeyGenerator rule of the Bouncy Castle ruleset together take up 104 lines and 2780 bytes, and its translation to \crysl{} (Listing \ref{lst:transkeygencrysl}) has 43 lines and takes 938 bytes.
+
+\begin{table}[H]
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ccc}
+\cline{2-3}
+&JCA \crysl{} & \makecell{Translated \\JCA \MARK{}}\\ \hline
+ Size(KB)& 36,6 & 83,30 \\ \hline
+ \end{tabular}
+ \begin{tabular}{cc}
+ \hline
+  \makecell{Bouncy Castle\\ JCA \crysl{}} & \makecell{Translated Bouncy \\Castle JCA \MARK{}}\\ \hline
+            39,7 & 95,20 \\ \hline
+ \end{tabular}
+ \begin{tabular}{cc}
+ \hline
+  \makecell{Translated Bouncy\\ Castle \crysl{} }& \makecell{Bouncy Castle\\ \MARK{}}\\ \hline
+            30,8 & 55,6 \\ \hline 
+ \end{tabular}
+ }
+\caption{Sizes of the original and translated \MARK{} and \crysl{} rule files.}
+\label{tab:filesize}
+\end{table}

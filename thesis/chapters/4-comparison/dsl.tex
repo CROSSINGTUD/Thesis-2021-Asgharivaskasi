@@ -1,0 +1,26 @@
+\crysl{} \cite{skm19} and \MARK{} \cite{cod} are the DSLs used by \cognicryptsast{} \cite{skm19} and \codyze{} \cite{cod}, respectively, to specify the correct usages of cryptographic APIs. 
+This section aims to compare the DSLs on a theoretical and practical level fairly. Therefore, we performed a systematic review \cite{systematic4} of ways to compare DSLs. We searched on different platforms like Google\footnote{https://www.google.com}, GoogleScholar\footnote{https://scholar.google.com}, IEEE explore digital library\footnote{https://ieeexplore.ieee.org}, and ResearchGate\footnote{https://www.researchgate.net} for related articles and read the relevant ones, but there is no publication that compares DSLs in the same domain in terms of expressiveness. Rather, we found similar yet unrelated papers. For example, Cuadrado \etal{} compared two DSLs with the same syntax but different implementation techniques (internal and external) in their paper \cite{evaldsl14}. But that is not suitable for our DSLs since \MARK{} and \crysl{} are both external DSLs and this comparison is not useful. The other papers discussed comparing DSLs and GPLs (General Purpose Languages) to test program comprehension via user studies, which is not the focus of our study \cite{dslvsgpl12} or measuring usage simplicity in DSLs and GPLs \cite{empdslvsgpl10}, or comparisons of ways to define DSLs \cite{comptext8}, which are all unrelated to our research. Several studies tested usability \cite{usabil12} \cite{usabledsl11} \cite{qualitydsl11} \cite{successfac09}, which requires a user study and is beyond the scope of this thesis.
+
+Thus, we propose translating \crysl{} rules to \MARK{} rules, and vice versa, to explore their expressiveness.
+By translating one language to another and vice versa in a particular domain, such as defining correct usages of cryptographic APIs, we are expressing elements of one language in another while preserving the meaning, which demonstrates the expressiveness in that particular domain. There will be four possible scenarios in our case of translation. If we can translate \MARK{} rules into \crysl{} and \crysl{} rules into \MARK, then \MARK{} and \crysl{} are equally expressive when defining rules for cryptographic APIs.	However, if \crysl{} rules can be expressed by \MARK, but \MARK{} rules cannot be translated into \crysl, then \MARK{} is more expressive in specifying cryptographic API rules. Additionally, if \MARK{} rules could be expressed by \crysl{}, and \crysl{} rules could not be expressed by \MARK{}, then \crysl{} is more expressive than \MARK{} in defining rules for cryptographic APIs. Finally, if \crysl{} rules and \MARK{} rules cannot be translated into each other, then they express different things in defining rules for cryptographic APIs. 
+
+
+Prior to comparing the DSLs, we provide a short explanation of \MARK{} and \crysl. We will then compare them practically and translate the rules, and finally, we will compare them theoretically.
+
+\input{thesis/chapters/4-comparison/crysl}
+\input{thesis/chapters/4-comparison/mark}
+ 
+
+\subsection{Practical comparison of \crysl{} and \MARK{}}
+\label{sec:practicdsl}
+
+This section aims to compare the DSLs on a practical level. In order to accomplish this, we proposed translating \crysl{} rules to \MARK{} and vice versa. Since there are \MARK{} and \crysl{} rules for the Bouncy Castle JCA API for Java, we first translate Bouncy Castle JCA rules from \crysl{} to \MARK{} and vice versa. As stated before, there are no \MARK{} rules specified for the JCA library, which is the primary cryptography API for Java applications \cite{snb16}. In this regard, it is worthwhile to translate \crysl{} JCA rules in \MARK{} language and compare their functionality and result of their analyses on the same Java cryptography examples. So at the end we will have three translations, \crysl{} Bouncy Castle JCA to \MARK, \MARK{} Bouncy Castle JCA to \crysl{} and \crysl{} JCA to \MARK. Source codes for the translated rules are available in Appendices \ref{appendix:ruletranslaions}.
+
+We developed the following translation based on the information we obtained from reviewing existing \MARK{} and \crysl{} rules, \crysl{} paper \cite{skm19} and \codyze's documentation page \cite{cod}. We will employ these translated rules in the evaluation of \codyze{} and \cognicryptsast{} (cf. Chapter \ref{ch:eval}).
+
+
+
+\subsubsection{Setup}
+\label{sec:rulesetup}
+We used the same virtual machines we explained in Section \ref{sec:practical} to translate rules. On the first machine with Java 8, we installed the \crysl{} Eclipse plugin and on the second machine with Java 11, we installed the \MARK{} Eclipse plugin. We used the \crysl{} rules from the Crypto-API-rules Github repository master branch \cite{apirules} to the commit 1dbad34\footnote{\url{https://github.com/CROSSINGTUD/Crypto-API-Rules/commit/1dbad342a46c47df62e891fc25f46944972d9e18}} and \MARK{} rules from \codyze{} Github repository main branch \cite{codyzegit} to the commit 8c74a13\footnote{\url{https://github.com/Fraunhofer-AISEC/codyze/commit/8c74a13be2385b79875990c5e36ed67b39579662}}, to the date of October 31st, 2021.
+

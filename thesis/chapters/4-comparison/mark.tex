@@ -1,0 +1,111 @@
+\subsection{\MARK{}}
+\label{subsec:mark}
+\MARK{} is a domain-specific language for writing rules to specify the correct usage patterns of APIs or libraries \cite{cod}. It stands for "Modellierungssprache fuer Anforderungen und Richtlinien der Kryptografie" (Modeling Language for Cryptography Requirements and Guidelines). \MARK{}'s grammar is written using Xtext. \MARK{}'s Eclipse plugin project \cite{markgithub} provides several features for \MARK{} language, including a language server for using \MARK{} in IDEs with LSP support, an Xtext generator that creates Crymlin/Gremlin from \MARK{} files, and an Eclipse plugin for syntax highlighting, auto-completion, and code correction \cite{markgithub}. Unfortunately, there are no further details available regarding the use of \MARK{} on other IDEs with LSP support or the creation of Crymlin/Gremlin out of \MARK{} files. In order to fully grasp these concepts, it is necessary to conduct extensive research on the implementation of \MARK{}, which is beyond the scope of this thesis.
+
+Currently, there are \MARK{} policies made by \codyze's developers for the Botan \cite{botan}, a C++ cryptography library, Bouncy Castle and Jackson \cite{jackson}, a high-performance JSON processor for Java libraries for cryptography in Java. After reviewing the \MARK{} ruleset on \codyze's Github page, we discovered that the Bouncy Castle \MARK{} ruleset contains rules for the JCA API. However, we will continue to refer to it as the Bouncy Castle \MARK{} ruleset.
+
+Writing \MARK{} rules for a library necessitates a thorough knowledge of the API and class structure of the library. \MARK{} policies are separated into two parts that we will discuss in separate sections; Entities (see Section \ref{subsubsec:entity}) and Rules (see Section \ref{subsubsec:rule}). Rules determine the correct usage of the entities. Entities are an abstract grouping of API functions. Entity contains three parts:
+\begin{itemize}
+\item \emph{Name}, the name of the rule.
+\item \emph{Ops}, set of operations (op).
+\item \emph{Var}, variables that refer to function arguments or return values.
+\end{itemize}
+
+
+Here we will provide a brief overview of the entity and rule parts of \MARK{} policies.
+
+\subsubsection{Entity}
+\label{subsubsec:entity}
+To describe entities, we consider Listing \ref{lst:orgkeygenmarken} which shows the entity part of the \MARK{} policy for javax.crypto.KeyGenerator and Listing \ref{lst:orgsecureRandomMARK} which is a part of \MARK{} entity file for java.security.SecureRandom to describe a less frequently used optional keyword, \code{forbidden}, in \MARK{}.
+
+\begin{lstlisting}[language=MARK,caption= {\MARK{} entities for javax.crypto.KeyGenerator of Bouncy Castle ruleset \cite{codyzegit}}, label={lst:orgkeygenmarken}, escapechar=@]
+package java.jca
+
+entity KeyGenerator {
+    
+    var algorithm;@\label{line:varsbeg}@
+    var provider;
+    
+    var keysize;
+    var random;
+    var params;
+    var key;@\label{line:varsend}@
+    
+    op instantiate {@\label{line:opsbeg}@
+        javax.crypto.KeyGenerator.getInstance(algorithm : java.lang.String); @\label{line:instance1}@
+        javax.crypto.KeyGenerator.getInstance(@\label{line:instance2}@
+            algorithm : java.lang.String,
+            provider : java.lang.String | java.security.Provider
+        );
+    }
+    
+    op init {
+        javax.crypto.KeyGenerator.init(keysize : int);
+        javax.crypto.KeyGenerator.init(
+            keysize : int,
+            random : java.security.SecureRandom
+        );
+        javax.crypto.KeyGenerator.init(random : java.security.SecureRandom);
+        javax.crypto.KeyGenerator.init(params : java.security.spec.AlgorithmParameterSpecs);
+        javax.crypto.KeyGenerator.init(
+            params : java.security.spec.AlgorithmParameterSpec,
+            random : java.security.SecureRandom
+        );
+    }
+    
+    op generate {
+        key = javax.crypto.KeyGenerator.generateKey();
+    }@\label{line:opsend}@
+}
+\end{lstlisting}
+
+The first step is to define model relevant classes as \MARK{} entities. Only those classes which contain the relevant data or function must be identified as \MARK{} entities. Even though many programming languages classes can be combined in an abstract \MARK{} entity in several cases, it can at first be easier to map classes explicitly into entities. For instance, KeyGenerator class to entity KeyGenerator. Developers can freely choose the name of the entity \cite{cod}.
+
+The second step is to define ops and variables. An op is a semantically equivalent or related group of functions, methods, or constructors, provided as completely qualified signatures. The most common ops in cryptographic libraries are, instantiate, initialize, update, finalize and reset. For example, in Listing \ref{lst:orgkeygenmarken}, we have instantiate op, which shows the \code{getInstance} methods with different possible parameters (Lines~\ref{line:instance1},~\ref{line:instance2}). The type of each op's parameters with a name is specified, but we can also have unnamed and untyped parameters (described with "\_"). These parameters do not play any role in the definition of rules. Named parameters must also be declared as entity variables using the \code{var} keyword (Lines~\ref{line:varsbeg} to~\ref{line:varsend}) \cite{cod}.
+
+The third step, which is optional, is to blacklist the forbidden ops. In some cases, functions that are deprecated or established to be insecure should not be used in the program. The \code{forbidden} keyword in \MARK{} indicates that the use of the following functions is insecure. For example, Lines~\ref{line:forbidpbe1} and~\ref{line:forbidpbe2} of Listing \ref{lst:orgsecureRandomMARK} are forbidden calls when using the SecureRandom class because they do not respect Bouncy Castle as a provider \cite{cod}.
+
+\begin{lstlisting}[language=MARK,caption= Part of \MARK{} entities for java.security.SecureRandom from Bouncy Castle ruleset \cite{codyzegit}., label={lst:orgsecureRandomMARK}, escapechar=^]
+    ...
+     op instantiate {
+        ...
+        java.security.SecureRandom.getInstanceStrong();
+        
+        // forbidden calls because they don't respect BC as provider
+        forbidden java.security.SecureRandom(); ^\label{line:forbidpbe1}^
+        forbidden java.security.SecureRandom(^\label{line:forbidpbe2}^
+            seed : byte[]
+        );
+    }
+    ...
+\end{lstlisting}
+
+
+\subsubsection{Rule}
+\label{subsubsec:rule}
+After defining entities, we can start writing rules. \MARK{} rules apply to instances of entities and specify the conditions that must be met in these instances. Instances of \MARK{} may correspond to actual objects but might also be abstract functions or variables in non-object-oriented languages and static methods. Listing \ref{lst:orgkeygenMARKrule} displays one of the \MARK{} rules associated with the KeyGenerator class from the Bouncy Castle \MARK{} files included in \codyze's Github repository.
+
+Every rule has a unique name across all \MARK{} files loaded into \codyze{} (Line \ref{line:rulename}). \code{Using} keyword (Line \ref{line:usingpart}) initiates the declaration of instances of the \MARK{} entities, here KeyGenerator and javax.crypto.Mac instances, and \code{ensure} shows the condition (Line \ref{line:ensurepart}). A violation of the condition will result in a finding with a message indicated by the \code{onfail} identifier (Line \ref{line:onfail}). 
+
+
+In some rules, some preconditions must be met before the main condition is evaluated. If they fail, the main condition will not be evaluated, and the rule will not return any results. Preconditions are declared by the \code{when} keyword (Line \ref{line:whenpart}). Mark includes several built-in functions that can be used as predicates in conditions and preconditions (e.g., Line \ref{line:builtinmark}). They are called during MARK rule evaluation and operate over their input arguments (usually MARK objects or constants) and the evaluation context. By convention, built-ins should begin with "\_". If a built-in fails, it will return an Error object which evaluates to not applicable, i.e., neither true nor false. 
+
+In the following rule example (Listing \ref{lst:orgkeygenMARKrule}), once the preconditions are satisfied, i.e., if the Mac algorithm is AESCMAC (Line \ref{line:whencond}), and the variable Mac key equals the KeyGenerator key (Line \ref{line:builtinmark}), then the rule condition must be met, that is, the KeyGenerator's key must be greater than or equal to 128 (Line \ref{line:condition2}). Otherwise, the InsufficientCMACKeyLength error will be thrown.
+
+\begin{lstlisting}[language=MARK2,caption= A \MARK{} rule associated with javax.crypto.KeyGenerator class from Bouncy Castle ruleset \cite{codyzegit}., label={lst:orgkeygenMARKrule}, escapechar=^]
+rule ID_5_3_02_CMAC_Keygen {  ^\label{line:rulename}^
+    using ^\label{line:usingpart}^
+        Mac as m,
+        KeyGenerator as kg
+    when ^\label{line:whenpart}^
+        m.algorithm in ["AESCMAC"] ^\label{line:whencond}^
+        && _is(m.key, kg.key) ^\label{line:builtinmark}^
+    ensure ^\label{line:ensurepart}^
+        _is(m.key, kg.key) ^\label{line:condition1}^
+        && kg.keysize >= 128 ^\label{line:condition2}^
+    onfail  ^\label{line:onfail}^
+        InsufficientCMACKeyLength 
+}
+\end{lstlisting}
+
+In this example, the condition \code{\_is(m.key, kg.key)} is mentioned in both the \code{when} and \code{ensure} sections. It might be a mistake since if it is true in the \code{when} section, then it is also true in the \code{ensure} section, so there is no need to verify it again. The developers of \codyze{} did not elaborate on the matter further; therefore, we have opened an issue on \codyze{}'s Github repository\footnote{https://github.com/Fraunhofer-AISEC/codyze/issues/400}.

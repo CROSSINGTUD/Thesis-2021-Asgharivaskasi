@@ -1,0 +1,10 @@
+\chapter{Future Work}
+\label{ch:fwork}
+In the future, we may conduct a user study to compare the tools and the DSLs and determine how user-friendly they are. Participants could use the tools to analyze sample codes, write rule specifications using DSLs, and record their observations. Consequently, we can determine which design users prefer and how each tool can be improved.
+
+After translating the rules, we figured that they are not entirely translatable to each other. Adding more built-in functions to each DSL would enable them to express more contents of the other DSL. Afterward, we can translate the rules again and determine if \MARK{} and \crysl{} DSLs are equally expressive.
+In addition, there was no appropriate estimation of the time required to produce a CPG. This could be accomplished by measuring the execution time of the CPG, and repeat the experiment for all benchmarks to determine an average time. In the same way, we could also obtain the run time for \cognicryptsast{} and \codyze{} and compare the tools' run times. \cryptoapibench{} does not contain many test cases to examine the tools into finding out their actual properties and might not provide an accurate estimate of the analyzer's properties. In addition, it may favor \cryptoguard{} by only including test cases that demonstrate \cryptoguard's analysis properties. Moreover, it provided no context-sensitive test cases. Therefore, we require more benchmarks that include inter-procedural, field-, path-, and context-sensitive cases to examine the tools further. In this manner, we may obtain a more accurate estimate of each tool's properties.
+
+The evaluation revealed that \codyze{} and \cognicryptsast{} contain some flaws in their analysis that resulted in false positives when analyzing the benchmarks. We thus raised issues on their Github pages; these issues must also be resolved by \codyze{} and \cognicryptsast{} developers to improve each tool's performance.
+
+

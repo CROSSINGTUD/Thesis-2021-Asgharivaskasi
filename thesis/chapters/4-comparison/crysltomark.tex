@@ -1,0 +1,157 @@
+There are 47 Bouncy Castle JCA and 49 JCA \crysl{} rules on Github \cite{apirules}. Each \crysl{} rule represents a class. While translating each rule to \MARK{}, we put entities (ops and vars) in one file and the rules on another file. As an example, there are two \MARK{} files for the KeyGenerator class, the KeyGenerator.mark file containing the entities of the class (see Listing \ref{lst:keygenmarkentrans}), and the Rule\_KeyGenerator.mark file containing the rules, such as order, constraints, etc (see Listing \ref{lst:keygenmarkruletrans}). Listings \ref{lst:keygenmarkentrans} and \ref{lst:keygenmarkruletrans} show KeyGenerator \MARK{} rule translated from its \crysl{} rule from JCA API in Listing \ref{lst:orgkeygencrysl} \cite{apirules}.
+
+The objects (Lines \ref{line:objects1} to \ref{line:objects2}) of the \crysl{} rules (Listing \ref{lst:orgkeygencrysl}) are directly translated to vars (Lines \ref{line:var1} to \ref{line:var2}). \MARK{} variables are not typed. The type of variables will be specified in the ops. As an example, in \crysl{} the type of \code{keySize} is \code{int}. In translation to \MARK{}, the type of \code{keysize} is specified in the operation where it is being used (Line \ref{line:keysizetype}). Return variables will not be typed in \MARK{} (Line \ref{line:notypekey}). Furthermore, the functions in the EVENTS section have exactly the same translation and grouping in the corresponding \MARK{} rule (Lines \ref{line:op1} to \ref{line:op3end}) without any labels. We have three kinds of operations in this case, instantiate (Line \ref{line:op1}) for \code{getInstance} methods, init (Line \ref{line:op2}) for \code{init} methods and generate (Line \ref{line:op3}) for \code{generateKey} method.
+\pagebreak
+
+\begin{lstlisting}[language=MARK,caption=  {Entity part of translated KeyGenerator \crysl{} rule to \MARK{} from JCA API.}, label={lst:keygenmarkentrans}, escapechar=|]
+package java.jca
+
+entity KeyGenerator {
+    
+    var keySize;|\label{line:var1}|
+    var params;
+    var key;
+    var algorithm;
+    var random;|\label{line:var2}|
+    
+    op instantiate {|\label{line:op1}|
+        javax.crypto.KeyGenerator.getInstance(algorithm : java.lang.String);
+        javax.crypto.KeyGenerator.getInstance(
+            algorithm : java.lang.String,
+            _
+        );
+    }
+    
+    op init {|\label{line:op2}|
+        javax.crypto.KeyGenerator.init(keySize : int);
+        javax.crypto.KeyGenerator.init(
+            keySize : int, |\label{line:keysizetype}|
+            random : java.security.SecureRandom
+        );
+        javax.crypto.KeyGenerator.init(random : java.security.SecureRandom);
+        javax.crypto.KeyGenerator.init(params : java.security.spec.AlgorithmParameterSpecs);
+        javax.crypto.KeyGenerator.init(
+            params : java.security.spec.AlgorithmParameterSpec,
+            random : java.security.SecureRandom
+        );
+    }
+    
+    op generate {|\label{line:op3}|
+        key = javax.crypto.KeyGenerator.generateKey(); |\label{line:notypekey}|
+    }|\label{line:op3end}|
+}
+\end{lstlisting}
+
+Listing \ref{lst:keygenmarkruletrans} shows the translated rules from ORDER, CONSTRAINTS, and REQUIRES sections of the KeyGenerator \crysl{} rule. The translation of \crysl{} ORDER section is the first rule in Listing \ref{lst:keygenmarkruletrans} Line \ref{line:ordermark}, which uses the same regular expression as the \crysl{} rule (Line \ref{line:ordercrysl}). The CONSTRAINTS in \crysl{} rule are the constraints over the \code{algorithm} and the \code{keysize} (Lines \ref{line:const1} and \ref{line:const2}) which direct translations are the second (Line \ref{line:algo}) and third (Line \ref{line:keysizemark}) rules of Listing \ref{lst:keygenmarkruletrans}. \MARK's analyzer checks all the rules, and if the ensure part is violated, an error is thrown even if the class has not been used in the analyzed project. We avoided this mistake by adding a when clause to all the \MARK{} rules (except the order rules) to determine if a variable corresponding to that rule exists, using the built-in method \code{\_has\_value}. The rule should not be tested if the variable is not present. The built-in function \code{\_has\_value(a)} checks whether a given \MARK{} variable, \code{a}, has a CPG-node which indicates that it exists as part of the program \cite{codyzegit}. In the Line \ref{line:hasvalue}, for instance, the analyzer checks whether the KeyGenerator's \code{algorithm} variable is present; otherwise, this rule is not executed.
+ \pagebreak
+\begin{lstlisting}[language=MARK2,caption= {Rule part of translated KeyGenerator \crysl{} rule to \MARK{} from JCA API.}, label={lst:keygenmarkruletrans}, escapechar=|]
+package java.jca
+
+rule JCAProvider_KeyGenerator_order{|\label{line:ordermark}|
+	using
+		KeyGenerator as kg
+	ensure
+		order
+			kg.instantiate(),
+			kg.init()?,
+			kg.generate()
+	onfail
+		InvalidOrderOfKeyGenerator
+}
+//constraints
+rule JCAProvider_KeyGenerator_algorithm{|\label{line:algo}|
+	using
+		KeyGenerator as kg
+	when 
+		_has_value(kg.algorithm)|\label{line:hasvalue}|
+	ensure
+		kg.algorithm in ["AES", "HmacSHA224", "HmacSHA256", "HmacSHA384", "HmacSHA512"]
+	onfail
+		InvalidSecretKeyAlgorithmOfKeyGenerator
+}
+rule JCAProvider_KeyGenerator_keysize{|\label{line:keysizemark}|
+	using
+		KeyGenerator as kg
+	when
+		kg.algorithm in ["AES"] && _has_value(kg.keySize)
+	ensure
+		kg.keySize in [128, 192, 256]
+	onfail
+		InvalidKeySizeOfKeyGenerator
+}
+//requires
+rule JCAProvider_KeyGenerator_randomized{
+	using
+		KeyGenerator as kg,
+		SecureRandom as sr
+	when
+		_has_value(kg.random)
+	ensure
+		_is(kg.random, sr)
+	onfail
+		NotRandomranGenOfKeyGenerator
+}
+\end{lstlisting}
+
+The ENSURES and REQUIRES sections of \crysl{} bind two rules together, so when we translate them to \MARK, we include all classes that contain the same predicate in the REQUIRES and ENSURES sections of their \crysl{} rule as instances of the corresponding \MARK{} rule. We have placed the translation for this binding in the \MARK{} rule file of the class which used this predicate in its REQUIRES section. For instance, KeyGenerator \crysl{} rule ENSURES \code{generatedKey[key, algorithm]} (Line \ref{line:generatedkey}) which means if the KeyGenerator is used properly, then it guarantees a key with the corresponding algorithm.
+
+
+This predicate appears in the Mac\footnote{https://github.com/CROSSINGTUD/Crypto-API-Rules/blob/master/BouncyCastle-JCA/src/Mac.crysl} and Cipher\footnote{https://github.com/CROSSINGTUD/Crypto-API-Rules/blob/master/BouncyCastle-JCA/src/Cipher.crysl} \crysl{} rule's REQUIRES section, so the \MARK{} rules are placed within the Mac and Cipher \MARK{} rule files.
+
+Listing \ref{lst:macmarkruletrans} illustrates the translation of the \code{generatedKey} predicate in the Mac \MARK{} rule file. The Mac \crysl{} rule specifies this predicate as \code{generatedKey[key, \_]} in its REUIRES section. This predicate indicates that the key variable used in creating the Mac instance must be generated appropriately using KeyGenerator or any other rule that has \code{generatedkey[javax.crypto.SecretKey,java.lang.String]} in their ENSURES section. The second parameter in the predicate, \code{generatedKey[key,\_]}, is an underscore, which implies that the algorithm used to generate the key does not matter.
+
+
+As well as KeyGenerator, there are other rules in \crysl{} that guarantee this predicate, such as SecretKeySpec, KeyStore and SecretKeyFactory. Therefore, we include all of them as instances in the Mac \MARK{} rule (Line \ref{line:seckey1} to \ref{line:seckey2}).
+ 
+We then provide a precondition to guarantee the existence of the Mac instance by checking that a key variable for this instance exists in the program (Line \ref{line:keyhasvalue}). 
+
+According to the Mac \crysl{} rule, it does not matter what algorithm is being used to generate the key, therefore, we only need to confirm that the key is generated by one of the mentioned classes. To accomplish this, we use the built-in function \code{\_is} (Line \ref{line:ensurekeys}). The built-in \code{\_is(a,b)} checks if two objects are equal \cite{codyzegit}. InvalidGeneratedKeyOfMac error message on Line \ref{line:errormessage} may appear if the program does not conform to this rule. 
+ 
+\begin{lstlisting}[language=MARK2,caption= {Part of translated Mac \crysl{} rule to \MARK{} from JCA API.}, label={lst:macmarkruletrans}, escapechar=@]
+rule JCAProvider_Mac_generatedkey{
+	using
+		Mac as m,
+		KeyStore as ks, @\label{line:seckey1}@
+		SecretKeyFactory as skf,
+		KeyGenerator as kg,
+		SecretKeySpec as sks @\label{line:seckey2}@
+	when 
+	    _has_value(m.key) @\label{line:keyhasvalue}@
+	ensure
+		_is(m.key, sks) || _is(m.key, skf.key)|| _is(m.key, kg.key) || _is(m.key, ks.key) @\label{line:ensurekeys}@
+	onfail
+		InvalidGeneratedKeyOfMac @\label{line:errormessage}@
+}
+\end{lstlisting}
+
+In \crysl{} it is possible to specify a method-event pattern using
+the keyword \emph{after}. For example, in Listing \ref{lst:orgpbecryslRule} of PBEKeySpec \crysl{} rule, we have the following predicate: \code{speccedKey[this, \_] after ClearPass} (Line \ref{line:neg}), which indicates that after using the \code{clearPassword} method, the speccedkey generated by PBEKeySpec is no longer valid. Since \MARK{} does not provide this feature, it is not possible to translate the NEGATES section of the \crysl{} rules to \MARK.
+
+
+We can define forbidden methods in \MARK, which is equivalent to the FORBIDDEN section of the \crysl{} rules. The forbidden methods are located in the entity part of the \MARK{} rule. Listing \ref{lst:pbekmarkentrans} shows a part of the translation of the PBEKeySpec \crysl{} rule to \MARK{} entities. Lines \ref{line:forbid1} and \ref{line:forbid2} show the translation of the FORBIDDEN section of PBEKeySpec \crysl{} rule (Lines \ref{line:forbidden1} and \ref{line:forbidden2}) to \MARK. These lines forbid the use of the PBEKeySpec method with 1 or 3 parameters; in another way, the method PBEKeySpec should only be used with four parameters; otherwise, it is considered insecure.
+
+
+\begin{lstlisting}[language=MARK,caption= {Part of Entity part of translated PBEKeySpec \crysl{} rule to \MARK{} from JCA API.}, label={lst:pbekmarkentrans}, escapechar=|]
+package java.jca
+
+entity PBEKeySpec {
+    ...
+	op instantiate {
+
+		javax.crypto.spec.PBEKeySpec(
+			password : char[],
+			salt : byte[],
+			iterationCount : int,
+			keyLength : int
+		);
+		forbidden javax.crypto.spec.PBEKeySpec(_: char[]);|\label{line:forbid1}|
+		forbidden javax.crypto.spec.PBEKeySpec(_: char[],_: byte[],_: int);|\label{line:forbid2}|
+	}
+    ...
+}
+\end{lstlisting}
+
+\subsubsection*{Discussion}
+\crysl{}'s compiler provided auto-completion, syntax checking, and case sensitivity. During the translation of \crysl{} rules into \MARK{}, some language features could not be translated. There is, for example, no such method in \MARK{} where we can retrieve an element of an array. There is \code{elements} in \crysl, but no equivalent method in \MARK. However, this is not a significant issue because this method can easily be added as a built-in method in \MARK. The same holds true for other built-in functions as well, such as noCallTo, callTo. The three built-in functions, \code{mode}, \code{alg}, and \cod{padding} are available via \code{\_split} in \MARK.
+
+There is a keyword, \code{after} that has been used in the sections REQUIRES, ENSURES, and NEGATES. This keyword cannot be translated into \MARK{} since there is no equivalent feature to \code{after} in \MARK. Moreover, we cannot include method calls in conditions or preconditions. In such cases, we translated the rules without considering the \code{after} part. For instance, the Line \ref{line:enskey} in Listing \ref{lst:orgpbecryslRule} ensures that a speccedKey with a certain keyLength is generated after a call to the constructor specified in the EVENTS section. This rule was translated without translating the \code{after} keyword, which is reasonable since the constructor call is the final and only call in the order section and will be called when generating a PBEKeySpec instance. When the method following the keyword \code{after} is not a final method, the rules are not equal, and the \MARK{} translation is incomplete. Further, it is not possible to translate the NEGATES section of \crysl{} rules to \MARK, as there is no equivalent feature to \code{after} in \MARK{} and this section depends entirely on this keyword.

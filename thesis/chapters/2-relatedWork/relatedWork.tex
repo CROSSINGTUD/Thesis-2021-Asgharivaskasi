@@ -1,0 +1,41 @@
+\chapter{Related Works}
+\label{ch:relatedwork}
+
+Many tools have been developed to detect cryptography misuses in Java code in order to prevent insecurity within a software program. Such tools use static analysis or dynamic analysis or a combination of static and dynamic analysis. Static analysis is the method of analyzing a program's code without running it. On the other hand, dynamic analysis is the monitoring and examining of a program depending on its execution. It is typically used to identify subtle faults or bugs that manifest during runtime and whose origin is too complex to be observed through static analysis \cite{cx16}.
+
+Below tools deploy dynamic analysis for detecting cryptographic misuses.
+
+\androssl{} is a framework to test mobile applications against connection security vulnerabilities \cite{androssl15}. It performs SSL man-in-the-middle attacks against android applications. A man-in-the-middle attack occurs when a third party intercepts a communication between two systems \cite{mitm19}. Successful attacks confirm the application's vulnerability. The AndroSSL developers tested it with 90 popular Android applications. AndroSSL found 25 apps with a vulnerability.
+
+
+Crypto keys are susceptible to being insecurely used at different stages of their usage, generation, derivation, operation, and cleaning. \khunt{} \cite{khunt18} uses binary dynamic analysis to identify such insecure keys in program executables. In order to identify the crypto keys used by the target program, the program is executed with coarse-grained binary code instrumentation \cite{khunt18}. In the next step, the program is executed by a heavyweight fine-grained instrumentation \cite{khunt18} to detect insecure keys. The \khunt{} developers analyzed 10 cryptographic libraries and 15 applications containing crypto operations via \khunt. Among the 25 evaluated programs, 22 contained insecure keys.
+
+
+
+The following tools combine static and dynamic analysis, and each employs different approaches. 
+
+
+\cma{} (CMA) \cite{cma14} uses both static and dynamic analysis in Android applications. They created a cryptographic misuse model to identify cryptographic misuses. The static analysis detects apps where cryptographic APIs are used. CMA generates runtime logs by running them. Through comparing logs with models, CMA decides if the implementations have misuses. It only analyzes symmetric encryption, hash, and asymmetric encryption misuse vulnerabilities. The CMA developers tested it on 45 apps that involve storing or transporting sensitive data, like mobile bank clients. Just 5 of them were found to have no misuse.
+
+
+Chatzikonstantinou et al. \cite{cx16} also conduct static and dynamic analysis to detect cryptographic misuses in Android applications. The static part is done manually on the source code by the developers, and dynamic analysis was done by Dalvik Debug Monitor Server\footnote{\url{https://developer.android.com/studio/profile/monitor}} (DDMS). DDMS is a GUI-based application designed to help identify bugs in Android applications while the program is running. However, in this project, they have used the tool to examine cryptographic libraries invoked by Android programs during runtime.
+They evaluated 49 Android apps from the Google Play marketplace. According to their findings, 87.8\% of the applications had cryptographic misuses, while in 12.2\%, no cryptography was used.
+
+
+\noindent Furthermore, there are other tools, which only use static analysis.
+
+
+\cryptolint{} \cite{emp13} is a static analyzer based upon the Androguard \cite{androguard} Android program analysis framework to discover JCA misuses in Android Dalvik bytecode. It uses the software slicing method to distinguish flows between cryptographic keys, initialization vectors, and other cryptographic data, as well as the cryptographic operations themselves, in a raw Android binary. It has a defined set of six rules. Violation of those rules is considered misuse. The result of their study on 11,748 Android apps shows that 10,327 systems (or 88\%) use cryptography incorrectly.
+
+
+\binsight{} \cite{bin18} is an automated static analysis system that identifies cryptographic misuses using the same rules as \cryptolint{} with program slicing. This tool is more effective in attributing Java class identifiers to its source, regardless of whether it is derived from an application source code or a third-party library, using a heuristic-based technique. It can handle large Android applications. They analyzed 132K Android applications, and the results suggested that 90\% of the violating applications, which contain at least one call-site to Java cryptographic API, originate from libraries.
+
+\cryptoguard{} \cite{sr19} uses static analysis on massive-sized Java projects and performs forward and backward slicing methods based on specific criteria to detect 16 predefined vulnerabilities. After performing the slicing, each program slice is analyzed to find the presence of a vulnerability. They use refinement algorithms to reduce false positives. False positive is when the analysis identifies a misuse that does not exist, and false negative is when the analysis does not find an existing misuse. They also created a benchmark called \cryptoapibench{} \cite{cryptoapibench} that covers all 16 cryptographic rules.
+
+
+\cognicryptsast{} \cite{skm19} is a static analyzer that uses white-listing to define the correct usage of Java cryptographic APIs by writing rule specifications in the domain-specific language, \crysl{}, and statically analyzing the code against those rules. Static analysis is conducted on a graph derived from an intermediate representation of Java code in \cognicryptsast{}. \cognicryptsast{} is accessible through Eclipse, or it can also be run independently as a command-line tool. \cognicryptsast{} developers scanned 10,000 Android applications and discovered at least one misuse in 95\% of them.
+
+\codyze{} \cite{cod} is also a static analysis tool for Java, C, and C++ programs that uses white-listing. \codyze{} developers described API's and library's correct usage patterns using \mark{} domain-specific language. The approach creates a graph of the source code and detects cryptographic misuses by performing static analysis on it. Besides integrating to common IDEs (e.g., Eclipse, IntelliJ, and Visual Studio), \codyze{} can also be used in command-line mode and provides an interactive console.
+
+
+In contrast with other static analysis tools, \cognicryptsast{} and \codyze{} seem to follow a similar approach to detect misuses. Both defined rules to specify the correct usage of cryptographic APIs using DSLs and build a graph of the code to do static analysis to detect the misuses. We examine their approaches in more detail as well as the results of their analysis to discover the similarities and differences between these two tools, and we can then determine the advantages and disadvantages of their respective approaches. The purpose of this study is to determine the shortcomings and benefits of each tool in order to create more reliable and effective tools in the future. The following chapter will provide a brief overview of \codyze{} and \cognicryptsast{}, allowing us to gain a better understanding of how they operate.

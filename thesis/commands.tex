@@ -1,0 +1,54 @@
+%%%%%%%%%
+% Some commands for setting up theorem environments as provided by package 
+% amsthm --- language sensitive
+%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{lemma}[definition]{Lemma}
+\ifgerman
+	\newtheorem{theorem}[definition]{Satz}
+	\newtheorem{corollary}[definition]{Korollar}
+	\newtheorem{example}[definition]{Beispiel}
+\else
+	\newtheorem{theorem}[definition]{Theorem}
+	\newtheorem{corollary}[definition]{Corollary}
+	\newtheorem{example}[definition]{Example}
+\fi
+
+
+
+%%%%%%%%%
+% Your commands should go here...
+%%%%%%%%%
+\newcommand*{\eg}{e.\,g.}
+\newcommand*{\ie}{i.\,e.}
+\newcommand*{\cf}{c.\,f.}
+\newcommand*{\etal}{et~al.}
+
+\newacro{template}[UPB-CS-TT]{Paderborn University Computer Science thesis template}
+
+\DeclareMathOperator{\testop}{top}
+
+\newcommand{\cognicryptsast}{\textsc{CogniCrypt\textsubscript{SAST}}}
+\newcommand{\cognicryptgen}{\textsc{CogniCrypt\textsubscript{GEN}}}
+\newcommand{\cognicrypttestgen}{\textsc{CogniCrypt\textsubscript{TestGen}}}
+\newcommand{\codyze}{\textsc{Codyze}}
+\newcommand{\crysl}{\textsc{CrySL}}
+\newcommand{\MARK}{\textsc{MARK}}
+\newcommand{\cognicrypt}{\textsc{CogniCrypt}}
+\newcommand{\cryptoguard}{\textsc{CryptoGuard}}
+\newcommand{\cryptoapibench}{\textsc{CryptoAPI-Bench}}
+\newcommand{\cryptolint}{\textsc{CryptoLint}}
+\newcommand{\binsight}{\textsc{BinSight}}
+\newcommand{\cma}{\textsc{Crypto Misuse Analyser}}
+\newcommand{\khunt}{\textsc{K-Hunt}}
+\newcommand{\androssl}{\textsc{AndroSSL}}
+\def\code#1{\texttt{#1}}
+\def\hyph{-\penalty0\hskip0pt\relax}
+
+\BeforeBeginEnvironment{code}{\vspace{5mm}}
+\AfterEndEnvironment{code}{\vspace{5mm}}
+
+
+
+

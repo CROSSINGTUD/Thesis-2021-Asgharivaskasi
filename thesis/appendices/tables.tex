@@ -1,0 +1,218 @@
+% \newpage
+\addcontentsline{toc}{chapter}{Tables}
+\section{Tables} 
+
+% \label{appendix:compose-email-schema}
+\subsection{Results of analyzing \MARK{} Bouncy Castle tests}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\begin{table}[H] 
+\centering
+\setlength\tabcolsep{4.3pt} 
+\small
+\begin{tabularx}{\textwidth}{|P{0.5cm}|l|x|x|x|x|}
+ \hline
+ No.&Test Name & \makecell{Valid \\ tests} & \makecell{Invalid \\ tests} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\codyze{}} \\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}
+    \\TP&FP& TP & FP
+\end{tabular} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\cognicryptsast{}}\\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}\\
+    TP&FP&TP&FP
+
+\end{tabular}\\
+
+ \hline
+ \hline
+1&DHGenParameterSpec& 1 & 0 & 0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+2&DHParameterSpec& 2& 0& 0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+3&DHPrivateKeySpec& 1& 0& 0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+4&DHPublicKeySpec& 1& 0&0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+5&DSAGenParameterSpec& 2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+6&DSAParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+7&DSAPrivateKeySpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+8&DSAPublicKeySpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+9&ECFieldF2m&3&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+10&ECFieldFp&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+11&ECGenParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+12&ECParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+13&ECPoint&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+14&ECPrivateKeySpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+15&ECPublicKeySpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+16&EncodedKeySpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+17&GCMParameterSpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+18&HMACParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+19&IvParameterSpec&2&0 &2{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+20&MGF1ParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+21&OAEPParameterSpec&1&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+22&PBEKeySpec&3&0&0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+23&PBEParameterSpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+24&PKCS8EncodedKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+25&PSSParameterSpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+26&RSAKeyGenParameterSpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+27&RSAMultiPrimePrivateCrtKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+28&RSAPrivateCrtKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+29&RSAPrivateKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+30&RSAPublicKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+31&SecretKeySpec&2&0 &0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+32&X509EncodedKeySpec&2& 0&0{\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+ \hline
+ \hline
+ \multicolumn{2}{|l|}{ \textbf{Total}} &  \textbf{50} & \textbf{0} & 2{\hskip 0.2in}0{\hskip 0.2in} 0 {\hskip 0.2in}0 & 0{\hskip 0.2in} 0{\hskip 0.2in} 0{\hskip 0.2in} 0\\
+
+ \hline
+
+\end{tabularx}
+\caption{\label{appendix:markbctestcomp} Comparison of the results of \codyze{} and \cognicryptsast{} analyses of \MARK{} Bouncy Castle tests generated by \cognicrypttestgen.}
+\end{table}
+
+
+
+\label{appendix:bctestcomporder}
+\subsection{Results of analyzing Bouncy Castle tests, only addressing the order misuses}
+\begin{table}[H]
+\centering
+\setlength\tabcolsep{4.3pt} 
+\small
+\begin{tabularx}{\textwidth}{|P{0.5cm}|l|x|x|x|x|}
+ \hline
+ No.&Test Name & \makecell{Valid \\ tests} & \makecell{Invalid \\ tests} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\codyze{}} \\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}
+    \\TP&FP& TP & FP
+\end{tabular} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\cognicryptsast{}}\\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}\\
+    TP&FP&TP&FP
+
+\end{tabular}\\
+
+ \hline
+ \hline
+1&AlgorithmParameterGenerator&  5 & 9 & 0{\hskip 0.25in}0 {\hskip 0.2in} 9 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 9 {\hskip 0.2in} 0\\
+2&AlgorithmParameters& 9& 5& 0{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+3&CertPathTrustManagerParameters& 1& 0& 0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+4&CipherInputStream& 3& 5& 3{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+5&CipherOutputStream& 3&5 &3{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0 \\
+6&Cipher& 56&69 & 9{\hskip 0.2in}21 {\hskip 0.15in} 47 {\hskip 0.15in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 47 {\hskip 0.1in} 23{\hskip 0.2in}\\
+7&DHGenParameterSpec& 1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+8&DHParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+9&DigestInputStream&2&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}1 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+10&DigestOutputStream&2&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}2 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+11&DSAGenParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+12&DSAParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+13&ECGenParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+14&ECParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+15&GCMParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+16&HMACParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+17&IvParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+18&KeyAgreement&7&23 &0{\hskip 0.25in}0 {\hskip 0.15in} 23 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 23 {\hskip 0.2in} 0 \\
+19&KeyFactory&6&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+20&KeyGenerator&8&8 &0{\hskip 0.25in}0 {\hskip 0.2in} 8 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 8 {\hskip 0.2in} 0\\
+21&KeyManagerFactory&6&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+22&KeyPairGenerator&6&10 &0{\hskip 0.25in}0 {\hskip 0.15in} 10 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 10 {\hskip 0.2in} 0\\
+23&KeyStoreBuilderParameters&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+24&KeyStore&13&21&0{\hskip 0.25in}0 {\hskip 0.15in} 17 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 17 {\hskip 0.2in} 0\\
+25&Mac&12&21 &0{\hskip 0.25in}7 {\hskip 0.15in} 21 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 21 {\hskip 0.2in} 0\\
+26&MessageDigest&9&13 &0{\hskip 0.25in}1 {\hskip 0.2in} 2 {\hskip 0.2in} 1&0 {\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+27&MGF1ParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+28&OAEPParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+29&PBEKeySpec&1&1 &0{\hskip 0.25in}0 {\hskip 0.2in} 1 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 1 {\hskip 0.2in} 0\\
+30&PBEParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+31&PKIXBuilderParameters&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+32&PKIXParameters&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+33&RSAKeyGenParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+34&SecretKeyFactory&3&2 &0{\hskip 0.25in}0 {\hskip 0.2in} 2 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 2 {\hskip 0.2in} 0\\
+35&SecureRandom&38&16 &3{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}2 {\hskip 0.2in} 0 {\hskip 0.2in} 7\\
+36&SSLContext&5&5&0{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+37&SSLParameters&4&4 &0{\hskip 0.25in}1 {\hskip 0.2in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 3 {\hskip 0.2in} 0\\
+38&TrustManagerFactory&6&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+ \hline
+ \hline
+ \multicolumn{2}{|l|}{ \textbf{Total}} &  \textbf{228} & \textbf{233} & 18 {\hskip 0.1in} 30{\hskip 0.2in} 172 {\hskip 0.1in}1 &  1{\hskip 0.2in} 5{\hskip 0.2in} 182{\hskip 0.1in} 30\\
+ \hline
+ \multicolumn{2}{|l|}{\multirow{2}{*}{\textbf{Results}}}
+ &   \multicolumn{2}{|l|}{\textbf{Precision(\%)}} &85,97 & 83,94\\ 
+ 
+ \multicolumn{2}{|l|}{} & \multicolumn{2}{|l|}{\textbf{Recall(\%)}} & 90,04 & 86,72 \\
+ \hline
+
+\end{tabularx}
+\caption{Comparison of the results of \codyze{} and \cognicryptsast{} analyses, only addressing the order misuses, of Bouncy Castle tests generated by \cognicrypttestgen.}
+
+\end{table}
+
+
+% JCA
+\label{appendix:jcatestcomp}
+\subsection{Results of analyzing JCA tests}
+\begin{table}[H]
+\centering
+\setlength\tabcolsep{4.31pt} 
+\small
+\begin{tabularx}{\textwidth}{|P{0.5cm}|l|x|x|x|x|}
+ \hline
+ No.&Test Name & \makecell{Valid \\ tests} & \makecell{Invalid \\ tests} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\codyze{}} \\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}
+    \\TP&FP& TP & FP
+\end{tabular} & \begin{tabular}{cccc}
+    \multicolumn{4}{c}{\cognicryptsast{}}\\
+    \multicolumn{2}{c}{Valid} & \multicolumn{2}{c}{Invalid}\\
+    TP&FP&TP&FP
+
+\end{tabular}\\
+
+ \hline
+ \hline
+1&AlgorithmParameterGenerator&  5 & 9 & 0{\hskip 0.25in}2 {\hskip 0.2in} 9 {\hskip 0.2in} 2&0 {\hskip 0.2in}3 {\hskip 0.2in} 9 {\hskip 0.2in} 0\\
+2&AlgorithmParameters& 9& 5& 13{\hskip 0.2in}9 {\hskip 0.2in} 5 {\hskip 0.2in} 5&18 {\hskip 0.15in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+3&CertPathTrustManagerParameters& 1& 0& 0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+4&CipherInputStream& 3& 5& 3{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 6 {\hskip 0.2in} 0\\
+5&CipherOutputStream& 3&5 &3{\hskip 0.25in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 6 {\hskip 0.2in} 0 \\
+6&Cipher& 56&69 & 33{\hskip 0.2in}21 {\hskip 0.15in} 65 {\hskip 0.1in} 0{\hskip 0.15in}&33 {\hskip 0.15in}28 {\hskip 0.15in} 83 {\hskip 0.15in} 38\\
+7&DHGenParameterSpec& 1&0 &1{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+8&DHParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+9&DigestInputStream&2&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&1 {\hskip 0.2in}2 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+10&DigestOutputStream&2&4 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&1 {\hskip 0.2in}2 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+11&DSAGenParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+12&DSAParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+13&ECGenParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+14&ECParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+15&GCMParameterSpec&2&0 &0{\hskip 0.25in}2 {\hskip 0.2in} 0 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+16&HMACParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+17&IvParameterSpec&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0 \\
+18&KeyAgreement&7&23 &0{\hskip 0.25in}2 {\hskip 0.15in} 23 {\hskip 0.2in} 6&0 {\hskip 0.2in}0 {\hskip 0.15in} 23 {\hskip 0.2in} 0 \\
+19&KeyFactory&6&0 &0{\hskip 0.25in}4 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+20&KeyGenerator&8&8 &0{\hskip 0.25in}3 {\hskip 0.2in} 8 {\hskip 0.2in} 3&0 {\hskip 0.2in}0 {\hskip 0.2in} 8 {\hskip 0.2in} 0\\
+21&KeyManagerFactory&6&4 &0{\hskip 0.25in}8 {\hskip 0.2in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+22&KeyPairGenerator&6&10 &4{\hskip 0.25in}0 {\hskip 0.15in} 14 {\hskip 0.2in} 0&4 {\hskip 0.2in}0 {\hskip 0.15in} 12 {\hskip 0.2in} 0\\
+23&KeyStoreBuilderParameters&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+24&KeyStore&13&21&0{\hskip 0.25in}0 {\hskip 0.15in} 17 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.15in} 17 {\hskip 0.2in} 0\\
+25&Mac&12&21 &0{\hskip 0.25in}7 {\hskip 0.15in} 21 {\hskip 0.2in} 0&1 {\hskip 0.2in}0 {\hskip 0.15in} 22 {\hskip 0.2in} 0\\
+26&MessageDigest&9&13 &0{\hskip 0.25in}1 {\hskip 0.2in} 2 {\hskip 0.2in} 1&2 {\hskip 0.2in}0 {\hskip 0.2in} 8 {\hskip 0.2in} 0\\
+27&MGF1ParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+28&OAEPParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+29&PBEKeySpec&1&1 &0{\hskip 0.25in}1 {\hskip 0.2in} 1 {\hskip 0.2in} 1&0 {\hskip 0.2in}0 {\hskip 0.2in} 1 {\hskip 0.2in} 0\\
+30&PBEParameterSpec&2&0 &0{\hskip 0.25in}1 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+31&PKIXBuilderParameters&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+32&PKIXParameters&2&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+33&RSAKeyGenParameterSpec&1&0 &0{\hskip 0.25in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 0 {\hskip 0.2in} 0\\
+34&SecretKeyFactory&3&2 &0{\hskip 0.25in}4 {\hskip 0.2in} 2 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 2 {\hskip 0.2in} 0\\
+35&SecureRandom&38&16 &3{\hskip 0.25in}0 {\hskip 0.2in} 3 {\hskip 0.2in} 0&0 {\hskip 0.2in}2 {\hskip 0.2in} 0 {\hskip 0.2in} 7\\
+36&SSLContext&5&5&10{\hskip 0.2in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0&10 {\hskip 0.15in}0 {\hskip 0.2in} 5 {\hskip 0.2in} 0\\
+37&SSLParameters&4&4 &0{\hskip 0.25in}1 {\hskip 0.2in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 3 {\hskip 0.2in} 0\\
+38&TrustManagerFactory&6&4 &0{\hskip 0.25in}13 {\hskip 0.15in} 4 {\hskip 0.2in} 0&0 {\hskip 0.2in}0 {\hskip 0.2in} 4 {\hskip 0.2in} 0\\
+ \hline
+ \hline
+ \multicolumn{2}{|l|}{ \textbf{Total}} &  \textbf{228} & \textbf{233} & 81 {\hskip 0.1in} 71{\hskip 0.15in} 207 {\hskip 0.1in}18 &  116{\hskip 0.1in} 10{\hskip 0.2in} 248{\hskip 0.1in} 33\\
+ \hline
+ \multicolumn{2}{|l|}{\multirow{2}{*}{\textbf{Results}}}
+ &   \multicolumn{2}{|l|}{\textbf{Precision(\%)}} &73,35 & 78,70\\ 
+ 
+ \multicolumn{2}{|l|}{} & \multicolumn{2}{|l|}{\textbf{Recall(\%)}} & 81,15 & 92,09 \\
+ \hline
+\end{tabularx}
+\caption{Comparison of the results of \codyze{} and \cognicryptsast{} analyses of JCA tests generated by \cognicrypttestgen.}
+
+\end{table}

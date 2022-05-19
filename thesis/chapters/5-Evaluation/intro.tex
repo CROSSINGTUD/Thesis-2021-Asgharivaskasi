@@ -1,0 +1,24 @@
+\chapter{Evaluation}
+\label{ch:eval}
+In this chapter, we will evaluate and compare the performance (precision and recall) of \codyze{} and \cognicryptsast{} Eclipse plugins. To accomplish this, we will use Java code samples that contain the correct and incorrect usages of cryptographic APIs and compare the analysis results each tool generates after analyzing the code samples.
+
+Consequently, we require a benchmark for comparing the efficiency of the tools in detecting cryptographic vulnerabilities. Unfortunately, \codyze{} and \cognicryptsast{} do not provide any generally accepted benchmark in this domain; therefore, we searched for alternative resources. One of the benchmarks we can use to compare analysis results that is more recent and relevant is the \cryptoapibench{} \cite{cryptoapibench}, which is the benchmark for \cryptoguard{} \cite{sr19} and covers a wide range of misuse instances. We will discuss \cryptoapibench{} and the results of analyzing it using both tools in section \ref{sec:apibench}. 
+
+Since \cryptoapibench{} might be biased towards \cryptoguard{} and therefore may not provide us with an accurate comparison, we further used \cognicrypttestgen{}\cite{rakshit}. \cognicrypttestgen{} is a test generator for cryptographic APIs. It generates test suites that contain test cases with all correct and incorrect usages of an API. It consumes \crysl{} rules as an input, parses them, and produces test suites for each rule. We will explain more about the test generation and the result of analyses in the Section \ref{sec:testgen}.
+
+To avoid confusion, we refer to the translated rules as follows.
+The translated Bouncy Castle JCA \crysl{} rules to \MARK, the translated Bouncy Castle JCA \MARK{} rules. The translated JCA \crysl{} rules to \MARK, the translated JCA \MARK{} rules. The translated Bouncy Castle \MARK{} rules to \crysl, the translate Bouncy Castle \crysl{} rules.
+
+The following setup section describes the environment in which we conducted the evaluations. Next, we discuss the results of analyzing \cryptoapibench{} using \cognicryptsast{} and \codyze, followed by discussing the results of analyzing \cognicrypttestgen{} generated tests.
+
+\subsubsection*{Setup}
+To analyze benchmarks with \codyze{} and \cognicryptsast, we employed the same virtual machines with analyzers installed in them as described in the setup of Section \ref{sec:practical}. There is a total of 6 GB of memory allocated to \codyze's language server as \codyze{} developers recommend using 6 GB or more. Since our virtual machine has a maximum memory of 8 GB, we dedicated 6 GB to the language server. The type state analysis is set to \code{within functions only}. The other option, \code{whole program}, does not work, therefore the \codyze{} developer recommended setting it to \code{within functions only}. The call graph construction algorithm of \cognicryptsast{} is set to CHA, which is the default. In this chapter, we used the original \crysl{} and \MARK{} rules as described in the Section \ref{sec:rulesetup} and the translated rules that are described in Section \ref{sec:practicdsl}.
+
+
+\section{Evaluation with \cryptoapibench}
+\input{thesis/chapters/5-Evaluation/apibench}
+\label{sec:apibench}
+
+\section{Evaluation with \cognicrypttestgen}
+\input{thesis/chapters/5-Evaluation/testgen}
+\label{sec:testgen}
